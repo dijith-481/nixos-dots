@@ -21,7 +21,7 @@
     swaylock-effects
     swayidle
     gammastep
-    wlsuset
+    wlsunset
     brightnessctl
     swaynotificationcenter
     libnotify

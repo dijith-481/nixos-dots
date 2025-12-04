@@ -40,5 +40,5 @@
     XDG_DATA_HOME = "$HOME/.local/share";
 
     PATH = "$HOME/.cargo/bin:$HOME/go/bin:$HOME/.local/bin:$PATH";
-  }
-    }
+  };
+}

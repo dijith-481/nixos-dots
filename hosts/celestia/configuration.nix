@@ -52,7 +52,6 @@ in
   hardware = {
     graphics = {
       enable = true;
-      settings.General.Experimental = true;
       extraPackages = with pkgs;[
         mesa
         intel-media-driver
@@ -174,18 +173,23 @@ in
   time.timeZone = "Asia/Kolkata";
   #i18n.defaultLocale = "en_US.UTF-8";
 
-  fonts.packages = with pkgs;[
-    nerd-fonts.iosevka
-    inter
-    noto-fonts
-    noto-fonts-color-emoji
-    corefonts
-  ];
-  fontconfig = {
-    sansSerif = [ "Inter" "Noto Sans" ];
-    serif = [ "Times New Roman" ];
-    monospace = [ "Iosevka" ];
-    emoji = [ "Noto Color Emoji" ];
+  fonts = {
+    packages = with pkgs;[
+      nerd-fonts.iosevka
+      inter
+      noto-fonts
+      noto-fonts-color-emoji
+      corefonts
+    ];
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        sansSerif = [ "Inter" "Noto Sans" ];
+        serif = [ "Times New Roman" ];
+        monospace = [ "Iosevka" ];
+        emoji = [ "Noto Color Emoji" ];
+      };
+    };
   };
 
   users.users.dijith = {

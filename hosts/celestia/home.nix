@@ -15,7 +15,7 @@ in
     ./session-variables.nix
     ./modules/development
     ./modules/desktop.nix
-    /modules/wayland.nix
+    ./modules/wayland.nix
     ./modules/system
   ];
   home.username = "dijith";

@@ -4,9 +4,10 @@ let
 in
 {
   #TODO switch to tuigreet
-  services.displayManger.ly = {
-    animation = "gameoflife";
-    battery_id = "BAT0";
+  services.displayManager.ly = {
+    settings = {
+      battery_id = "BAT0";
 
+    };
   };
 }

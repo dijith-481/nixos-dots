@@ -4,7 +4,7 @@ let
 in
 {
   stylix.enable = true;
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/everforest-dark-hard.yaml";
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/nord.yaml";
   stylix.image = locals.wallpapers.main;
   stylix.cursor = {
     package = pkgs.everforest-cursors;
@@ -33,6 +33,5 @@ in
   };
   stylix.targets = {
     gtk.enable = true;
-    qt.enable = true;
   };
 }

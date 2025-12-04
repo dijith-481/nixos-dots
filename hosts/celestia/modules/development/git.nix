@@ -3,10 +3,10 @@
 {
   programs.git = {
     enable = true;
-    userName = "dijith-481";
-    userEmail = "dijithdinesh@protonmail.com";
+    settings = {
+      user.name = "dijith-481";
+      user.email = "dijithdinesh@protonmail.com";
 
-    extraConfig = {
       init.defaultBranch = "main";
       commit.gpgSign = true;
       tag.gpgSign = true;
@@ -15,7 +15,6 @@
       diff.tool = "vimdiff";
       merge.tool = "vimdiff";
       column.ui = "auto";
-
 
       diff.algorithm = "patience";
       merge.conflictstyle = "diff3";
