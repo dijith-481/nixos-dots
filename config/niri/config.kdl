@@ -3,23 +3,7 @@ workspace "browser"
 workspace "ytmusic"
 environment {
     DISPLAY ":0"
-    ELECTRON_OZONE_PLATFORM_HINT "wayland"
-    QT_QPA_PLATFORM "wayland;xcb"
-    QT_QPA_PLATFORMTHEME "qt6ct"
-    GTK_THEME "Nordic-v40"
-    GDK_BACKEND "wayland"
-    // GTK_USE_PORTAL "1"
-    // GDK_DEBUG "portals"
-    QT_WAYLAND_DISABLE_WINDOWDECORATION "1"
-    QT_AUTO_SCREEN_SCALE_FACTOR "1"
-    QT_ENABLE_HIGHDPI_SCALING "1"
-    QT_QUICK_CONTROLS_STYLE "org.kde.desktop"
-    XDG_CURRENT_DESKTOP "niri"
-    XDG_SESSION_TYPE "wayland"
-    // XDG_SESSION_DESKTOP "niri"
-    SSH_AUTH_SOCK "/run/user/1000/gcr/ssh"
-    GDK_DPI_SCALE "1.2"
-    GDK_SCALE "1.2"
+ // SSH_AUTH_SOCK "/run/user/1000/gcr/ssh"
 }
 input {
     disable-power-key-handling
@@ -137,23 +121,25 @@ overview {
         off
     }
 }
-spawn-at-startup "clipse" "-listen"
-spawn-at-startup "foot" "server"
-spawn-at-startup "systemctl" "--user" "start" "hyprpolkitagent"
-spawn-at-startup "kdeconnectd"
-spawn-at-startup "kdeconnect-indicator"
-spawn-at-startup "waybar"
-spawn-at-startup "dunst"
+// spawn-at-startup "clipse" "-listen"
+// spawn-at-startup "foot" "server"
+// spawn-at-startup "systemctl" "--user" "start" "hyprpolkitagent"
+// spawn-sh-at-startup "nfsm"
+// spawn-at-startup "kdeconnectd"
+// spawn-at-startup "kdeconnect-indicator"
+// spawn-at-startup "waybar"
+// spawn-at-startup "dunst"
 //spawn-at-startup "syncthing" "serve"
-spawn-at-startup "swww-daemon"
-spawn-at-startup "sleep" "1" "&&" "exec" "swww" "restore"
-spawn-at-startup "~/.config/hypr/scripts/initwallpaper.sh"
-spawn-at-startup "gnome-keyring-daemon" "--start" "--components=secrets"
-spawn-at-startup "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE" "NIRI_SOCKET"
-spawn-at-startup "zen"
-spawn-at-startup "brave" "--app=https://music.youtube.com"
-spawn-at-startup "wlsunset" "-l" "10.77" "-L" "76.22"
-spawn-at-startup "xwayland-satellite"
+// spawn-at-startup "swww-daemon"
+spawn-at-startup "~/.config/niri/autostart.sh"
+// spawn-at-startup "sleep" "1" "&&" "exec" "swww" "restore"
+// spawn-at-startup "~/.config/hypr/scripts/initwallpaper.sh"
+// spawn-at-startup "gnome-keyring-daemon" "--start" "--components=secrets"
+// spawn-at-startup "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE" "NIRI_SOCKET"
+// spawn-at-startup "zen"
+// spawn-at-startup "brave" "--app=https://music.youtube.com"
+// spawn-at-startup "wlsunset" "-l" "10.77" "-L" "76.22"
+// spawn-at-startup "xwayland-satellite"
 prefer-no-csd
 screenshot-path "~/Downloads/screenshots/ from %Y-%m-%d %H-%M-%S.png"
 cursor {
@@ -244,7 +230,7 @@ window-rule {
     }
 }
 window-rule {
-    match at-startup=true app-id="zen$"
+    match at-startup=true app-id="zen-beta$"
     open-on-workspace "browser"
     open-maximized true
     draw-border-with-background false
@@ -809,7 +795,7 @@ binds {
         maximize-column
     }
     Mod+F {
-        fullscreen-window
+        spawn "nfsm-cli"
     }
     Mod+Shift+F {
         toggle-windowed-fullscreen

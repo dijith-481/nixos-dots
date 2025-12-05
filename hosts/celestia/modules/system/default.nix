@@ -6,7 +6,6 @@
     nushell
     kitty
     ghostty
-    clipse
     dysk
     dua
 
@@ -30,6 +29,7 @@
     drm_info
     wayland-utils
     wdisplays
+    pkg-config
 
 
   ];

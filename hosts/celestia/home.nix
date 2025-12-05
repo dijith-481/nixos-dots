@@ -21,6 +21,15 @@ in
   home.username = "dijith";
   home.homeDirectory = "/home/dijith";
   home.stateVersion = versions.homeManager;
+  stylix.targets.zen-browser =
+    {
+      enableCss = true;
+      profileNames = [
+        "zen"
+
+      ];
+
+    };
 
 
 

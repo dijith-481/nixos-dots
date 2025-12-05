@@ -15,10 +15,7 @@
     MOZ_X11_EGL = "1";
 
     QT_QPA_PLATFORM = "wayland";
-    QT_QPA_PLATFORMTHEME = "qt6ct";
     QT_AUTO_SCREEN_SCALE_FACTOR = "0";
-
-    GDK_BACKEND = "wayland";
 
     SDL_VIDEODRIVER = "wayland";
     CLUTTER_BACKEND = "wayland";

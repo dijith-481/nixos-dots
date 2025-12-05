@@ -32,6 +32,20 @@ in
     };
   };
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.consoleLogLevel = 0;
+  boot.initrd.verbose = false;
+
+  boot.kernelParams = [
+    "quiet"
+    "splash"
+    "boot.shell_on_fail"
+    "loglevel=3"
+    "rd.systemd.show_status=false"
+    "rd.udev.log_level=3"
+    "udev.log_priority=3"
+
+    "vt.global_cursor_default=0"
+  ];
 
   nix = {
     settings = {
@@ -73,15 +87,13 @@ in
   networking = {
     hostName = locals.hostname;
     networkmanager.enable = true;
-    firewall = rec {
+    firewall = {
       enable = true;
-      allowedTCPPortRanges = [{ from = 1714; to = 1764; }];
-      allowedUDPPortRanges = allowedTCPPortRanges;
+      allowedTCPPorts = [ 22 80 443 5173 3000 3001 4321 8000 8080 ];
     };
   };
 
 
-  services.displayManager.ly.enable = true;
   services.xserver.enable = true;
   services.keyd = {
     enable = true;
