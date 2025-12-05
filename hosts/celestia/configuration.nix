@@ -37,7 +37,7 @@ in
 
   boot.plymouth = {
     enable = true;
-    theme = "lone";
+    theme = lib.mkForce "lone";
     themePackages = with pkgs; [
       # By default we would install all themes
       (adi1090x-plymouth-themes.override {
@@ -56,7 +56,7 @@ in
   # Hide the OS choice for bootloaders.
   # It's still possible to open the bootloader list by pressing any key
   # It will just not appear on screen unless a key is pressed
-  boot.loader.timeout = 0;
+  boot.loader.timeout = 3;
   zramSwap = {
     enable = true;
     algorithm = "lz4";

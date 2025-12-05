@@ -11,7 +11,7 @@
         # --asterisks: hides password characters
         # --remember: remembers last username
         # --cmd niri-session: The command to start your window manager
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --asterisks --remember --cmd niri-session";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --asterisks --remember --cmd niri-session";
         user = "greeter";
       };
     };
