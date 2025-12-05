@@ -1,5 +1,6 @@
 { config, lib, pkgs, inputs, ... }:
 {
+
   home.packages = with pkgs;[
     brave
     inputs.zen-browser.packages."${pkgs.system}".default
@@ -7,6 +8,7 @@
     localsend
     seahorse
     libsecret
+    nautilus
 
 
 

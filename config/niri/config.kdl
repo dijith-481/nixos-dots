@@ -123,7 +123,7 @@ overview {
 }
 // spawn-at-startup "clipse" "-listen"
 // spawn-at-startup "foot" "server"
-// spawn-at-startup "systemctl" "--user" "start" "hyprpolkitagent"
+ spawn-at-startup "systemctl" "--user" "start" "hyprpolkitagent"
 // spawn-sh-at-startup "nfsm"
 // spawn-at-startup "kdeconnectd"
 // spawn-at-startup "kdeconnect-indicator"
@@ -139,11 +139,11 @@ spawn-at-startup "~/.config/niri/autostart.sh"
 // spawn-at-startup "zen"
 // spawn-at-startup "brave" "--app=https://music.youtube.com"
 // spawn-at-startup "wlsunset" "-l" "10.77" "-L" "76.22"
-// spawn-at-startup "xwayland-satellite"
+spawn-at-startup "xwayland-satellite"
 prefer-no-csd
 screenshot-path "~/Downloads/screenshots/ from %Y-%m-%d %H-%M-%S.png"
 cursor {
-    xcursor-theme "oreo_nord_cursors"
+    xcursor-theme "Nordzy-cursors"
     xcursor-size 10
     hide-when-typing
  // hide-after-inactive-ms 3000

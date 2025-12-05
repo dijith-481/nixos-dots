@@ -5,5 +5,5 @@ sleep 1
 
 swww restore
 
-zen
+zen &
 brave --app=https://music.youtube.com &

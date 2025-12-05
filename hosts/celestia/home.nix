@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 let
   versions = import ../../versions.nix;
   dotfiles = "${config.home.homeDirectory}/nixos-dots/config";
@@ -21,14 +21,24 @@ in
   home.username = "dijith";
   home.homeDirectory = "/home/dijith";
   home.stateVersion = versions.homeManager;
-  stylix.targets.zen-browser =
-    {
+
+  home.pointerCursor = {
+    gtk.enable = true;
+    x11.enable = true;
+  };
+
+
+  stylix.targets = {
+    waybar.enable = false;
+    zen-browser = {
+      enable = true;
       enableCss = true;
       profileNames = [
-        "zen"
+        "dijith"
       ];
 
     };
+  };
 
 
 

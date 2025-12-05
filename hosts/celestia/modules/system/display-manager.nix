@@ -17,5 +17,5 @@
     };
   };
 
-  environment.systemPackages = [ pkgs.greetd.tuigreet ];
+  environment.systemPackages = [ pkgs.tuigreet ];
 }

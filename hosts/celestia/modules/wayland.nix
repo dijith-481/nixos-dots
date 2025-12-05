@@ -1,7 +1,6 @@
 { pkgs, inputs, ... }:
 let
   inherit (inputs.nfsm-flake.packages.${pkgs.system}) nfsm nfsm-cli;
-  chameleos = pkgs.callPackage ../../../pkgs/chameleos.nix { };
 in
 {
   xdg.portal = {
@@ -31,25 +30,6 @@ in
   services.syncthing.enable = true;
   programs.waybar.enable = true;
 
-  systemd.user.services = {
-    hyprpolkitagent = {
-      Unit = { Description = "Hyprland Polkit Agent"; };
-      Service = {
-        ExecStart = "${pkgs.hyprpolkitagent}/libexec/hyprpolkitagent";
-        Restart = "always";
-      };
-      Install = { WantedBy = [ "graphical-session.target" ]; };
-    };
-    xwayland-satellite = {
-      Unit = { Description = "Xwayland Satellite"; };
-      Service = {
-        ExecStart = "${pkgs.xwayland-satellite}/bin/xwayland-satellite";
-        Restart = "always";
-      };
-      Install = { WantedBy = [ "graphical-session.target" ]; };
-    };
-
-  };
 
   home.packages = with pkgs;[
     niri
@@ -78,6 +58,5 @@ in
     xdg-desktop-portal-gnome
     nfsm
     nfsm-cli
-    chameleos
   ];
 }

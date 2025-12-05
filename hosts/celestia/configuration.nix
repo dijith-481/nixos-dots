@@ -32,20 +32,36 @@ in
     };
   };
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.consoleLogLevel = 0;
+  boot.consoleLogLevel = 3;
   boot.initrd.verbose = false;
+
+  boot.plymouth = {
+    enable = true;
+    theme = "lone";
+    themePackages = with pkgs; [
+      # By default we would install all themes
+      (adi1090x-plymouth-themes.override {
+        selected_themes = [ "lone" ];
+      })
+    ];
+  };
 
   boot.kernelParams = [
     "quiet"
     "splash"
     "boot.shell_on_fail"
-    "loglevel=3"
-    "rd.systemd.show_status=false"
-    "rd.udev.log_level=3"
     "udev.log_priority=3"
-
-    "vt.global_cursor_default=0"
+    "rd.systemd.show_status=auto"
   ];
+  # Hide the OS choice for bootloaders.
+  # It's still possible to open the bootloader list by pressing any key
+  # It will just not appear on screen unless a key is pressed
+  boot.loader.timeout = 0;
+  zramSwap = {
+    enable = true;
+    algorithm = "lz4";
+    memoryPercent = 40;
+  };
 
   nix = {
     settings = {
@@ -69,7 +85,6 @@ in
       extraPackages = with pkgs;[
         mesa
         intel-media-driver
-        libvdpau-va-gl
       ];
     };
     bluetooth = {
@@ -133,6 +148,11 @@ in
 
   services.syncthing = {
     enable = true;
+    user = "dijith"; # Run as your user
+    dataDir = "/home/dijith"; # Default folder for new syncs
+    configDir = "/home/dijith/.config/syncthing"; # Use your user config
+    overrideDevices = false; # Don't wipe your manual config changes
+    overrideFolders = false; # Don't wipe your manual folders
     openDefaultPorts = true;
   };
 
@@ -157,10 +177,14 @@ in
       WIFI_PWR_ON_BAT = "on";
     };
   };
+
+  programs.dconf.enable = true;
   programs.niri.enable = true;
   programs.niri.useNautilus = false;
   programs.fish.enable = true;
   environment.systemPackages = with pkgs; [
+    libva-utils
+    intel-gpu-tools
     git
     vim
     curl

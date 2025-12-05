@@ -44,6 +44,9 @@
 
     gemini-cli
     opencode
+    figma-agent
+
+
 
   ];
 }

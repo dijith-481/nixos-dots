@@ -8,9 +8,9 @@ in
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/nord.yaml";
   stylix.image = locals.wallpapers.main;
   stylix.cursor = {
-    package = pkgs.everforest-cursors;
-    name = "Everforest-cursors-dark";
-    size = 16;
+    name = "Nordzy-cursors";
+    package = pkgs.nordzy-cursor-theme;
+    size = 10;
   };
   stylix.fonts = {
     monospace = {
