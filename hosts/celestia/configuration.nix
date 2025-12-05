@@ -158,6 +158,7 @@ in
     };
   };
   programs.niri.enable = true;
+  programs.niri.useNautilus = false;
   programs.fish.enable = true;
   environment.systemPackages = with pkgs; [
     git

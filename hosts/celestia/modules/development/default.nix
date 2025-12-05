@@ -41,5 +41,9 @@
     httpie # Better curl alternative
     #todo test it
     yaak # API testing tool
+
+    gemini-cli
+    opencode
+
   ];
 }

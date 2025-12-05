@@ -26,7 +26,6 @@ in
       enableCss = true;
       profileNames = [
         "zen"
-
       ];
 
     };

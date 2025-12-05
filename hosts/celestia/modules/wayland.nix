@@ -1,12 +1,9 @@
-{ pkgs, inputs, system, ... }:
+{ pkgs, inputs, ... }:
 let
-  inherit (inputs.nfsm-flake.packages.${system}) nfsm nfsm-cli;
+  inherit (inputs.nfsm-flake.packages.${pkgs.system}) nfsm nfsm-cli;
+  chameleos = pkgs.callPackage ../../../pkgs/chameleos.nix { };
 in
 {
-  imports = [
-    inputs.dankMaterialShell.homeModules.dankMaterialShell.default
-    # inputs.dankMaterialShell.homeModules.dankMaterialShell.niri
-  ];
   xdg.portal = {
     enable = true;
     extraPortals = [
@@ -21,6 +18,7 @@ in
     latitude = "10.77";
     longitude = "76.22";
   };
+
   services.kdeconnect = {
     enable = true;
     indicator = true;
@@ -29,14 +27,9 @@ in
   services.swww.enable = true;
   services.dunst.enable = true;
   services.hypridle.enable = true;
-  services.hyprlock.enable = true;
+  programs.hyprlock.enable = true;
   services.syncthing.enable = true;
-  # programs.waybar.enable = true;
-  programs.niri.enable = true;
-  programs.niri.useNautilus = false;
-  programs.dankMaterialShell = {
-    enable = true;
-  };
+  programs.waybar.enable = true;
 
   systemd.user.services = {
     hyprpolkitagent = {
@@ -57,27 +50,11 @@ in
     };
 
   };
-  home.file.".config/niri/autostart.sh" = {
-    executable = true;
-    text = ''
-      #!/bin/sh
-      dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP NIRI_SOCKET
-
-      sleep 1
-
-      swww restore 
-
-      zen 
-      brave --app=https://music.youtube.com &
-      
-    '';
-  };
 
   home.packages = with pkgs;[
     niri
     fuzzel
     anyrun
-    cham
     waybar
     imagemagick
     hyprpicker
@@ -95,10 +72,12 @@ in
     swaynotificationcenter
     libnotify
     kdePackages.kdeconnect-kde
+    kdePackages.qqc2-desktop-style
     hyprpolkitagent
     xdg-desktop-portal-gtk
     xdg-desktop-portal-gnome
     nfsm
     nfsm-cli
+    chameleos
   ];
 }
