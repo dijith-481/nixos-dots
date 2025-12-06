@@ -6,6 +6,7 @@ let
   configs = {
     niri = "niri";
     helix = "helix";
+    zellij = "zellij";
   };
 
 in

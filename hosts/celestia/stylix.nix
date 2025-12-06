@@ -31,6 +31,7 @@ in
       popups = 12;
     };
   };
+  stylix.polarity = "dark";
   stylix.targets = {
     gtk.enable = true;
     qt.enable = true;
