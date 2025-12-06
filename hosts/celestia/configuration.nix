@@ -13,6 +13,7 @@ in
     ];
 
   boot.loader.systemd-boot = {
+    consoleMode = "max";
     enable = true;
     extraEntries = {
       "arch.conf" = "
@@ -27,8 +28,13 @@ in
       "/data-decrypt-key" = "/boot/data-decrypt-key";
     };
     luks.devices."luks" = {
-      fallbackToPassword = true;
       keyFile = "/data-decrypt-key";
+    };
+    kernelModules = [
+      "i915"
+    ];
+    systemd = {
+      enable = true;
     };
   };
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -50,13 +56,14 @@ in
     "quiet"
     "splash"
     "boot.shell_on_fail"
-    "udev.log_priority=3"
-    "rd.systemd.show_status=auto"
+    "rd.udev.log_level=3"
+    "rd.udev.log_priority=3"
+    "systemd.show_status=auto"
   ];
   # Hide the OS choice for bootloaders.
   # It's still possible to open the bootloader list by pressing any key
   # It will just not appear on screen unless a key is pressed
-  boot.loader.timeout = 3;
+  boot.loader.timeout = 0;
   zramSwap = {
     enable = true;
     algorithm = "lz4";
@@ -80,6 +87,8 @@ in
   };
 
   hardware = {
+
+    enableRedistributableFirmware = true;
     graphics = {
       enable = true;
       extraPackages = with pkgs;[
@@ -106,6 +115,11 @@ in
       enable = true;
       allowedTCPPorts = [ 22 80 443 5173 3000 3001 4321 8000 8080 ];
     };
+  };
+
+  services.logind = {
+    powerKey = "ignore";
+    powerKeyLongPress = "poweroff";
   };
 
 
@@ -204,7 +218,7 @@ in
 
   virtualisation.docker = {
     enable = true;
-    enableOnBoot = true;
+    # enableOnBoot = true;
   };
 
   time.timeZone = "Asia/Kolkata";

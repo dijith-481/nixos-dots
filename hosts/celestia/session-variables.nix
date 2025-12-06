@@ -17,6 +17,7 @@
     QT_QPA_PLATFORM = "wayland";
     QT_AUTO_SCREEN_SCALE_FACTOR = "0";
 
+    SSH_AUTH_SOCK = "/run/user/1000/gcr/ssh";
     SDL_VIDEODRIVER = "wayland";
     CLUTTER_BACKEND = "wayland";
     PIPEWIRE_LATENCY = "128/48000";

@@ -6,6 +6,10 @@
       url = "github:gvolpe/nfsm";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sysc-greet = {
+      url = "github:Nomadcxx/sysc-greet";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -15,7 +19,7 @@
 
   };
 
-  outputs = { nixpkgs, stylix, ... }@inputs: {
+  outputs = { nixpkgs, sysc-greet, stylix, ... }@inputs: {
     nixosConfigurations = {
       nixos-celestia = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -23,7 +27,7 @@
         modules = [
           ./hosts/celestia
           stylix.nixosModules.stylix
-
+          sysc-greet.nixosModules.default
 
         ];
       };

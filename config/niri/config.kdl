@@ -3,7 +3,6 @@ workspace "browser"
 workspace "ytmusic"
 environment {
     DISPLAY ":0"
- // SSH_AUTH_SOCK "/run/user/1000/gcr/ssh"
 }
 input {
     disable-power-key-handling
@@ -24,7 +23,7 @@ input {
         scroll-factor 1
     }
     mouse {
-        // natural-scroll
+       // natural-scroll
         accel-speed 0.2
     }
     trackpoint {
@@ -123,6 +122,7 @@ overview {
 }
 // spawn-at-startup "clipse" "-listen"
 // spawn-at-startup "foot" "server"
+spawn-at-startup "nfsm"
  spawn-at-startup "systemctl" "--user" "start" "hyprpolkitagent"
 // spawn-sh-at-startup "nfsm"
 // spawn-at-startup "kdeconnectd"

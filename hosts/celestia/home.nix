@@ -31,6 +31,7 @@ in
   stylix.targets = {
     waybar.enable = false;
     dunst.enable = false;
+    hyprlock.enable = false;
     zen-browser = {
       enable = true;
       enableCss = true;

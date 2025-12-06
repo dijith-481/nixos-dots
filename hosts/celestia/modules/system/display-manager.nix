@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
-  services.displayManager.ly.enable = false;
+
+
 
   services.greetd = {
     enable = true;
@@ -11,11 +12,11 @@
         # --asterisks: hides password characters
         # --remember: remembers last username
         # --cmd niri-session: The command to start your window manager
-        command = "${pkgs.tuigreet}/bin/tuigreet --time --asterisks --remember --cmd niri-session";
+        command = "${pkgs.greetd}/bin/agreety  --cmd niri-session";
         user = "greeter";
       };
     };
   };
 
-  environment.systemPackages = [ pkgs.tuigreet ];
+  # environment.systemPackages = [ pkgs.tuigreet ];
 }
