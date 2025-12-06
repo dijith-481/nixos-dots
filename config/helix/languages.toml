@@ -1,0 +1,8 @@
+[[language]]
+name = "nix"
+language-servers = ["nixd"]
+auto-format = true
+formatter.command = "nixpkgs-fmt" 
+
+[language-server.nixd]
+command = "nixd"
