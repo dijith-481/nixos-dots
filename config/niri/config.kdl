@@ -23,7 +23,7 @@ input {
         scroll-factor 1
     }
     mouse {
-       // natural-scroll
+        // natural-scroll
         accel-speed 0.2
     }
     trackpoint {
@@ -120,10 +120,35 @@ overview {
         off
     }
 }
-// spawn-at-startup "clipse" "-listen"
+
+recent-windows {
+    // off
+    debounce-ms 750
+
+    open-delay-ms 150
+
+    highlight {
+        active-color "#999999ff"
+        urgent-color "#ff9999ff"
+        padding 30
+        corner-radius 0
+    }
+
+    previews {
+        max-height 480
+        max-scale 0.5
+    }
+
+    binds {
+        Mod+Ctrl+Tab         { next-window; }
+        Mod+Ctrl+Shift+Tab   { previous-window; }
+        Mod+Tab       { next-window     filter="app-id"; }
+        Mod+Shift+Tab { previous-window filter="app-id"; }
+    }
+}// spawn-at-startup "clipse" "-listen"
 // spawn-at-startup "foot" "server"
 spawn-at-startup "nfsm"
- spawn-at-startup "systemctl" "--user" "start" "hyprpolkitagent"
+spawn-at-startup "systemctl" "--user" "start" "hyprpolkitagent"
 // spawn-sh-at-startup "nfsm"
 // spawn-at-startup "kdeconnectd"
 // spawn-at-startup "kdeconnect-indicator"
@@ -755,12 +780,6 @@ binds {
     Mod+Control+Shift+A {
         move-column-to-last
     }
-    Mod+Tab {
-        focus-window-previous
-    }
-    Mod+Shift+Tab {
-        focus-workspace-previous
-    }
     Mod+BracketLeft {
         consume-or-expel-window-left
     }
@@ -793,6 +812,9 @@ binds {
     }
     Mod+D {
         maximize-column
+    }
+    Mod+Shift+D{
+        maximize-window-to-edges
     }
     Mod+F {
         spawn "nfsm-cli"

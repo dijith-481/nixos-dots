@@ -7,7 +7,7 @@
     ./shell.nix
   ];
   home.packages = with pkgs; [
-    zed
+    zed-editor
 
     pnpm
 

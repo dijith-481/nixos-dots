@@ -22,6 +22,7 @@ in
     enable = true;
     indicator = true;
   };
+
   services.clipse.enable = true;
   services.swww.enable = true;
   services.dunst.enable = true;

@@ -1,8 +1,19 @@
 { config, ... }:
 
 {
+
   programs.git = {
     enable = true;
+
+    delta = {
+      enable = true;
+      options = {
+        navigate = true;
+        line-numbers = true;
+        syntax-theme = "Nord";
+      };
+    };
+
     settings = {
       user.name = "dijith-481";
       user.email = "dijithdinesh@protonmail.com";
@@ -11,13 +22,21 @@
       commit.gpgSign = true;
       tag.gpgSign = true;
       push.autoSetupRemote = true;
-      core.editor = "hx";
+
+      include.path = "~/.config/delta/theme.gitconfig";
+      core = {
+        editor = "hx";
+        # 'pager' is removed here because delta.enable = true handles it
+      };
+
+      # 'interactive.diffFilter' is removed; handled by delta module
+
       diff.tool = "vimdiff";
       merge.tool = "vimdiff";
       column.ui = "auto";
 
       diff.algorithm = "patience";
-      merge.conflictstyle = "diff3";
+      merge.conflictstyle = "zdiff3";
     };
 
     signing = {
@@ -25,7 +44,6 @@
       signByDefault = true;
     };
   };
-
   #TODO write comments on setup gpg and ssh on install
   programs.ssh = {
     enable = true;

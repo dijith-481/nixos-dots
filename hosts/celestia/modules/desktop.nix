@@ -32,6 +32,7 @@
     bluetui
     powertop
     yazi
+    xdg-desktop-portal-termfilechooser
     qview
     inkscape
     mpv

@@ -18,6 +18,7 @@
     cmatrix
     cava
     fum
+    scooter
 
     delta # Better git diff
     lazygit # TUI for git
