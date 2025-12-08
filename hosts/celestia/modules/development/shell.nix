@@ -19,6 +19,7 @@
     cava
     fum
     scooter
+    eslint_d
 
     delta # Better git diff
     lazygit # TUI for git
@@ -31,6 +32,8 @@
     tree
 
     killall
+
+    antigravity
   ];
 
   programs.zoxide = {

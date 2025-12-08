@@ -9,6 +9,7 @@
     seahorse
     libsecret
     nautilus
+    helvum
 
 
 

@@ -22,6 +22,8 @@
 
     gcc # GNU Compiler Collection
     tree-sitter
+    lua-language-server
+    typescript-language-server
 
     #TODO move mason imports here
     shellcheck # Shell script linting
