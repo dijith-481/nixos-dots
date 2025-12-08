@@ -22,6 +22,7 @@ in
 		  ";
     };
   };
+  powerManagement.cpuFreqGovernor = "performance";
   boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd = {
     secrets = {
@@ -111,9 +112,10 @@ in
   networking = {
     hostName = locals.hostname;
     networkmanager.enable = true;
-    firewall = {
+    firewall = rec{
       enable = true;
-      allowedTCPPorts = [ 22 80 443 5173 3000 3001 4321 8000 8080 ];
+      allowedTCPPorts = [ 22 80 443 5173 3000 3001 4321 8000 8080 45325 ];
+      allowedUDPPorts = allowedTCPPorts;
     };
   };
 
@@ -181,14 +183,8 @@ in
   services.tlp = {
     enable = true;
     settings = {
-      CPU_MIN_PERF_ON_AC = 0;
-      CPU_MAX_PERF_ON_AC = 100;
-      CPU_MIN_PERF_ON_BAT = 0;
-      CPU_MAX_PERF_ON_BAT = 60;
       START_CHARGE_THRESH_BAT0 = 0;
       STOP_CHARGE_THRESH_BAT0 = 1;
-      WIFI_PWR_ON_AC = "off";
-      WIFI_PWR_ON_BAT = "on";
     };
   };
 
