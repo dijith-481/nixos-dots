@@ -158,12 +158,10 @@ keybinds clear-defaults=true {
         bind "Alt 7" { GoToTab 7; }
         bind "Alt 8" { GoToTab 8; }
         bind "Alt 9" { GoToTab 9; }
-        bind "Ctrl h" { MoveFocusOrTab "left"; }
-        bind "Ctrl j" { MoveFocus "down"; }
-        bind "Ctrl k" { MoveFocus "up"; }
-        bind "Ctrl l" { MoveFocusOrTab "right"; }
-        bind "Alt l" { MoveTab "right"; }
-        bind "Alt h" { MoveTab "left"; }
+        bind "Alt h" { MoveFocusOrTab "left"; }
+        bind "Alt j" { MoveFocus "down"; }
+        bind "Alt k" { MoveFocus "up"; }
+        bind "Alt l" { MoveFocusOrTab "right"; }
         bind "Alt p" { MoveFocusOrTab "left"; }
         bind "Alt n" { MoveFocusOrTab "right"; }
         bind "Alt q" { NewTab;  }
@@ -311,7 +309,6 @@ default_mode "locked"
 //   - true (default)
 //   - false
 // 
-// mouse_mode false
  
 // Toggle having pane frames around the panes
 // Options:
