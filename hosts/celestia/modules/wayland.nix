@@ -1,7 +1,4 @@
-{ pkgs, inputs, ... }:
-let
-  inherit (inputs.nfsm-flake.packages.${pkgs.system}) nfsm nfsm-cli;
-in
+{ pkgs, ... }:
 {
   xdg.portal = {
     enable = true;
@@ -57,7 +54,5 @@ in
     hyprpolkitagent
     xdg-desktop-portal-gtk
     xdg-desktop-portal-gnome
-    nfsm
-    nfsm-cli
   ];
 }

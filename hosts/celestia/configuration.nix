@@ -13,6 +13,8 @@ in
     ];
 
   boot.loader.systemd-boot = {
+
+    configurationLimit = 5;
     consoleMode = "max";
     enable = true;
     extraEntries = {
@@ -22,6 +24,7 @@ in
 		  ";
     };
   };
+  security.tpm2.enable = lib.mkDefault true;
   powerManagement.cpuFreqGovernor = "performance";
   boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd = {
@@ -39,27 +42,22 @@ in
     };
   };
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.consoleLogLevel = 3;
+  boot.consoleLogLevel = 0;
   boot.initrd.verbose = false;
 
-  boot.plymouth = {
-    enable = true;
-    theme = lib.mkForce "lone";
-    themePackages = with pkgs; [
-      # By default we would install all themes
-      (adi1090x-plymouth-themes.override {
-        selected_themes = [ "lone" ];
-      })
-    ];
-  };
+  # boot.plymouth = {
+  #   enable = true;
+  #   theme = lib.mkForce "lone";
+  #   themePackages = with pkgs; [
+  #     # By default we would install all themes
+  #     (adi1090x-plymouth-themes.override {
+  #       selected_themes = [ "lone" ];
+  #     })
+  #   ];
+  # };
 
   boot.kernelParams = [
     "quiet"
-    "splash"
-    "boot.shell_on_fail"
-    "rd.udev.log_level=3"
-    "rd.udev.log_priority=3"
-    "systemd.show_status=auto"
   ];
   # Hide the OS choice for bootloaders.
   # It's still possible to open the bootloader list by pressing any key
@@ -81,7 +79,7 @@ in
     gc = {
       automatic = true;
       dates = "weekly";
-      options = "--delete-older-than 30d";
+      options = "--delete-older-than 10d";
     };
     optimise.automatic = true;
 
@@ -90,13 +88,20 @@ in
   hardware = {
 
     enableRedistributableFirmware = true;
+    enableAllFirmware = true;
     graphics = {
       enable = true;
       extraPackages = with pkgs;[
         mesa
         intel-media-driver
+        intel-vaapi-driver
+        libva-vdpau-driver  
+        intel-compute-runtime
+        libvdpau-va-gl
+        vpl-gpu-rt
       ];
     };
+
     bluetooth = {
       enable = true;
       powerOnBoot = true;
@@ -107,6 +112,12 @@ in
       };
     };
   };
+environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "iHD";
+VDPAU_DRIVER = "va_gl";  
+LIBVA_DRIVERS_PATH = "/run/opengl-driver/lib/dri";
+    LD_LIBRARY_PATH = [ "/run/opengl-driver/lib" ];
+  };
 
 
   networking = {
@@ -114,7 +125,7 @@ in
     networkmanager.enable = true;
     firewall = rec{
       enable = true;
-      allowedTCPPorts = [ 22 80 443 5173 3000 3001 4321 8000 8080 45325 ];
+      allowedTCPPorts = [ 22 80 443 5173 3000 3001 4321 8000 8080 45325 22000 ];
       allowedUDPPorts = allowedTCPPorts;
     };
   };
@@ -185,6 +196,10 @@ in
     settings = {
       START_CHARGE_THRESH_BAT0 = 0;
       STOP_CHARGE_THRESH_BAT0 = 1;
+      CPU_SCALING_GOVERNOR_ON_AC = "powersave";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+      CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "balance_power";
     };
   };
 

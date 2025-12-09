@@ -1,15 +1,9 @@
 {
   description = "dijith's nixos config";
   inputs = {
+
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nfsm-flake = {
-      url = "github:gvolpe/nfsm";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    sysc-greet = {
-      url = "github:Nomadcxx/sysc-greet";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -19,15 +13,18 @@
 
   };
 
-  outputs = { nixpkgs, sysc-greet, stylix, ... }@inputs: {
+  outputs = { nixpkgs, nixos-hardware, stylix, ... }@inputs: {
     nixosConfigurations = {
       nixos-celestia = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
           ./hosts/celestia
+
+          "${nixos-hardware}/common/cpu/intel/meteor-lake"
+          "${nixos-hardware}/common/pc/laptop"
+          "${nixos-hardware}/common/pc/ssd"
           stylix.nixosModules.stylix
-          sysc-greet.nixosModules.default
 
         ];
       };
