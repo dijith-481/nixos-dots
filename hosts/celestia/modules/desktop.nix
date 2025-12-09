@@ -2,7 +2,27 @@
 {
 
   home.packages = with pkgs;[
-    brave
+ (brave.override {
+      commandLineArgs = [
+      "--enable-cmd-decoder=passthrough"
+"--enable-features=WaylandLinuxDrmSyncobj,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,CanvasOopRasterization,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
+        "--enable-features=UseMultiPlaneFormatForHardwareVideo"
+        "--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder"
+        "--ignore-gpu-blocklist"
+        "--enable-zero-copy"
+      ];
+    })
+(google-chrome.override {
+      commandLineArgs = [
+      "--enable-cmd-decoder=passthrough"
+"--enable-features=WaylandLinuxDrmSyncobj,AcceleratedVideoDecodeLinuxZeroCopyGL,AcceleratedVideoDecodeLinuxGL,VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,CanvasOopRasterization,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
+        "--enable-features=UseMultiPlaneFormatForHardwareVideo"
+        "--enable-features=AcceleratedVideoEncoder"
+        "--ignore-gpu-blocklist"
+        "--enable-zero-copy"
+      ];
+    })
+
     inputs.zen-browser.packages."${pkgs.system}".default
     zathura
     localsend
