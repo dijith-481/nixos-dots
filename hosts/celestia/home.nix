@@ -7,6 +7,7 @@ let
     niri = "niri";
     helix = "helix";
     zellij = "zellij";
+    fish="fish";
   };
 
 in
