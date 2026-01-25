@@ -1,4 +1,4 @@
 {
-  nixos = "25.11";
-  homeManager = "25.11";
+  nixos = "26.05";
+  homeManager = "26.05";
 }

@@ -3,7 +3,7 @@
   home.sessionVariables = {
     XCURSOR_THEME = "Everforest-Dark";
     XCURSOR_SIZE = "28";
-    ECITOR = "hx";
+    EDITOR = "hx";
     BROWSER = "zen-beta";
     TERMINAL = "foot";
     TERM = "xterm-256color";
@@ -37,6 +37,6 @@
     XDG_CONFIG_HOME = "$HOME/.config";
     XDG_DATA_HOME = "$HOME/.local/share";
 
-    PATH = "$HOME/.cargo/bin:$HOME/go/bin:$HOME/.local/bin:$PATH";
+    PATH = "$HOME/.cargo/bin:$HOME/go/bin:$HOME/.local/bin:$PATH:$HOME/.npm-global/bin";
   };
 }

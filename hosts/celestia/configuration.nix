@@ -95,7 +95,7 @@ in
         mesa
         intel-media-driver
         intel-vaapi-driver
-        libva-vdpau-driver  
+        libva-vdpau-driver
         intel-compute-runtime
         libvdpau-va-gl
         vpl-gpu-rt
@@ -112,10 +112,10 @@ in
       };
     };
   };
-environment.sessionVariables = {
+  environment.sessionVariables = {
     LIBVA_DRIVER_NAME = "iHD";
-VDPAU_DRIVER = "va_gl";  
-LIBVA_DRIVERS_PATH = "/run/opengl-driver/lib/dri";
+    VDPAU_DRIVER = "va_gl";
+    LIBVA_DRIVERS_PATH = "/run/opengl-driver/lib/dri";
     LD_LIBRARY_PATH = [ "/run/opengl-driver/lib" ];
   };
 
@@ -134,6 +134,8 @@ LIBVA_DRIVERS_PATH = "/run/opengl-driver/lib/dri";
     powerKey = "ignore";
     powerKeyLongPress = "poweroff";
   };
+
+
 
 
   services.xserver.enable = true;
@@ -184,7 +186,7 @@ LIBVA_DRIVERS_PATH = "/run/opengl-driver/lib/dri";
   };
 
   services.libinput.enable = true;
-  services.thermald.enable = true;
+  # services.thermald.enable = true;
 
   services.printing.enable = lib.mkDefault true;
   services.avahi.enable = lib.mkDefault true;
@@ -201,6 +203,20 @@ LIBVA_DRIVERS_PATH = "/run/opengl-driver/lib/dri";
       CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
       CPU_ENERGY_PERF_POLICY_ON_BAT = "balance_power";
     };
+  };
+
+  security.enableWrappers = true;
+  security.wrappers.intel_gpu_top = {
+    owner = "root";
+    group = "root";
+    source = "${pkgs.intel-gpu-tools}/bin/intel_gpu_top";
+    capabilities = "cap_perfmon+ep";
+  };
+  security.wrappers.btop = {
+    owner = "root";
+    group = "root";
+    source = "${pkgs.btop}/bin/btop";
+    capabilities = "cap_perfmon+ep";
   };
 
   programs.dconf.enable = true;
@@ -225,6 +241,10 @@ LIBVA_DRIVERS_PATH = "/run/opengl-driver/lib/dri";
   security.polkit.enable = true;
   services.gnome.gnome-keyring.enable = true;
   programs.kdeconnect.enable = true;
+  systemd.services.docker = {
+    requires = [ "home-dijith-.Data.mount" ];
+    after = [ "home-dijith-.Data.mount" ];
+  };
 
   virtualisation.docker = {
     enable = true;
