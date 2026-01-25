@@ -120,36 +120,37 @@ overview {
         off
     }
 }
-
 recent-windows {
     // off
     debounce-ms 750
-
     open-delay-ms 150
-
     highlight {
         active-color "#999999ff"
         urgent-color "#ff9999ff"
         padding 30
         corner-radius 0
     }
-
     previews {
         max-height 480
         max-scale 0.5
     }
-
     binds {
-        Mod+Ctrl+Tab         { next-window; }
-        Mod+Ctrl+Shift+Tab   { previous-window; }
-        Mod+Tab       { next-window     filter="app-id"; }
-        Mod+Shift+Tab { previous-window filter="app-id"; }
+        Mod+Ctrl+Tab {
+            next-window
+        }
+        Mod+Ctrl+Shift+Tab {
+            previous-window
+        }
+        Mod+Tab {
+            next-window filter="app-id"
+        }
+        Mod+Shift+Tab {
+            previous-window filter="app-id"
+        }
     }
-}// spawn-at-startup "clipse" "-listen"
-// spawn-at-startup "foot" "server"
-spawn-at-startup "nfsm"
+}
+// spawn-at-startup "clipse" "-listen"// spawn-at-startup "foot" "server"
 spawn-at-startup "systemctl" "--user" "start" "hyprpolkitagent"
-// spawn-sh-at-startup "nfsm"
 // spawn-at-startup "kdeconnectd"
 // spawn-at-startup "kdeconnect-indicator"
 // spawn-at-startup "waybar"
@@ -263,6 +264,16 @@ window-rule {
 window-rule {
     match app-id="^clipse$"
     match app-id="^selectwebsite$"
+    open-floating true
+    default-column-width {
+        fixed 622
+    }
+    default-window-height {
+        fixed 652
+    }
+}
+window-rule {
+    match app-id="float"
     open-floating true
     default-column-width {
         fixed 622
@@ -813,11 +824,11 @@ binds {
     Mod+D {
         maximize-column
     }
-    Mod+Shift+D{
+    Mod+Shift+D {
         maximize-window-to-edges
     }
     Mod+F {
-        spawn "nfsm-cli"
+        fullscreen-window
     }
     Mod+Shift+F {
         toggle-windowed-fullscreen
