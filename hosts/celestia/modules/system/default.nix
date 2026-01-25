@@ -13,6 +13,7 @@
     procs
     hyperfine
 
+    pulseaudio
     pwvucontrol
     lm_sensors
     powertop

@@ -154,7 +154,55 @@ in
     };
   };
 
-  # DNS will be handled automatically by NetworkManager
+
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="leds", KERNEL=="platform::micmute", MODE="0666"
+  '';
+
+  systemd.user.services.mic-led-sync = {
+    description = "Sync Microphone Mute LED with WirePlumber status";
+    
+    after = [ "pipewire.service" "wireplumber.service" ];
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+
+    path = with pkgs; [ 
+      wireplumber 
+      pulseaudio 
+      brightnessctl 
+      gnugrep 
+      bash 
+      coreutils 
+    ];
+
+    serviceConfig = {
+      Type = "simple";
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
+
+    script = ''
+      set -e
+      
+      update_led() {
+        STATUS=$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null) || return 0
+
+        if echo "$STATUS" | grep -q "MUTED"; then
+          brightnessctl -d "platform::micmute" set 0
+        else
+          brightnessctl -d "platform::micmute" set 1
+        fi
+      }
+
+      update_led
+
+      pactl subscribe | grep --line-buffered "source" | while read -r line; do 
+        update_led
+      done
+    '';
+  };
+
+# DNS will be handled automatically by NetworkManager
   # Optional: Custom DNS servers (uncomment if you want to override ISP DNS)
   # networking.nameservers = [ "8.8.8.8" "1.1.1.1" "1.0.0.1" "9.9.9.9" ];
   # Enable systemd-resolved for better DNS handling
