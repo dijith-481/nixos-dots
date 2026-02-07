@@ -14,7 +14,7 @@
     hyperfine
 
     pulseaudio
-    pwvucontrol
+    pavucontrol
     lm_sensors
     powertop
     acpi

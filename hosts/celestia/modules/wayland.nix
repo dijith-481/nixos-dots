@@ -31,6 +31,7 @@
 
   home.packages = with pkgs;[
     niri
+    wl-mirror
     fuzzel
     anyrun
     waybar

@@ -1,24 +1,30 @@
 function dotenv
-    # Check if the .env file exists
-    if not test -f .env
-        echo "Error: .env file not found."
+    set -l config_file .env
+    if test -n "$argv[1]"
+        set config_file $argv[1]
+    end
+
+    if not test -f "$config_file"
         return 1
     end
 
-    # Read the .env file line by line
     while read -l line
-        # Skip comments and empty lines
-        if string match -q -- '#' $line || string match -q -- '^[[:space:]]*$' $line
+        set -l clean_line (string trim -- $line)
+        if test -z "$clean_line"; or string match -q -- "#*" $clean_line
             continue
         end
 
-        # Split the line into a key and a value
-        set -l key_val (string split -n -m 1 '=' $line)
-        set -l key $key_val[1]
-        set -l val $key_val[2]
+        set -l kv (string split -m 1 = -- $clean_line)
+        set -l key (string trim -- $kv[1])
+        set -l val (string trim -- $kv[2])
 
-        # Set the environment variable
-        set -gx $key $val
+        if string match -q -r "^'.*'\$" -- $val
+            set val (string sub -s 2 -e -1 -- $val)
+        else if string match -q -r '^".*"$' -- $val
+            set val (string sub -s 2 -e -1 -- $val)
+        end
+
+        set -gx "$key" $val
         echo "Exported $key"
-    end <.env
+    end <$config_file
 end

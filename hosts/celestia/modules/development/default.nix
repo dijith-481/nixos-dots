@@ -24,6 +24,8 @@
     tree-sitter
     lua-language-server
     typescript-language-server
+    typescript
+    typescript-go
 
     #TODO move mason imports here
     shellcheck # Shell script linting

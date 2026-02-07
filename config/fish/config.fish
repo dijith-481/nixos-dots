@@ -22,6 +22,10 @@ kdlfmt completions fish | source
 # fastfetch
 ff
 
+function print_osc7 --on-variable=PWD
+    printf "\033]7;file://$HOSTNAME/$PWD\033\\"
+end
+
 bind -M insert ctrl-y accept-autosuggestion
 function ll
     ls -al $argv

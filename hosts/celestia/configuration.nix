@@ -45,16 +45,16 @@ in
   boot.consoleLogLevel = 0;
   boot.initrd.verbose = false;
 
-  # boot.plymouth = {
-  #   enable = true;
-  #   theme = lib.mkForce "lone";
-  #   themePackages = with pkgs; [
-  #     # By default we would install all themes
-  #     (adi1090x-plymouth-themes.override {
-  #       selected_themes = [ "lone" ];
-  #     })
-  #   ];
-  # };
+  boot.plymouth = {
+    enable = true;
+    theme = lib.mkForce "lone";
+    themePackages = with pkgs; [
+      # By default we would install all themes
+      (adi1090x-plymouth-themes.override {
+        selected_themes = [ "lone" ];
+      })
+    ];
+  };
 
   boot.kernelParams = [
     "quiet"
@@ -269,6 +269,22 @@ in
 
   programs.dconf.enable = true;
   programs.niri.enable = true;
+  xdg.portal = {
+  enable = true;
+  config.niri = {
+    default = [ "gnome" "gtk" ];
+    "org.freedesktop.impl.portal.Access" = [ "gtk" ];
+    "org.freedesktop.impl.portal.Notification" = [ "gtk" ];
+    "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+    "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
+    "org.freedesktop.impl.portal.FileChooser" = [ "termfilechooser" ];
+  };
+
+  extraPortals = [
+    pkgs.xdg-desktop-portal-gtk
+    pkgs.xdg-desktop-portal-gnome
+  ];
+};
   programs.niri.useNautilus = false;
   programs.fish.enable = true;
   environment.systemPackages = with pkgs; [
