@@ -269,23 +269,7 @@ in
 
   programs.dconf.enable = true;
   programs.niri.enable = true;
-  xdg.portal = {
-  enable = true;
-  config.niri = {
-    default = [ "gnome" "gtk" ];
-    "org.freedesktop.impl.portal.Access" = [ "gtk" ];
-    "org.freedesktop.impl.portal.Notification" = [ "gtk" ];
-    "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
-    "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
-    "org.freedesktop.impl.portal.FileChooser" = [ "termfilechooser" ];
-  };
-
-  extraPortals = [
-    pkgs.xdg-desktop-portal-gtk
-    pkgs.xdg-desktop-portal-gnome
-  ];
-};
-  programs.niri.useNautilus = false;
+   programs.niri.useNautilus = false;
   programs.fish.enable = true;
   environment.systemPackages = with pkgs; [
     libva-utils
