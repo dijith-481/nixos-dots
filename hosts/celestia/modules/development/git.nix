@@ -5,15 +5,6 @@
   programs.git = {
     enable = true;
 
-    delta = {
-      enable = true;
-      options = {
-        navigate = true;
-        line-numbers = true;
-        syntax-theme = "Nord";
-      };
-    };
-
     settings = {
       user.name = "dijith-481";
       user.email = "dijithdinesh@protonmail.com";
@@ -44,13 +35,30 @@
       signByDefault = true;
     };
   };
-  #TODO write comments on setup gpg and ssh on install
+  # git diff pager — replaces the deprecated programs.git.delta module
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+    options = {
+      navigate = true;
+      line-numbers = true;
+      syntax-theme = "Nord";
+    };
+  };
+
+  # SSH config — matchBlocks renamed to settings in current home-manager
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    matchBlocks = {
+    settings = {
       "github.com" = {
         hostname = "github.com";
+        user = "git";
+        identityFile = "${config.home.homeDirectory}/.ssh/github_rsa";
+      };
+
+      "bitbucket.org" = {
+        hostname = "bitbucket.org";
         user = "git";
         identityFile = "${config.home.homeDirectory}/.ssh/github_rsa";
       };

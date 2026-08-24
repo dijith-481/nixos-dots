@@ -49,4 +49,28 @@
   programs.bat = {
     enable = true;
   };
+
+  programs.starship.enable = true;
+
+  # Declarative fish — replaces config/fish (symlink removed from home.nix)
+  programs.fish = {
+    enable = true;
+    interactiveShellInit = ''
+      set -g fish_greeting
+
+      bind -M insert ctrl-y accept-autosuggestion
+
+      kdlfmt completions fish | source
+
+      function print_osc7 --on-variable=PWD
+          printf "\033]7;file://$HOSTNAME/$PWD\033\\"
+      end
+    '';
+    shellAliases = {
+      ff = "fastfetch";
+      ll = "ls -al";
+      la = "ls -a";
+      vi = "nvim";
+    };
+  };
 }

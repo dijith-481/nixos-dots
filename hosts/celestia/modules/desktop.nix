@@ -2,20 +2,20 @@
 {
 
   home.packages = with pkgs;[
- (brave.override {
+    (brave.override {
       commandLineArgs = [
-      "--enable-cmd-decoder=passthrough"
-"--enable-features=WaylandLinuxDrmSyncobj,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,CanvasOopRasterization,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
+        "--enable-cmd-decoder=passthrough"
+        "--enable-features=WaylandLinuxDrmSyncobj,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,CanvasOopRasterization,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
         "--enable-features=UseMultiPlaneFormatForHardwareVideo"
         "--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder"
         "--ignore-gpu-blocklist"
         "--enable-zero-copy"
       ];
     })
-(google-chrome.override {
+    (google-chrome.override {
       commandLineArgs = [
-      "--enable-cmd-decoder=passthrough"
-"--enable-features=WaylandLinuxDrmSyncobj,AcceleratedVideoDecodeLinuxZeroCopyGL,AcceleratedVideoDecodeLinuxGL,VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,CanvasOopRasterization,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
+        "--enable-cmd-decoder=passthrough"
+        "--enable-features=WaylandLinuxDrmSyncobj,AcceleratedVideoDecodeLinuxZeroCopyGL,AcceleratedVideoDecodeLinuxGL,VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,CanvasOopRasterization,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
         "--enable-features=UseMultiPlaneFormatForHardwareVideo"
         "--enable-features=AcceleratedVideoEncoder"
         "--ignore-gpu-blocklist"
@@ -23,7 +23,8 @@
       ];
     })
 
-    inputs.zen-browser.packages."${pkgs.system}".default
+    # zen twilight only — stable removed (twilight supersedes it)
+    inputs.zen-browser.packages."${pkgs.system}".twilight
     zathura
     localsend
     seahorse
@@ -55,7 +56,7 @@
     yazi
     xdg-desktop-portal-termfilechooser
     qview
-    inkscape
+    # inkscape
     mpv
     ffmpeg
     v4l-utils

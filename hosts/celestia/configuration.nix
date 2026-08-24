@@ -28,11 +28,9 @@ in
   powerManagement.cpuFreqGovernor = "performance";
   boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd = {
-    secrets = {
-      "/data-decrypt-key" = "/boot/data-decrypt-key";
-    };
+    availableKernelModules = [ "tpm_crb" ];
     luks.devices."luks" = {
-      keyFile = "/data-decrypt-key";
+      crypttabExtraOpts = [ "tpm2-device=auto" ];
     };
     kernelModules = [
       "i915"
@@ -130,9 +128,9 @@ in
     };
   };
 
-  services.logind = {
-    powerKey = "ignore";
-    powerKeyLongPress = "poweroff";
+  services.logind.settings.Login = {
+    HandlePowerKey = "ignore";
+    HandlePowerKeyLongPress = "poweroff";
   };
 
 
@@ -268,8 +266,10 @@ in
   };
 
   programs.dconf.enable = true;
+  # flake module provides session wiring + config validation;
+  # package comes from nixpkgs so it tracks our (newest) nixpkgs
+  programs.niri.package = pkgs.niri;
   programs.niri.enable = true;
-   programs.niri.useNautilus = false;
   programs.fish.enable = true;
   environment.systemPackages = with pkgs; [
     libva-utils

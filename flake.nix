@@ -10,13 +10,21 @@
     };
     stylix.url = "github:nix-community/stylix";
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
   };
 
-  outputs = { nixpkgs, nixos-hardware, stylix, ... }@inputs: {
+  outputs = { nixpkgs, nixos-hardware, stylix, self, ... }@inputs: {
+
+    overlays.default = final: prev: {
+      vp = prev.callPackage ./pkgs/vp.nix { };
+      antigravity = prev.callPackage ./pkgs/antigravity.nix { };
+    };
     nixosConfigurations = {
       nixos-celestia = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
           ./hosts/celestia
@@ -25,6 +33,7 @@
           "${nixos-hardware}/common/pc/laptop"
           "${nixos-hardware}/common/pc/ssd"
           stylix.nixosModules.stylix
+          inputs.niri.nixosModules.niri
 
         ];
       };

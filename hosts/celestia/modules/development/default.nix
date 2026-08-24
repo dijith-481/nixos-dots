@@ -25,7 +25,7 @@
     lua-language-server
     typescript-language-server
     typescript
-    typescript-go
+    # typescript-go removed — its `tsc` collides with typescript's in buildEnv
 
     #TODO move mason imports here
     shellcheck # Shell script linting
@@ -46,11 +46,26 @@
     #todo test it
     yaak # API testing tool
 
-    gemini-cli
+    # gemini-cli removed — replaced by Antigravity CLI upstream
     opencode
     figma-agent
 
+    vp # Vite+ unified web toolchain (pinned in pkgs/vp.nix)
 
+    # --- Languages & runtimes ---
+    go
+    gopls
+    beamPackages.elixir
+    beamPackages.erlang
+    elixir-ls
+    ghc
+    cabal-install
+    uv
+    ruff
 
+    # --- Apps ---
+    libreoffice-stable
+    # cursor: not in nixpkgs; CDN unreachable — install AppImage manually, then pin in pkgs/
+    github-desktop
   ];
 }

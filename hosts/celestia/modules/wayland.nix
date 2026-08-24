@@ -1,5 +1,9 @@
 { pkgs, ... }:
 {
+  imports = [
+    ./desktop/niri-config.nix
+  ];
+
   xdg.portal = {
   enable = true;
   config = {
@@ -30,7 +34,7 @@
   };
 
   services.clipse.enable = true;
-  services.swww.enable = true;
+  services.awww.enable = true;
   services.dunst.enable = true;
   services.hypridle.enable = true;
   programs.hyprlock.enable = true;

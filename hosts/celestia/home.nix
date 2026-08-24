@@ -3,18 +3,17 @@ let
   versions = import ../../versions.nix;
   dotfiles = "${config.home.homeDirectory}/nixos-dots/config";
   create_symlink = path: config.lib.file.mkOutOfStoreSymlink path;
+  # niri & fish are now fully declarative (modules/desktop/niri-config.nix,
+  # modules/development/shell.nix) — no out-of-store symlinks needed.
   configs = {
-    niri = "niri";
     helix = "helix";
     zellij = "zellij";
-    fish="fish";
   };
 
 in
 
 {
   imports = [
-    ../../globals.nix
     ./session-variables.nix
     ./modules/development
     ./modules/desktop.nix

@@ -7,6 +7,7 @@
 
     inputs.home-manager.nixosModules.home-manager
     {
+      nixpkgs.overlays = [ inputs.self.overlays.default ];
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
