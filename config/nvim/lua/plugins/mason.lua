@@ -12,6 +12,12 @@ local ensure_installed = {
 	"deno",
 	"biome",
 	"oxlint",
+	"css-lsp",
+	"astro-language-server",
+	"fish-lsp",
+	"ty",
+	"jdtls",
+	"zls",
 }
 require("mason").setup()
 require("mason-tool-installer").setup({

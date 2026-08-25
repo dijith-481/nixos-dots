@@ -143,9 +143,13 @@ writeShellApplication {
     done
 
     # shell + editor configs minimal (so fish/starship work but don't leak secrets)
-    # bind read-only where safe, else empty
+    BWRAP_ARGS+=(--dir /home/dijith/.config)
     for p in ".config/fish" ".config/starship" ".config/starship.toml"; do
-      if [[ -e "$HOME/$p" ]]; then BWRAP_ARGS+=(--ro-bind "$HOME/$p" "/home/dijith/$p"); fi
+      if [[ -e "$HOME/$p" ]]; then
+        # ensure parent dir exists for file binds
+        BWRAP_ARGS+=(--dir "$(dirname "/home/dijith/$p")")
+        BWRAP_ARGS+=(--ro-bind "$HOME/$p" "/home/dijith/$p")
+      fi
     done
 
     # git config safe to expose ro (no tokens)
