@@ -1,0 +1,22 @@
+# ghostty minimal — linux-first, nord, Iosevka, no borders
+theme = Nordfox
+font-family = Iosevka Nerd Font
+font-size = 12
+window-decoration = false
+confirm-close-surface = false
+quit-after-last-window-closed = true
+quit-after-last-window-closed-delay = 0s
+gtk-single-instance = true
+shell-integration-features = no-cursor
+
+# links: ctrl+click opens
+link-url = true
+
+# keybinds: clear all, keep only zoom
+keybind = clear
+keybind = ctrl+plus=increase_font_size:1
+keybind = ctrl+equal=increase_font_size:1
+keybind = ctrl+minus=decrease_font_size:1
+keybind = ctrl+0=reset_font_size
+keybind = ctrl+shift+plus=increase_font_size:1
+keybind = ctrl+shift+minus=decrease_font_size:1

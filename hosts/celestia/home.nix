@@ -12,15 +12,13 @@ let
     # --- direct store copy --- waybar + remaining dotfiles from .Data/dotfiles ---
     waybar = "waybar";
     fastfetch = "fastfetch";
-    foot = "foot";
-    fuzzel = "fuzzel";
+    # fuzzel/foot/yazi/zed now themed via stylix — not direct copy (prevents conflict with stylix theme)
     cava = "cava";
     clipse = "clipse";
     fum = "fum";
     htop = "htop";
     hypr = "hypr";
     kitty = "kitty";
-    yazi = "yazi";
     zathura = "zathura";
     wofi = "wofi";
     tmux = "tmux";
@@ -29,6 +27,7 @@ let
     paru = "paru";
     zed = "zed";
     colors = "colors";
+    ghostty = "ghostty";
   };
 
 in
@@ -55,10 +54,18 @@ in
     waybar.enable = false;
     dunst.enable = false;
     hyprlock.enable = false;
+    # keep ghostty/helix manual nord themes — don't let stylix overwrite our configs
+    ghostty.enable = false;
+    helix.enable = false;
+    # file apps + launchers: let stylix theme them (we keep waybar/helix manual)
+    yazi.enable = true;
+    fuzzel.enable = true;
+    foot.enable = true;
     zen-browser = {
       enable = true;
       enableCss = true;
       profileNames = [
+        "w0jo7uh8.Default Profile"
         "dijith"
       ];
 

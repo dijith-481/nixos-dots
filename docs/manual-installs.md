@@ -67,7 +67,19 @@ If `npm` beta fails with `EBADPLATFORM musl vs glibc`, use the `curl` installer 
 
 Docs: https://opencode.ai/v2/docs/cli / https://opencode.ai/v2/docs/migrate-v1
 
-## 4. zram
+## 4. codex — Muse
+
+Not via Nix (upstream curl installer to `~/.local/bin/codex`).
+
+```bash
+curl -fsSL https://chatgpt.com/codex/install.sh | sh
+# installs to ~/.local/bin/codex
+codex --version
+```
+
+Docs: https://developers.openai.com/codex
+
+## 5. zram
 
 Already declarative, no manual install:
 

@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
+    nix-your-shell
     fishPlugins.done
     fishPlugins.fzf-fish
     fishPlugins.forgit
@@ -101,6 +102,11 @@
       function ....; cd ../../..; end
       function .....; cd ../../../..; end
       function ......; cd ../../../../..; end
+
+      # nix-your-shell — make `nix shell`/`nix develop` use fish (you're on fish by default)
+      if type -q nix-your-shell
+          nix-your-shell fish | source
+      end
 
       # auto fastfetch — mirrors config/fish/config.fish:23 ff + config/fish/functions/ff.fish
       if status is-interactive

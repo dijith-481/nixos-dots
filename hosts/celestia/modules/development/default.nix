@@ -5,6 +5,7 @@
   imports = [
     ./git.nix
     ./shell.nix
+    ./sandbox.nix
   ];
   # npm global prefix for opencode v2 (and any npm -g) — reproducible, not nix store
   home.file.".npmrc".text = "prefix=${config.home.homeDirectory}/.npm-global";
