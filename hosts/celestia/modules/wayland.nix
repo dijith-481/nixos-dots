@@ -40,6 +40,7 @@
   programs.hyprlock.enable = true;
   services.syncthing.enable = true;
   programs.waybar.enable = true;
+  programs.fuzzel.enable = true;
 
 
   home.packages = with pkgs;[
