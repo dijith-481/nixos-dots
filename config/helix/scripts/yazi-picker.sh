@@ -1,1 +1,1 @@
-/nix/store/gm9ysgxrg3cq242lf1pqp4c217p6n4ba-home-manager-files/.config/helix/scripts/yazi-picker.sh
+/nix/store/fv1n2z0nzanz88sajmfhbhqhc7qyfaba-home-manager-files/.config/helix/scripts/yazi-picker.sh

@@ -1,7 +1,1 @@
-#!/bin/bash
-
-COUNT=$(dunstctl count waiting)
-ENABLED="   "
-DISABLED="   "
-if [ $COUNT != 0 ]; then DISABLED=" 󰂝  $COUNT"; fi
-if dunstctl is-paused | grep -q "false"; then echo $ENABLED; else echo $DISABLED; fi
+/nix/store/fv1n2z0nzanz88sajmfhbhqhc7qyfaba-home-manager-files/.config/waybar/scripts/dunst.sh

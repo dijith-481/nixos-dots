@@ -241,15 +241,8 @@
       # mirrors config/fish/functions/ls.fish
       ls = "command ls --color=auto $argv";
 
-      # mirrors config/fish/functions/hx.fish
-      hx = ''
-        if set -q ZELLIJ
-            command hx $argv
-        else
-            set -x HX_ARGS "$argv"
-            zellij --layout helix
-        end
-      '';
+      # hx — direct helix, no zellij wrapper (user requested)
+      hx = "command hx $argv";
 
       # mirrors config/fish/functions/dotenv.fish
       dotenv = ''
