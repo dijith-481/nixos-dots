@@ -1,18 +1,20 @@
 # Declarative niri configuration via niri-flake
 # Translated from config/niri/config.kdl — build-time validated against niri's schema.
-# Stylix auto-themes borders/cursor via its niri target.
+# Stylix auto-themes borders/cursor via its niri target (focus-ring/border colors intentionally kept minimal).
 { pkgs, lib, ... }:
 
 {
   programs.niri.settings = {
     # --- Named workspaces ---
     workspaces = {
+      "mainWorkspace".name = "mainWorkspace";
       "browser".name = "browser";
       "ytmusic".name = "ytmusic";
     };
 
     # --- Environment for compositor-spawned processes ---
     environment = {
+      DISPLAY = ":0";
       NIXOS_OZONE_WL = "1";
       ELECTRON_OZONE_PLATFORM_HINT = "wayland";
       XDG_CURRENT_DESKTOP = "niri";
@@ -60,8 +62,19 @@
       preset-window-heights = map (p: { proportion = p; }) [ 0.33333 0.5 0.66667 1.0 ];
       default-column-width.proportion = 0.5;
 
-      focus-ring.enable = false;
-      border.enable = false;
+      focus-ring = {
+        enable = false;
+        width = 2;
+        active.color = "#81a1c1";
+        inactive.color = "#3b4252";
+        # gradient handled via stylix; kdl: active-gradient from="#3b4252ff" to="#81a1c1" angle=20
+      };
+      border = {
+        enable = false;
+        width = 2;
+        active.color = "#81a1c1";
+        inactive.color = "#3b4252";
+      };
 
       tab-indicator = {
         hide-when-single-tab = true;
@@ -89,6 +102,10 @@
       workspace-shadow.enable = false;
     };
 
+    gestures.hot-corners.enable = false;
+
+    animations.slowdown = 0.5;
+
     # NOTE: recent-windows (alt-tab switcher) not yet in niri-flake's schema —
     # it's newer than the flake's pinned niri. Re-add once sodiboo's bot picks it up.
     # Until then Mod+Tab binds below are inert.
@@ -105,13 +122,19 @@
     #     max-height = 480;
     #     max-scale = 0.5;
     #   };
+    #   binds = {
+    #     "Mod+Ctrl+Tab".action.next-window = {};
+    #     "Mod+Ctrl+Shift+Tab".action.previous-window = {};
+    #     "Mod+Tab".action.next-window = { filter = "app-id"; };
+    #     "Mod+Shift+Tab".action.previous-window = { filter = "app-id"; };
+    #   };
     # };
 
     spawn-at-startup = [
       { argv = [ "systemctl" "--user" "start" "hyprpolkitagent" ]; }
       { argv = [ "xwayland-satellite" ]; }
-      { sh = "sleep 1 && (awww restore || swww restore)"; }
-      { sh = "(zen-beta || zen-twilight || zen)"; }
+      { argv = [ "swww" "restore" ]; }
+      { argv = [ "zen-twilight" ]; }
       { argv = [ "brave" "--app=https://music.youtube.com" ]; }
     ];
 
@@ -127,6 +150,12 @@
     hotkey-overlay.skip-at-startup = true;
 
     layer-rules = [
+      {
+        matches = [{ namespace = "swww-daemon"; }];
+      }
+      {
+        matches = [{ namespace = "^swww-daemon$"; }];
+      }
       {
         matches = [
           { namespace = "^waybar$"; at-startup = true; }
@@ -147,6 +176,18 @@
         open-floating = true;
         default-column-width.fixed = 784;
         default-window-height.fixed = 464;
+      }
+      {
+        matches = [ { app-id = "com.mitchellh.ghostty"; title = "floatingfoot"; } ];
+        open-floating = true;
+        default-column-width.fixed = 784;
+        default-window-height.fixed = 464;
+      }
+      {
+        matches = [ { app-id = "com.mitchellh.ghostty"; title = "md"; } ];
+        open-floating = true;
+        default-column-width.fixed = 700;
+        default-window-height.fixed = 500;
       }
       {
         matches = [ { app-id = "^.*music.youtube.*$"; at-startup = true; } ];
@@ -174,7 +215,7 @@
         default-window-height.fixed = 438;
       }
       {
-        matches = [ { app-id = "zen$"; at-startup = true; } ];
+        matches = [ { app-id = "zen-twilight$"; at-startup = true; } ];
         open-on-workspace = "browser";
         open-maximized = true;
         draw-border-with-background = false;
@@ -254,7 +295,7 @@
         "Mod+TouchpadScrollDown".cooldown-ms = 200;
         "Mod+TouchpadScrollDown".action.focus-workspace-down = { };
 
-        # media / volume / brightness
+        # media / volume / brightness — mirror KDL's hypr scripts
         "XF86AudioPlay" = { allow-when-locked = true; action.spawn = [ "playerctl" "play-pause" ]; };
         "XF86AudioPause" = { allow-when-locked = true; action.spawn = [ "playerctl" "play-pause" ]; };
         "XF86AudioPrev" = { allow-when-locked = true; action.spawn = [ "playerctl" "next" ]; };
@@ -263,8 +304,8 @@
         "XF86AudioLowerVolume" = { allow-when-locked = true; action.spawn = [ "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-" ]; };
         "XF86AudioMute" = { allow-when-locked = true; action.spawn = [ "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle" ]; };
         "XF86AudioMicMute" = { allow-when-locked = true; action.spawn = [ "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle" ]; };
-        "XF86MonBrightnessUp" = { allow-when-locked = true; action.spawn = [ "brightnessctl" "set" "+5%" ]; };
-        "XF86MonBrightnessDown" = { allow-when-locked = true; action.spawn = [ "brightnessctl" "set" "5%-" ]; };
+        "XF86MonBrightnessUp" = { allow-when-locked = true; action.spawn = [ "~/.config/hypr/scripts/brightness.sh" "up" ]; };
+        "XF86MonBrightnessDown" = { allow-when-locked = true; action.spawn = [ "~/.config/hypr/scripts/brightness.sh" "down" ]; };
 
         # playerctl extras
         "Mod+Alt+space" = { repeat = false; } // (sh "~/.config/hypr/scripts/playerctl-play-pause.sh");
@@ -276,10 +317,11 @@
         "Mod+U" = { repeat = false; } // (sh "~/.config/hypr/scripts/wallpaper.sh");
         "Mod+Control+U" = { repeat = false; } // (sh "~/.config/hypr/scripts/live-wallpaper.sh");
 
-        # windows & terminals
+        # windows & terminals — includes KDL's Mod+Ctrl+W wallpaper-close
+        "Mod+Ctrl+W" = { repeat = false; } // (sh "niri msg action close-window && ~/.config/hypr/scripts/wallpaper.sh");
         "Mod+W" = { repeat = false; action.close-window = { }; };
-        "Mod+Q".action.spawn = [ "foot" ];
-        "Mod+Return" = { repeat = false; action.spawn = [ "foot" "-a" "floatingfoot" ]; };
+        "Mod+Q".action.spawn = [ "ghostty" ];
+        "Mod+Return" = { repeat = false; action.spawn = [ "ghostty" "--title=floatingfoot" ]; };
         "Mod+Alt+Return" = { repeat = false; action.spawn = [ "kitty" ]; };
 
         # notifications
@@ -294,7 +336,7 @@
         "Mod+space".action.spawn = [ "fuzzel" ];
         "Mod+F2".action.spawn = [ "hyprlock" ];
         "Mod+E".action.spawn = [ "kitty" "--class" "yazi" "-e" "yazi" ];
-        "Mod+Control+E".action.spawn = [ "foot" "-a" "floatingfoot" "-e" "yazi" ];
+        "Mod+Control+E".action.spawn = [ "ghostty" "--title=floatingfoot" "-e" "yazi" ];
         "Mod+V".action.spawn = [ "kitty" "--class" "clipse" "-e" "clipse" ];
         "Mod+Control+space" = { repeat = false; } // (sh "pkill fum || kitty --class fum -e 'fum'");
 
@@ -311,8 +353,8 @@
         "Ctrl+Print" = { action.screenshot-screen.show-pointer = false; };
         "Alt+Print".action.screenshot-window = { };
 
-        # web / misc
-        "Mod+B" = { repeat = false; action.spawn-sh = "zen-beta || zen-twilight || zen"; };
+        # web / misc — fix zen-beta -> zen-twilight (package is twilight)
+        "Mod+B" = { repeat = false; action.spawn-sh = "zen-twilight || zen"; };
         "Mod+Control+B" = { repeat = false; action.spawn = [ "./Dev/history-website-appmode/target/release/history-website-appmode" ]; };
         "Mod+Control+Shift+B" = { repeat = false; action.spawn = [ "./Dev/history-website-appmode/target/release/history-website-appmode" "-i" ]; };
         "Mod+Alt+Y".action.spawn = [ "brave" "--app=https://music.youtube.com" ];
@@ -320,9 +362,9 @@
         "Mod+Control+f" = { repeat = false; } // (sh "~/.config/hypr/scripts/kde-fileshare.sh");
         "Mod+Control+c" = { repeat = false; } // (sh "~/.config/hypr/scripts/copy-file.sh");
         "Mod+Control+Shift+c" = { repeat = false; } // (sh "~/.config/hypr/scripts/rip-drag.sh");
-        "Mod+z".action.spawn = [ "foot" "nvim" ];
-        "Mod+x" = { repeat = false; } // (sh "foot -T md ~/.config/hypr/scripts/mdToday.sh");
-        "Mod+Control+X" = { repeat = false; } // (sh "foot -T md ~/.config/hypr/scripts/todolist.sh");
+        "Mod+z".action.spawn = [ "ghostty" "-e" "nvim" ];
+        "Mod+x" = { repeat = false; } // (sh "ghostty --title=md -e ~/.config/hypr/scripts/mdToday.sh");
+        "Mod+Control+X" = { repeat = false; } // (sh "ghostty --title=md -e ~/.config/hypr/scripts/todolist.sh");
         "Mod+Alt+c".action.spawn = [ "hyprpicker" "-a" ];
         "Mod+Y".action.focus-workspace = "ytmusic";
         "Mod+grave".action.toggle-overview = { };

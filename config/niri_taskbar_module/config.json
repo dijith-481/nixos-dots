@@ -1,0 +1,18 @@
+{
+  "rewrite-rules": {
+    "^(foot)$": "  Foot",
+    "^.*tmux.*$": " ",
+    "^.*zathura.*$": " ",
+    "^.*nvim.*$": "",
+    "^.*Brave.*$": "󰊯 ",
+    "^.*(Zen Browser).*$": "󰈹 ",
+    "^(.*Google AI Studio.*)$": " ",
+    ".*YouTube Music.*": "YT Music",
+    "^~$": " "
+  },
+  "ignore-list": ["Peek", "some_other_app_to_ignore"],
+  "app-ids-mapping": {
+    "firefoxdeveloperedition": "firefox-developer-edition",
+    "org.mozilla.firefox": "firefox"
+  }
+}

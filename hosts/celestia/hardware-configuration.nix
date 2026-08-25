@@ -5,8 +5,7 @@
 
 {
   imports =
-    [
-      (modulesPath + "/installer/scan/not-detected.nix")
+    [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" ];
@@ -14,30 +13,35 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    {
-      device = "/dev/disk/by-uuid/af771425-a0ee-4f41-9ced-6c85a4a5a6c6";
+  fileSystems."/mnt/data" =
+    { device = "/dev/mapper/data";
       fsType = "ext4";
     };
 
-  fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-uuid/8FD1-04A6";
+  boot.initrd.luks.devices."data" = {
+    device = "/dev/disk/by-uuid/b3144f8b-87c9-4685-95bb-85510d4b5582";
+    crypttabExtraOpts = [ "tpm2-device=auto" ];
+  };
+
+  fileSystems."/" =
+    { device = "/dev/disk/by-uuid/1db2329d-d8c4-4c26-8304-0571b1fe7206";
+      fsType = "ext4";
+    };
+
+    fileSystems."/boot" =
+    { device = "/dev/disk/by-uuid/4AD1-E6D0";
       fsType = "vfat";
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
-  fileSystems."/home/dijith/.Data" =
-    {
-      device = "/dev/mapper/luks";
+  fileSystems."/var/lib/vms" =
+    { device = "/dev/disk/by-uuid/d77aadc0-7fbb-4eb5-a274-d337461116cf";
       fsType = "ext4";
-      options = [ "nofail" ];
     };
 
-  boot.initrd.luks.devices."luks".device = "/dev/disk/by-uuid/ad230d1a-d8e0-4130-acd1-a2646df639af";
-
-  swapDevices = [ ];
+    swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  hardware.cpu.intel.npu.enable = true;
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

@@ -1,0 +1,7 @@
+[mgr]
+prepend_keymap = [
+    { on = "<C-y>", run = ["plugin system-clipboard"], desc = "Yank image and copy it to clipboard" },
+  { on = [ "M" ], run = "plugin gvfs -- select-then-mount --jump", desc = "Select device to mount and jump to its mount" },
+{ on = ["C-b"], run = "b", desc = "Bookmarks" },
+  { on = [ "g", "m" ], run = "cd /run/user/1000/gvfs", desc = "Go to MTP Device" },
+]

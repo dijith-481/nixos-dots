@@ -1,13 +1,33 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 let
   versions = import ../../versions.nix;
-  dotfiles = "${config.home.homeDirectory}/nixos-dots/config";
-  create_symlink = path: config.lib.file.mkOutOfStoreSymlink path;
+  # Reproducible store path — no mkOutOfStoreSymlink
+  configDir = ../../config;
   # niri & fish are now fully declarative (modules/desktop/niri-config.nix,
   # modules/development/shell.nix) — no out-of-store symlinks needed.
+  # Other dotfiles kept as direct store copies — will be migrated to Nix options later.
   configs = {
     helix = "helix";
     zellij = "zellij";
+    # --- direct store copy --- waybar + remaining dotfiles from .Data/dotfiles ---
+    waybar = "waybar";
+    fastfetch = "fastfetch";
+    foot = "foot";
+    fuzzel = "fuzzel";
+    cava = "cava";
+    clipse = "clipse";
+    fum = "fum";
+    htop = "htop";
+    hypr = "hypr";
+    kitty = "kitty";
+    yazi = "yazi";
+    zathura = "zathura";
+    wofi = "wofi";
+    tmux = "tmux";
+    niri_taskbar_module = "niri_taskbar_module";
+    paru = "paru";
+    zed = "zed";
+    colors = "colors";
   };
 
 in
@@ -48,11 +68,12 @@ in
 
   xdg.configFile = builtins.mapAttrs
     (name: subpath: {
-      source = create_symlink "${dotfiles}/${subpath}";
+      source = configDir + "/${subpath}";
       recursive = true;
-
     })
     configs;
 
+  # Reproducible: no out-of-store ~/nixos-dots symlink — repo is at ~/nixos-dots (store-copied via home.file is not needed)
+  # home.file."nixos-dots" removed for pure declarative reproducibility
 
 }

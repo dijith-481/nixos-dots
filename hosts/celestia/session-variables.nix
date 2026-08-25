@@ -4,8 +4,8 @@
     XCURSOR_THEME = "Everforest-Dark";
     XCURSOR_SIZE = "28";
     EDITOR = "hx";
-    BROWSER = "zen-beta";
-    TERMINAL = "foot";
+    BROWSER = "zen-twilight";
+    TERMINAL = "ghostty";
     TERM = "xterm-256color";
     COLORTERM = "truecolor";
 

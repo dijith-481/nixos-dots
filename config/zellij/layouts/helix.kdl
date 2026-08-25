@@ -1,12 +1,1 @@
-layout {
-    pane size=1 borderless=true {
-        plugin location="zellij:tab-bar"
-    }
-    pane command="fish" close_on_exit=true {
-        args "-c" "hx $HX_ARGS"
-    }
-    pane size=1 borderless=true {
-        plugin location="zellij:status-bar"
-    }
-}
-
+/nix/store/gm9ysgxrg3cq242lf1pqp4c217p6n4ba-home-manager-files/.config/zellij/layouts/helix.kdl

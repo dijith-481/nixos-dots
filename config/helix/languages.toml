@@ -1,8 +1,1 @@
-[[language]]
-name = "nix"
-language-servers = ["nixd"]
-auto-format = true
-formatter.command = "nixpkgs-fmt" 
-
-[language-server.nixd]
-command = "nixd"
+/nix/store/gm9ysgxrg3cq242lf1pqp4c217p6n4ba-home-manager-files/.config/helix/languages.toml

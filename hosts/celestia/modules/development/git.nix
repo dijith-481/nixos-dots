@@ -7,7 +7,7 @@
 
     settings = {
       user.name = "dijith-481";
-      user.email = "dijithdinesh@protonmail.com";
+      user.email = "dijithdinesh481@gmail.com";
 
       init.defaultBranch = "main";
       commit.gpgSign = true;
@@ -31,7 +31,7 @@
     };
 
     signing = {
-      key = "FB73ACE9832782B3";
+      key = "34F7623C3D4EB56B6365350A54EE82784BE29F43";
       signByDefault = true;
     };
   };
@@ -54,13 +54,15 @@
       "github.com" = {
         hostname = "github.com";
         user = "git";
-        identityFile = "${config.home.homeDirectory}/.ssh/github_rsa";
+        identityFile = "${config.home.homeDirectory}/.ssh/github";
+        identitiesOnly = true;
       };
 
       "bitbucket.org" = {
         hostname = "bitbucket.org";
         user = "git";
-        identityFile = "${config.home.homeDirectory}/.ssh/github_rsa";
+        identityFile = "${config.home.homeDirectory}/.ssh/bitbucket";
+        identitiesOnly = true;
       };
     };
   };

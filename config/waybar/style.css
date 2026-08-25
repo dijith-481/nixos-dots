@@ -1,0 +1,133 @@
+@import url("../colors/nord-colors.css");
+
+* {
+  font-size: 14px;
+  font-family: "MesloLGS Nerd Font";
+}
+#waybar {
+  font-weight: bold;
+}
+window#waybar {
+  all: unset;
+  background-color: @background;
+}
+/* #clock:hover, */
+/* #bluetooth:hover, */
+/* #network:hover, */
+/* #backlight:hover, */
+/* #battery:hover, */
+/* #tray:hover { */
+/* background-color: @nord3; */
+/* } */
+.modules-left {
+}
+.modules-center {
+}
+.modules-right {
+}
+tooltip {
+  background: @background;
+  color: @color7;
+}
+#clock,
+#bluetooth,
+#custom-dunst,
+#network,
+#backlight,
+#battery,
+#workspaces,
+#tray,
+#wireplumber {
+  margin: 4px 2px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  background-color: @nord0;
+  color: @color7;
+  transition: all 0.3s ease;
+}
+
+#mpris {
+  margin: 0 2px;
+  font-weight: 800;
+  color: @nord9;
+}
+
+#custom-niri-taskbar,
+#workspaces {
+  padding: 2px 4px;
+  background-color: transparent;
+  /* margin-left: 4px; */
+}
+#workspaces button {
+  all: unset;
+  padding: 0 8px;
+  color: @nord3;
+}
+#workspaces button:hover {
+  color: @nord4;
+  border: none;
+  transition: all 1s ease;
+}
+#workspaces button.active {
+  color: @nord9;
+  border: none;
+}
+#workspaces button.empty {
+  color: @nord2;
+  border: none;
+}
+#workspaces button.empty:hover {
+  color: @nord4;
+  border: none;
+  transition: all 1s ease;
+}
+#workspaces button.empty.active {
+  color: @nord12;
+  border: none;
+}
+#bluetooth {
+  color: @nord4;
+}
+#wireplumber.muted {
+  background-color: @nord11;
+}
+#wireplumber {
+  /* background-color: @nord9; */
+  color: @nord4;
+}
+#bluetooth.connected {
+  color: @nord1;
+  background-color: @nord4;
+}
+#network {
+}
+
+#network.ethernet,
+#network.wifi {
+  color: @nord1;
+  background-color: @nord4;
+}
+#network.disconnected {
+  color: @nord1;
+  background-color: @nord11;
+}
+#battery {
+  margin-right: 8px;
+  background-color: @nord15;
+  color: @nord0;
+}
+#battery.good {
+  background-color: @nord14;
+}
+#battery.warning {
+  background-color: @nord12;
+}
+#battery.critical {
+  background-color: @nord11;
+}
+#battery.plugged {
+  background-color: @nord9;
+}
+#battery.charging {
+  background-color: @nord13;
+}

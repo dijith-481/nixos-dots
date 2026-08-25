@@ -1,0 +1,78 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      // "shift shift": "file_finder::Toggle"
+    }
+  },
+  {
+    "context": "vim_mode == insert && showing_completions",
+    "bindings": {
+      "ctrl-y": "editor::ComposeCompletion"
+    }
+  },
+  {
+    "context": "vim_mode == normal",
+    "bindings": {
+      "space f f": "file_finder::Toggle",
+      "space f r": "projects::OpenRecent",
+
+      "space w h": "pane::SplitHorizontal", // split window horizontally
+      "space w v": "pane::SplitVertical", // split window vertically
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-j": "workspace::ActivatePaneDown",
+
+      // "space": "command_palette::Toggle", // leader key
+      "space f o": "workspace::Open", // open a project in a new window
+      "space f s": "workspace::Save", // save file
+      "space b b": "tab_switcher::Toggle", // switch to another open file
+      "space b l": "pane::AlternateFile", // switch to last focused buffer
+      "space s p": "workspace::NewSearch", // search the current project
+      "space a c": "agent::ToggleFocus", // open assistant chat
+      "space p s": "project_panel::ToggleFocus", // open project structure
+      "space s v": "outline::Toggle", // find variables in the current file
+      "space w m m": "workspace::ToggleZoom", // maximize current buffer
+      "space t t": "terminal_panel::ToggleFocus", // open terminal
+      "space w d": "pane::CloseActiveItem", // close current window
+      "space s s": "buffer_search::Deploy" // search current buffer
+    }
+  },
+  {
+    "context": "Terminal",
+    "bindings": {
+      "space t t": "pane::CloseActiveItem" // close the terminal
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      " f f": "file_finder::Toggle",
+      "  f g": "pane::DeploySearch"
+    }
+  },
+
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      " c r": "editor::Rename",
+      ", c a": "editor::ToggleCodeActions",
+      "shift-k": "editor::Hover",
+      "g d": "editor::GoToDefinition"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      // "j k": ["workspace::SendKeystrokes", "escape"]
+    }
+  }
+]

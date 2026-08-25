@@ -1,0 +1,12 @@
+[[plugin.deps]]
+use = "orhnk/system-clipboard"
+rev = "4f6942d"
+hash = "8e81a147e8ddfd992b10dd957d51a199"
+
+[[plugin.deps]]
+use = "boydaihungst/gvfs"
+rev = "f07b496"
+hash = "162bf7326809fb2b831d7fac7525b067"
+
+[flavor]
+deps = []

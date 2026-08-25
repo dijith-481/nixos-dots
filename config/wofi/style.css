@@ -1,0 +1,95 @@
+@import url("/home/dijith/dotfiles/colors/nord-colors.css");
+
+@keyframes fadeIn {
+  0% {
+  }
+  100% {
+  }
+}
+
+* {
+  font-family: "MesloLGS Nerd Font", monospace;
+  font-size: 12px;
+  outline: none;
+  text-shadow: none;
+}
+
+window {
+  border: 3px solid;
+  border-radius: 8px;
+  background-color: @background;
+  border-color: @nord3;
+}
+#inner-box {
+  /* padding: 10px; */
+  /* background-color: ; */
+}
+#outer-box {
+  /* border: none; */
+}
+#scroll {
+  /* margin: 0px; */
+  padding: 20px;
+  border: none;
+}
+#input {
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  outline: none;
+  color: @nord4;
+
+  /* box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5); */
+  border-radius: 8px;
+  background-color: @nord3;
+}
+#input image {
+  background-color: transparent;
+  border: none;
+  color: @nord4;
+}
+#input * {
+  border: none;
+  outline: none;
+}
+
+#input:focus {
+  outline: none;
+  border: 3px solid;
+  border-color: @nord9;
+  border-radius: 8;
+}
+#text {
+  margin: 5px;
+  border: none;
+  color: @nord4;
+  outline: none;
+}
+#entry {
+  border: none;
+  border-radius: 8px;
+  margin: 5px;
+  padding-left: 10px;
+}
+#entry arrow {
+  border: none;
+  color: @nord4;
+}
+#entry:selected {
+  border-color: @nord9;
+  padding: 10px;
+  background-color: @nord3;
+}
+#entry:selected #text {
+  background-color: transparent;
+  color: @nord4;
+}
+
+#entry:selected image {
+  background-color: transparent;
+}
+/* #entry:drop(active) { */
+/*   background-color: @nord11 !important; */
+/* } */

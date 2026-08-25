@@ -1,0 +1,57 @@
+# Basic settings (unchanged)
+set selection-clipboard clipboard
+set incremental-search true
+
+# --- OLED Black & White Color Scheme ---
+
+# Notifications (Errors, Warnings, Info)
+set notification-error-bg      "#000000"  # Black background
+set notification-error-fg      "#FFFFFF"  # White text (Maybe consider a subtle color like red here if pure B&W is too limiting for errors)
+set notification-warning-bg    "#000000"  # Black background
+set notification-warning-fg    "#FFFFFF"  # White text (Maybe consider yellow/orange here if needed)
+set notification-bg            "#000000"  # Black background
+set notification-fg            "#FFFFFF"  # White text
+
+# Completion Interface (for commands)
+set completion-bg              "#000000"  # Black background
+set completion-fg              "#FFFFFF"  # White text
+set completion-group-bg        "#000000"  # Black background for groups
+set completion-group-fg        "#FFFFFF"  # White text for groups
+set completion-highlight-bg    "#FFFFFF"  # White background for selected item (inverted)
+set completion-highlight-fg    "#000000"  # Black text for selected item (inverted)
+
+# Index / Table of Contents
+set index-bg                   "#000000"  # Black background
+set index-fg                   "#FFFFFF"  # White text
+set index-active-bg            "#FFFFFF"  # White background for selected item (inverted)
+set index-active-fg            "#000000"  # Black text for selected item (inverted)
+
+# Input Bar (command line at the bottom)
+set inputbar-bg                "#000000"  # Black background
+set inputbar-fg                "#FFFFFF"  # White text
+
+# Status Bar (bottom information line)
+set statusbar-bg               "#000000"  # Black background
+set statusbar-fg               "#FFFFFF"  # White text
+
+# Search Highlighting
+# Note: Recolor affects the base document. Highlights overlay this.
+# Setting highlight color to white will make the *text* within the highlight white.
+# The actual background of the highlight itself isn't directly controlled here,
+# but often appears as a slightly dimmed version or uses default system highlight.
+# Let's keep these white for maximum text contrast within the highlight area.
+set highlight-color            "#FFFFFF"
+set highlight-active-color     "#FFFFFF"  # Active highlight might look same as inactive in pure B&W
+
+# Default Window Colors & Document Recolor
+set default-bg                 "#000000"  # Black background for Zathura window chrome
+set default-fg                 "#FFFFFF"  # White text for Zathura window chrome
+
+set render-loading             "true"     # Keep loading indicator enabled
+set render-loading-bg          "#000000"  # Black background during loading
+set render-loading-fg          "#FFFFFF"  # White indicator during loading
+
+# Document Recolor Settings (Crucial for reading)
+set recolor-lightcolor         "#000000"  # Map light colors (like page background) to black
+set recolor-darkcolor          "#FFFFFF"  # Map dark colors (like text) to white
+set recolor                    "true"     # Enable the recoloring inversion

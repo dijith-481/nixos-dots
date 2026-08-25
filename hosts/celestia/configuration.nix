@@ -29,15 +29,13 @@ in
   boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd = {
     availableKernelModules = [ "tpm_crb" ];
-    luks.devices."luks" = {
-      crypttabExtraOpts = [ "tpm2-device=auto" ];
-    };
     kernelModules = [
       "i915"
     ];
     systemd = {
       enable = true;
     };
+    systemd.tpm2.enable = true;
   };
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.consoleLogLevel = 0;
@@ -290,12 +288,17 @@ in
   services.gnome.gnome-keyring.enable = true;
   programs.kdeconnect.enable = true;
   systemd.services.docker = {
-    requires = [ "home-dijith-.Data.mount" ];
-    after = [ "home-dijith-.Data.mount" ];
+    requires = [ "var-lib-vms.mount" ];
+    after = [ "var-lib-vms.mount" ];
   };
 
   virtualisation.docker = {
     enable = true;
+    daemon = {
+      settings = {
+        data-root = "/var/lib/vms/docker";
+      };
+    };
     # enableOnBoot = true;
   };
 
@@ -333,6 +336,29 @@ in
       "audio"
     ];
     shell = pkgs.fish;
+  };
+
+  # Bind the encrypted data volume into the user's home.
+  fileSystems."/home/dijith/.Data" = {
+    device = "/mnt/data";
+    fsType = "none";
+    options = [ "bind" "nofail" "x-systemd.make-directory" ];
+    neededForBoot = false;
+  };
+
+  # Ensure the user owns the mounted data volume.
+  systemd.services.data-access = {
+    description = "Set ownership of /home/dijith/.Data";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "home-dijith-.Data.mount" ];
+    requires = [ "home-dijith-.Data.mount" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      chown -R dijith:users /home/dijith/.Data
+    '';
   };
 
   system.stateVersion = versions.nixos;
