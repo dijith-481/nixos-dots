@@ -1,6 +1,11 @@
 # Vite+ unified web toolchain (vp CLI) — pinned release
 # https://viteplus.dev — bump `version` + `hash` together on updates
-{ lib, stdenv, fetchurl }:
+{
+  lib,
+  stdenv,
+  fetchurl,
+  autoPatchelfHook,
+}:
 
 stdenv.mkDerivation rec {
   pname = "vp";
@@ -12,6 +17,12 @@ stdenv.mkDerivation rec {
   };
 
   sourceRoot = ".";
+
+  nativeBuildInputs = [ autoPatchelfHook ];
+
+  buildInputs = [
+    stdenv.cc.cc.lib
+  ];
 
   installPhase = ''
     runHook preInstall

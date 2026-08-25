@@ -22,6 +22,8 @@
     overlays.default = final: prev: {
       vp = prev.callPackage ./pkgs/vp.nix { };
       antigravity = prev.callPackage ./pkgs/antigravity.nix { };
+      antigravity-cli = prev.callPackage ./pkgs/antigravity-cli.nix { };
+      opencode2 = prev.callPackage ./pkgs/opencode2.nix { };
     };
     nixosConfigurations = {
       nixos-celestia = nixpkgs.lib.nixosSystem {

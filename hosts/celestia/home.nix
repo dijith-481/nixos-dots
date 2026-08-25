@@ -25,6 +25,7 @@ let
     wofi = "wofi";
     tmux = "tmux";
     niri_taskbar_module = "niri_taskbar_module";
+    nvim = "nvim";
     paru = "paru";
     zed = "zed";
     colors = "colors";

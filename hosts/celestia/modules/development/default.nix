@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 
 {
@@ -6,6 +6,9 @@
     ./git.nix
     ./shell.nix
   ];
+  # npm global prefix for opencode v2 (and any npm -g) — reproducible, not nix store
+  home.file.".npmrc".text = "prefix=${config.home.homeDirectory}/.npm-global";
+
   home.packages = with pkgs; [
     zed-editor
 
@@ -47,7 +50,9 @@
     yaak # API testing tool
 
     # gemini-cli removed — replaced by Antigravity CLI upstream
-    opencode
+    opencode # v1 stable via nix (opencode)
+    opencode2 # v2 beta via nix (opencode2, from @opencode-ai/cli@beta, curl alternative)
+    antigravity-cli # agy (pinned in pkgs/antigravity-cli.nix)
     figma-agent
 
     vp # Vite+ unified web toolchain (pinned in pkgs/vp.nix)

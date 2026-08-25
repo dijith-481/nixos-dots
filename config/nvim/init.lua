@@ -1,0 +1,7 @@
+require("config")
+require("options")
+require("keymaps")
+require("autocmd")
+require("modules")
+require("lsp")
+require("plugins")
