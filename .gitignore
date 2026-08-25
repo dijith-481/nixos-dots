@@ -1,0 +1,4 @@
+# all files ending with  .backup
+*.backup
+
+
