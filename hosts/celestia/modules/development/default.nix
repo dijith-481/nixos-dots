@@ -51,11 +51,9 @@
 
     # gemini-cli removed — replaced by Antigravity CLI upstream
     opencode # v1 stable via nix (opencode)
-    opencode2 # v2 beta via nix (opencode2, from @opencode-ai/cli@beta, curl alternative)
-    antigravity-cli # agy (pinned in pkgs/antigravity-cli.nix)
     figma-agent
 
-    vp # Vite+ unified web toolchain (pinned in pkgs/vp.nix)
+    # vp, antigravity-cli (agy), opencode2 removed from nix — see docs/manual-installs.md for curl/npm manual installs (stub-ld pain, use nix-ld instead)
 
     # --- Languages & runtimes ---
     go

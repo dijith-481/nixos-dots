@@ -264,6 +264,7 @@ in
   };
 
   programs.dconf.enable = true;
+  programs.nix-ld.enable = true; # for dynamically linked binaries in $HOME (vp's vite-plus node at ~/.local/share/vite-plus/js_runtime/node/…/bin/node, manual installs)
   # flake module provides session wiring + config validation;
   # package comes from nixpkgs so it tracks our (newest) nixpkgs
   programs.niri.package = pkgs.niri;
