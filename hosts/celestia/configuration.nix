@@ -273,6 +273,7 @@ in
   environment.systemPackages = with pkgs; [
     libva-utils
     intel-gpu-tools
+    bubblewrap
     git
     vim
     curl
@@ -280,6 +281,7 @@ in
     rustup
     helix
     nh
+    chatgpt
   ];
 
   programs.gnupg.agent = {
