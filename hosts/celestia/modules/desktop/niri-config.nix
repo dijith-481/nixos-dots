@@ -132,6 +132,7 @@
 
     spawn-at-startup = [
       { argv = [ "systemctl" "--user" "start" "hyprpolkitagent" ]; }
+      { argv = [ "waybar" ]; }
       { argv = [ "xwayland-satellite" ]; }
       { argv = [ "swww" "restore" ]; }
       { argv = [ "zen-twilight" ]; }
@@ -215,7 +216,7 @@
         default-window-height.fixed = 438;
       }
       {
-        matches = [ { app-id = "zen-twilight$"; at-startup = true; } ];
+        matches = [{ app-id = "zen-twilight$"; }];
         open-on-workspace = "browser";
         open-maximized = true;
         draw-border-with-background = false;

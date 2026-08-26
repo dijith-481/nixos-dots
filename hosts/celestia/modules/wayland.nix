@@ -40,6 +40,8 @@
   programs.hyprlock.enable = true;
   services.syncthing.enable = true;
   programs.waybar.enable = true;
+  programs.waybar.systemd.enable = true;
+  programs.waybar.systemd.targets = [ "graphical-session.target" ];
   programs.fuzzel.enable = true;
 
 

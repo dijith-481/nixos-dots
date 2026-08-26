@@ -28,6 +28,7 @@ let
     zed = "zed";
     colors = "colors";
     ghostty = "ghostty";
+    opencode = "opencode";
   };
 
 in
