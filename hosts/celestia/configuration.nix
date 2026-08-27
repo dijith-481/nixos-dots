@@ -25,7 +25,6 @@ in
     };
   };
   security.tpm2.enable = lib.mkDefault true;
-  powerManagement.cpuFreqGovernor = "performance";
   boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd = {
     availableKernelModules = [ "tpm_crb" ];
@@ -37,7 +36,9 @@ in
     };
     systemd.tpm2.enable = true;
   };
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # Use the nixpkgs default kernel for an A/B test. The latest kernel produced
+  # persistent i915 page-flip waits and an atomic-update failure on this GPU.
+  boot.kernelPackages = pkgs.linuxPackages;
   boot.consoleLogLevel = 0;
   boot.initrd.verbose = false;
 
@@ -54,6 +55,10 @@ in
 
   boot.kernelParams = [
     "quiet"
+    # The internal eDP panel's PSR1 sink repeatedly remains in timing re-sync
+    # while i915_flip workers wait in drm_atomic_helper_wait_for_flip_done,
+    # producing system-wide I/O PSI despite almost no NVMe activity.
+    "i915.enable_psr=0"
   ];
   # Hide the OS choice for bootloaders.
   # It's still possible to open the bootloader list by pressing any key
@@ -69,7 +74,10 @@ in
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
-      cores = 0;
+      # Avoid letting a single build occupy every logical CPU while the laptop
+      # cooling system is unable to keep the package below its throttle point.
+      max-jobs = 1;
+      cores = 8;
     };
 
     gc = {
@@ -77,8 +85,6 @@ in
       dates = "weekly";
       options = "--delete-older-than 10d";
     };
-    optimise.automatic = true;
-
   };
 
   hardware = {
@@ -87,13 +93,9 @@ in
     enableAllFirmware = true;
     graphics = {
       enable = true;
-      extraPackages = with pkgs;[
-        mesa
+      extraPackages = with pkgs; [
         intel-media-driver
-        intel-vaapi-driver
-        libva-vdpau-driver
         intel-compute-runtime
-        libvdpau-va-gl
         vpl-gpu-rt
       ];
     };
@@ -110,9 +112,6 @@ in
   };
   environment.sessionVariables = {
     LIBVA_DRIVER_NAME = "iHD";
-    VDPAU_DRIVER = "va_gl";
-    LIBVA_DRIVERS_PATH = "/run/opengl-driver/lib/dri";
-    LD_LIBRARY_PATH = [ "/run/opengl-driver/lib" ];
   };
 
 
@@ -134,7 +133,6 @@ in
 
 
 
-  services.xserver.enable = true;
   services.keyd = {
     enable = true;
     keyboards = {
@@ -218,6 +216,27 @@ in
     pulse.enable = true;
     alsa.enable = true;
   };
+  # PipeWire and browser screen capture need RTKit to schedule real-time media
+  # threads without falling back to normal priority under CPU load.
+  security.rtkit.enable = true;
+
+  # Keep one portal stack at the system layer. Niri supplies the GNOME backend
+  # for ScreenCast; GTK handles generic dialogs and power-inhibit requests.
+  xdg.portal = {
+    enable = true;
+    config = {
+      niri = {
+        default = [ "gnome" "gtk" ];
+        "org.freedesktop.impl.portal.Access" = [ "gtk" ];
+        "org.freedesktop.impl.portal.Notification" = [ "gtk" ];
+        "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+        "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
+        "org.freedesktop.impl.portal.Inhibit" = [ "gtk" ];
+      };
+      common.default = [ "gtk" ];
+    };
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
 
   services.syncthing = {
     enable = true;
@@ -230,7 +249,11 @@ in
   };
 
   services.libinput.enable = true;
-  # services.thermald.enable = true;
+  # The Yoga's fan curve is owned by firmware/EC and is not exposed as a
+  # controllable hwmon device.  thermald cannot raise its fan speed here; it
+  # would only add another CPU/power throttling policy on top of TLP and the
+  # processor's hardware thermal protection.
+  services.thermald.enable = false;
 
   services.printing.enable = lib.mkDefault true;
   services.avahi.enable = lib.mkDefault true;
@@ -240,12 +263,20 @@ in
   services.tlp = {
     enable = true;
     settings = {
-      START_CHARGE_THRESH_BAT0 = 0;
-      STOP_CHARGE_THRESH_BAT0 = 1;
       CPU_SCALING_GOVERNOR_ON_AC = "powersave";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
       CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
       CPU_ENERGY_PERF_POLICY_ON_BAT = "balance_power";
+      # Keep the firmware's more aggressive AC fan curve while independently
+      # limiting CPU heat below.  Balanced is preferable on battery.
+      PLATFORM_PROFILE_ON_AC = "performance";
+      PLATFORM_PROFILE_ON_BAT = "balanced";
+
+      # Temporary safety limits until the firmware-controlled fan is repaired.
+      CPU_MAX_PERF_ON_AC = 80;
+      CPU_MAX_PERF_ON_BAT = 60;
+      CPU_BOOST_ON_AC = 0;
+      CPU_BOOST_ON_BAT = 0;
     };
   };
 
@@ -288,6 +319,26 @@ in
     enable = true;
   };
   security.polkit.enable = true;
+
+  # niri-flake's KDE agent crashes while opening its authentication dialog
+  # because its QML runtime cannot load the Kvantum module. It also races with
+  # hyprpolkitagent for the single per-session polkit-agent registration.
+  # Keep polkit itself enabled, but run exactly one working Wayland agent.
+  systemd.user.services.niri-flake-polkit.enable = false;
+  systemd.user.services.hyprpolkitagent = {
+    description = "Hyprland Polkit Authentication Agent";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    unitConfig.ConditionEnvironment = "WAYLAND_DISPLAY";
+    serviceConfig = {
+      ExecStart = "${pkgs.hyprpolkitagent}/libexec/hyprpolkitagent";
+      Slice = "session.slice";
+      TimeoutStopSec = "5s";
+      Restart = "on-failure";
+    };
+  };
+
   services.gnome.gnome-keyring.enable = true;
   programs.kdeconnect.enable = true;
   systemd.services.docker = {
@@ -360,10 +411,11 @@ in
       RemainAfterExit = true;
     };
     script = ''
-      chown -R dijith:users /home/dijith/.Data
+      # Only the mount root needs ownership correction. Recursing through the
+      # whole encrypted data volume caused a large metadata scan every boot.
+      chown dijith:users /home/dijith/.Data
     '';
   };
 
   system.stateVersion = versions.nixos;
 }
-

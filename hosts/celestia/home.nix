@@ -66,7 +66,7 @@ in
       enable = true;
       enableCss = true;
       profileNames = [
-        "w0jo7uh8.Default Profile"
+        "dijith-twilight"
         "dijith"
       ];
 
@@ -81,6 +81,17 @@ in
       recursive = true;
     })
     configs;
+
+  # Keep the large Zen session intact while reducing background CPU wakeups
+  # and session-store write amplification. These are defaults, not locked
+  # policies, so they can still be changed from about:config.
+  home.file.".config/zen/dijith-twilight/user.js".text = ''
+    user_pref("browser.tabs.unloadOnLowMemory", false);
+    user_pref("browser.sessionstore.restore_on_demand", true);
+    user_pref("browser.sessionstore.interval", 60000);
+    user_pref("dom.min_background_timeout_value", 2000);
+    user_pref("dom.min_background_timeout_value_without_budget_throttling", 2000);
+  '';
 
   # Reproducible: no out-of-store ~/nixos-dots symlink — repo is at ~/nixos-dots (store-copied via home.file is not needed)
   # home.file."nixos-dots" removed for pure declarative reproducibility

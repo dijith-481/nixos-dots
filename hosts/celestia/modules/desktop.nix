@@ -2,26 +2,10 @@
 {
 
   home.packages = with pkgs;[
-    (brave.override {
-      commandLineArgs = [
-        "--enable-cmd-decoder=passthrough"
-        "--enable-features=WaylandLinuxDrmSyncobj,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,CanvasOopRasterization,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
-        "--enable-features=UseMultiPlaneFormatForHardwareVideo"
-        "--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder"
-        "--ignore-gpu-blocklist"
-        "--enable-zero-copy"
-      ];
-    })
-    (google-chrome.override {
-      commandLineArgs = [
-        "--enable-cmd-decoder=passthrough"
-        "--enable-features=WaylandLinuxDrmSyncobj,AcceleratedVideoDecodeLinuxZeroCopyGL,AcceleratedVideoDecodeLinuxGL,VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,CanvasOopRasterization,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
-        "--enable-features=UseMultiPlaneFormatForHardwareVideo"
-        "--enable-features=AcceleratedVideoEncoder"
-        "--ignore-gpu-blocklist"
-        "--enable-zero-copy"
-      ];
-    })
+    # Native Wayland is selected by NIXOS_OZONE_WL. Keep Chromium's tested GPU
+    # defaults instead of forcing Vulkan, syncobj, multiplane and blocklist bypasses.
+    brave
+    google-chrome
 
     # zen twilight only — stable removed (twilight supersedes it)
     inputs.zen-browser.packages."${pkgs.system}".twilight

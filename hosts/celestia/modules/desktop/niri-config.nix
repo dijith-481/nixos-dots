@@ -5,6 +5,14 @@
 
 {
   programs.niri.settings = {
+    # Intel display page-flip waits currently appear as severe full I/O PSI and
+    # make input laggy under browser/video load. Serialize frame completion and
+    # avoid the direct-scanout path while isolating the i915/Niri interaction.
+    debug = {
+      wait-for-frame-completion-before-queueing = [ ];
+      disable-direct-scanout = [ ];
+    };
+
     # --- Named workspaces ---
     workspaces = {
       "mainWorkspace".name = "mainWorkspace";
@@ -131,10 +139,7 @@
     # };
 
     spawn-at-startup = [
-      { argv = [ "systemctl" "--user" "start" "hyprpolkitagent" ]; }
-      { argv = [ "waybar" ]; }
       { argv = [ "xwayland-satellite" ]; }
-      { argv = [ "swww" "restore" ]; }
       { argv = [ "zen-twilight" ]; }
       { argv = [ "brave" "--app=https://music.youtube.com" ]; }
     ];
