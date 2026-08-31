@@ -249,10 +249,8 @@ in
   };
 
   services.libinput.enable = true;
-  # The Yoga's fan curve is owned by firmware/EC and is not exposed as a
-  # controllable hwmon device.  thermald cannot raise its fan speed here; it
-  # would only add another CPU/power throttling policy on top of TLP and the
-  # processor's hardware thermal protection.
+  # thermald can only add CPU/power throttling on this machine; it does not
+  # control the Yoga's firmware/EC fan modes.
   services.thermald.enable = false;
 
   services.printing.enable = lib.mkDefault true;
@@ -260,23 +258,129 @@ in
   services.udisks2.enable = true;
 
 
-  services.tlp = {
-    enable = true;
-    settings = {
-      CPU_SCALING_GOVERNOR_ON_AC = "powersave";
-      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-      CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
-      CPU_ENERGY_PERF_POLICY_ON_BAT = "balance_power";
-      # Keep the firmware's more aggressive AC fan curve while independently
-      # limiting CPU heat below.  Balanced is preferable on battery.
-      PLATFORM_PROFILE_ON_AC = "performance";
-      PLATFORM_PROFILE_ON_BAT = "balanced";
+  # Do not stack a userspace CPU limiter on top of the firmware profile and
+  # Intel's hardware thermal protection.  TLP previously disabled turbo and
+  # capped intel_pstate at 80% even while the firmware profile was performance.
+  services.tlp.enable = false;
+  services.power-profiles-daemon.enable = false;
 
-      # Temporary safety limits until the firmware-controlled fan is repaired.
-      CPU_MAX_PERF_ON_AC = 80;
-      CPU_MAX_PERF_ON_BAT = 60;
-      CPU_BOOST_ON_AC = 0;
-      CPU_BOOST_ON_BAT = 0;
+  # The BIOS binds its ACPI fan stages to the acpitz sensor, which remains
+  # stuck near 28 C, instead of the working TCPU sensor.  Drive those existing
+  # stages from TCPU with hysteresis so the fans respond before hardware
+  # thermal throttling begins.  PNP0C0B:04 is the lowest stage and :01 the
+  # highest normal stage; :00 remains available for the firmware's emergency
+  # trip point.
+  systemd.services.lenovo-acpi-fan-workaround = {
+    description = "Drive Lenovo ACPI fan stages from the real CPU temperature";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "systemd-modules-load.service" ];
+    path = [ pkgs.coreutils ];
+    serviceConfig = {
+      Type = "simple";
+      Restart = "always";
+      RestartSec = 2;
+    };
+    script = ''
+      fan1=""
+      fan2=""
+      fan3=""
+      fan4=""
+
+      for coolingDevice in /sys/class/thermal/cooling_device*; do
+        case "$(readlink -f "$coolingDevice/device")" in
+          */PNP0C0B:04) fan1="$coolingDevice" ;;
+          */PNP0C0B:03) fan2="$coolingDevice" ;;
+          */PNP0C0B:02) fan3="$coolingDevice" ;;
+          */PNP0C0B:01) fan4="$coolingDevice" ;;
+        esac
+      done
+
+      tempZone=""
+      for zone in /sys/class/thermal/thermal_zone*; do
+        read -r zoneType < "$zone/type"
+        if [ "$zoneType" = TCPU ]; then
+          tempZone="$zone"
+          break
+        fi
+      done
+
+      if [ -z "$fan1" ] || [ -z "$fan2" ] || [ -z "$fan3" ] ||
+         [ -z "$fan4" ] || [ -z "$tempZone" ]; then
+        echo "Required Lenovo ACPI fan stages or TCPU sensor not found" >&2
+        exit 1
+      fi
+
+      setLevel() {
+        level="$1"
+        if [ "$level" -ge 1 ]; then echo 1 > "$fan1/cur_state"; else echo 0 > "$fan1/cur_state"; fi
+        if [ "$level" -ge 2 ]; then echo 1 > "$fan2/cur_state"; else echo 0 > "$fan2/cur_state"; fi
+        if [ "$level" -ge 3 ]; then echo 1 > "$fan3/cur_state"; else echo 0 > "$fan3/cur_state"; fi
+        if [ "$level" -ge 4 ]; then echo 1 > "$fan4/cur_state"; else echo 0 > "$fan4/cur_state"; fi
+      }
+
+      level=0
+      trap 'setLevel 0' EXIT INT TERM
+      while true; do
+        read -r temperature < "$tempZone/temp"
+        case "$level" in
+          0) if [ "$temperature" -ge 60000 ]; then level=1; fi ;;
+          1)
+            if [ "$temperature" -ge 70000 ]; then level=2
+            elif [ "$temperature" -lt 55000 ]; then level=0
+            fi
+            ;;
+          2)
+            if [ "$temperature" -ge 80000 ]; then level=3
+            elif [ "$temperature" -lt 65000 ]; then level=1
+            fi
+            ;;
+          3)
+            if [ "$temperature" -ge 90000 ]; then level=4
+            elif [ "$temperature" -lt 75000 ]; then level=2
+            fi
+            ;;
+          4) if [ "$temperature" -lt 85000 ]; then level=3; fi ;;
+        esac
+        setLevel "$level"
+        sleep 2
+      done
+    '';
+  };
+
+  # Reproduce Fedora Workstation's power-management stack in isolated boot
+  # entries.  Fedora maps the desktop Performance profile to TuneD's
+  # throughput-performance profile.  Keep these as non-default A/B tests and
+  # do not stack our ACPI fan workaround on top of TuneD.
+  specialisation.fedora-tuned-performance.configuration = {
+    system.nixos.tags = [ "fedora-tuned-performance" ];
+    systemd.services.lenovo-acpi-fan-workaround.enable = lib.mkForce false;
+    services.tuned = {
+      enable = true;
+      ppdSupport = true;
+      ppdSettings = {
+        main = {
+          default = "performance";
+          battery_detection = false;
+        };
+        profiles.performance = "throughput-performance";
+      };
+    };
+  };
+
+  specialisation.fedora-tuned-lts.configuration = {
+    system.nixos.tags = [ "fedora-tuned-lts" ];
+    boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_12;
+    systemd.services.lenovo-acpi-fan-workaround.enable = lib.mkForce false;
+    services.tuned = {
+      enable = true;
+      ppdSupport = true;
+      ppdSettings = {
+        main = {
+          default = "performance";
+          battery_detection = false;
+        };
+        profiles.performance = "throughput-performance";
+      };
     };
   };
 

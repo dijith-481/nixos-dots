@@ -12,7 +12,6 @@
       init.defaultBranch = "main";
       commit.gpgSign = true;
       tag.gpgSign = true;
-      push.autoSetupRemote = true;
 
       include.path = "~/.config/delta/theme.gitconfig";
       core = {
@@ -58,21 +57,19 @@
         identitiesOnly = true;
       };
 
+      "github-logai" = {
+        hostname = "github.com";
+        user = "git";
+        identityFile = "${config.home.homeDirectory}/.ssh/github-logai";
+        identitiesOnly = true;
+      };
+
       "bitbucket.org" = {
         hostname = "bitbucket.org";
         user = "git";
         identityFile = "${config.home.homeDirectory}/.ssh/bitbucket";
         identitiesOnly = true;
       };
-    };
-  };
-
-  # GitHub CLI
-  programs.gh = {
-    enable = true;
-    settings = {
-      git_protocol = "ssh";
-      editor = "nvim";
     };
   };
 }

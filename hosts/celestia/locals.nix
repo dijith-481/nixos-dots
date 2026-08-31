@@ -2,8 +2,8 @@
 
 {
   wallpapers = {
-    main = ../../config/walls/clash.png;
-    blurred = ../../config/walls/clash.png;
+    main = ../../config/walls/nord-arctic.png;
+    blurred = ../../config/walls/nord-hills.png;
   };
   hostname = "celestia";
   user = {

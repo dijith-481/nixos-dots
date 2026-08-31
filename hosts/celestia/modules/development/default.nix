@@ -49,6 +49,10 @@
     #todo test it
     yaak # API testing tool
 
+    cloudflared # Cloudflare Tunnel daemon
+    ngrok       # ngrok tunneling
+    wrangler    # Cloudflare Workers CLI
+
     # gemini-cli removed — replaced by Antigravity CLI upstream
     opencode # v1 stable via nix (opencode)
     figma-agent
