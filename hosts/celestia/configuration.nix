@@ -419,6 +419,7 @@ in
     helix
     nh
     chatgpt
+    zcode
   ];
 
   programs.gnupg.agent = {
