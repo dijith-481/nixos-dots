@@ -23,6 +23,7 @@
       vp = prev.callPackage ./pkgs/vp.nix { };
       antigravity = prev.callPackage ./pkgs/antigravity.nix { };
       chatgpt = prev.callPackage ./pkgs/chatgpt.nix { };
+      zcode = prev.callPackage ./pkgs/zcode.nix { };
     };
     nixosConfigurations = {
       nixos-celestia = nixpkgs.lib.nixosSystem {
