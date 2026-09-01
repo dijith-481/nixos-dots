@@ -23,7 +23,27 @@
   programs.waybar.enable = true;
   programs.waybar.systemd.enable = true;
   programs.waybar.systemd.targets = [ "graphical-session.target" ];
-  programs.fuzzel.enable = true;
+  programs.fuzzel = {
+    enable = true;
+    settings = {
+      main = {
+        show-actions = "yes";
+        # also ensure terminal & layer match our source config
+        terminal = "foot -e";
+        layer = "overlay";
+        lines = 20;
+        width = 50;
+        icon-theme = "Zafiro-Nord-Black";
+        icons-enabled = "yes";
+        sort-result = "yes";
+        match-counter = "yes";
+      };
+      border = {
+        width = 2;
+        radius = 8;
+      };
+    };
+  };
 
 
   home.packages = with pkgs;[
@@ -31,6 +51,7 @@
     niri
     wl-mirror
     fuzzel
+    proton-vpn
     anyrun
     imagemagick
     hyprpicker

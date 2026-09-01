@@ -339,7 +339,7 @@
         "Mod+Alt+E" = { repeat = false; } // (sh "pkill wlsunset || wlsunset -l 10.77 -L 76.22");
 
         # apps & tools
-        "Mod+space".action.spawn = [ "fuzzel" ];
+        "Mod+space".action.spawn = [ "fuzzel" "--show-actions" ];
         "Mod+F2".action.spawn = [ "hyprlock" ];
         "Mod+E".action.spawn = [ "kitty" "--class" "yazi" "-e" "yazi" ];
         "Mod+Control+E".action.spawn = [ "ghostty" "--title=floatingfoot" "-e" "yazi" ];
@@ -361,8 +361,8 @@
 
         # web / misc — fix zen-beta -> zen-twilight (package is twilight)
         "Mod+B" = { repeat = false; action.spawn-sh = "zen-twilight || zen"; };
-        "Mod+Control+B" = { repeat = false; action.spawn = [ "./Dev/history-website-appmode/target/release/history-website-appmode" ]; };
-        "Mod+Control+Shift+B" = { repeat = false; action.spawn = [ "./Dev/history-website-appmode/target/release/history-website-appmode" "-i" ]; };
+        "Mod+Control+B" = { repeat = false; action.spawn = [ "kitty" "--class" "selectwebsite" "-e" "/home/dijith/Dev/history-website-appmode/target/release/history-website-appmode" ]; };
+        "Mod+Control+Shift+B" = { repeat = false; action.spawn = [ "kitty" "--class" "selectwebsite" "-e" "/home/dijith/Dev/history-website-appmode/target/release/history-website-appmode" "-i" ]; };
         "Mod+Alt+Y".action.spawn = [ "brave" "--app=https://music.youtube.com" ];
         "Mod+g".action.spawn = [ "brave" "--app=https://aistudio.google.com" ];
         "Mod+Control+f" = { repeat = false; } // (sh "~/.config/hypr/scripts/kde-fileshare.sh");
