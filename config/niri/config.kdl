@@ -490,10 +490,10 @@ binds {
     }
     // Mod+Alt+b repeat=false { focus-workspace "browser"; }
     Mod+Control+B repeat=false {
-        spawn "./Dev/history-website-appmode/target/release/history-website-appmode"
+        spawn "kitty" "--class" "selectwebsite" "-e" "/home/dijith/Dev/history-website-appmode/target/release/history-website-appmode"
     }
     Mod+Control+Shift+B repeat=false {
-        spawn "./Dev/history-website-appmode/target/release/history-website-appmode" "-i"
+        spawn "kitty" "--class" "selectwebsite" "-e" "/home/dijith/Dev/history-website-appmode/target/release/history-website-appmode" "-i"
     }
     Mod+Alt+Y repeat=false {
         spawn "brave" "--app=https://music.youtube.com"
