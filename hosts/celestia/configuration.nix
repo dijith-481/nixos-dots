@@ -404,6 +404,8 @@ in
   # package comes from nixpkgs so it tracks our (newest) nixpkgs
   programs.niri.package = pkgs.niri;
   programs.niri.enable = true;
+  programs.appimage.enable=true;
+  programs.appimage.binfmt=true;
   programs.fish.enable = true;
   environment.systemPackages = with pkgs; [
     libva-utils
