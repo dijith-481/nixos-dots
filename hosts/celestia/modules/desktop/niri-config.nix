@@ -5,14 +5,6 @@
 
 {
   programs.niri.settings = {
-    # Intel display page-flip waits currently appear as severe full I/O PSI and
-    # make input laggy under browser/video load. Serialize frame completion and
-    # avoid the direct-scanout path while isolating the i915/Niri interaction.
-    debug = {
-      wait-for-frame-completion-before-queueing = [ ];
-      disable-direct-scanout = [ ];
-    };
-
     # --- Named workspaces ---
     workspaces = {
       "mainWorkspace".name = "mainWorkspace";
@@ -150,7 +142,10 @@
     cursor = {
       theme = "Nordzy-cursors";
       size = 10;
-      hide-when-typing = true;
+      # Hiding the hardware cursor on every key press triggers an atomic
+      # cursor-plane update.  On this Meteor Lake/i915 panel those commits can
+      # block in drm_atomic_helper_wait_for_flip_done and stall input.
+      hide-when-typing = false;
     };
 
     hotkey-overlay.skip-at-startup = true;
