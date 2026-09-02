@@ -15,7 +15,7 @@ fi
 transition_type="outer"
 #transition_type="random"
 
-swww img $wallpaper \
+awww img $wallpaper \
   --transition-type=$transition_type \
   --transition-pos 0.74,0.34 \
   --transition-duration 0.8 \

@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-sleep 1  && exec swww restore 
+sleep 1 && exec awww restore
