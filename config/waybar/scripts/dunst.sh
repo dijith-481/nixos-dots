@@ -1,1 +1,1 @@
-/nix/store/islwsqvqb869jrzsixpbpzj55bczwg3j-home-manager-files/.config/waybar/scripts/dunst.sh
+/nix/store/v1zipiik0v7dhhly4a64hjiwmag2r2y7-home-manager-files/.config/waybar/scripts/dunst.sh

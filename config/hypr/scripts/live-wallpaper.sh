@@ -15,7 +15,7 @@ transition_type="wave"
 #transition_type="wipe"
 #transition_type="random"
 
-swww img $wallpaper \
+awww img $wallpaper \
   --transition-type=$transition_type \
   --transition-pos top-right \
   --transition-fps 60 --transition-step 2 --transition-angle 50
