@@ -12,7 +12,10 @@
   # profile control can temporarily select another profile, and both update live.
   systemd.services.celestia-power-profile = {
     description = "Select a sane power profile for the current power source";
-    wantedBy = [ "multi-user.target" ];
+    # PPD's upstream unit is ordered after multi-user.target. Starting this
+    # dependent service from that same target creates a boot-only ordering
+    # cycle, so apply the initial policy as part of the graphical boot instead.
+    wantedBy = [ "graphical.target" ];
     wants = [ "power-profiles-daemon.service" ];
     after = [ "power-profiles-daemon.service" ];
     path = [ pkgs.coreutils pkgs.power-profiles-daemon ];
