@@ -1,1 +1,2 @@
-/nix/store/v1zipiik0v7dhhly4a64hjiwmag2r2y7-home-manager-files/.config/zellij/kdlfmt.kdl
+indent_size 2
+use_tabs #false

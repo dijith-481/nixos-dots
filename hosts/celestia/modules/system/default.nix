@@ -18,7 +18,6 @@
     lm_sensors
     powertop
     acpi
-    tlp
 
     usbutils # Provides lsusb command
     pciutils # Provides lspci command

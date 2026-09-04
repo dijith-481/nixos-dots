@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ lib, pkgs, ... }:
 let
   versions = import ../../versions.nix;
   locals = import ./locals.nix { inherit pkgs; };
@@ -10,6 +10,7 @@ in
       ./stylix.nix
       ./hardware-configuration.nix
       ./modules/system/display-manager.nix
+      ./modules/system/power.nix
     ];
 
   boot.loader.systemd-boot = {
@@ -36,9 +37,9 @@ in
     };
     systemd.tpm2.enable = true;
   };
-  # Use the nixpkgs default kernel for an A/B test. The latest kernel produced
-  # persistent i915 page-flip waits and an atomic-update failure on this GPU.
-  boot.kernelPackages = pkgs.linuxPackages;
+  # Track the newest kernel available in the pinned nixpkgs revision. Meteor
+  # Lake graphics, scheduling and power-management fixes land here first.
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.consoleLogLevel = 0;
   boot.initrd.verbose = false;
 
@@ -151,23 +152,22 @@ in
 
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="leds", KERNEL=="platform::micmute", MODE="0666"
-    ACTION=="change", SUBSYSTEM=="power_supply", KERNEL=="ADP1", RUN+="${pkgs.systemd}/bin/systemctl --no-block restart apply-power-source-profile.service"
   '';
 
   systemd.user.services.mic-led-sync = {
     description = "Sync Microphone Mute LED with WirePlumber status";
-    
+
     after = [ "pipewire.service" "wireplumber.service" ];
     wantedBy = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];
 
-    path = with pkgs; [ 
-      wireplumber 
-      pulseaudio 
-      brightnessctl 
-      gnugrep 
-      bash 
-      coreutils 
+    path = with pkgs; [
+      wireplumber
+      pulseaudio
+      brightnessctl
+      gnugrep
+      bash
+      coreutils
     ];
 
     serviceConfig = {
@@ -197,7 +197,7 @@ in
     '';
   };
 
-# DNS will be handled automatically by NetworkManager
+  # DNS will be handled automatically by NetworkManager
   # Optional: Custom DNS servers (uncomment if you want to override ISP DNS)
   # networking.nameservers = [ "8.8.8.8" "1.1.1.1" "1.0.0.1" "9.9.9.9" ];
   # Enable systemd-resolved for better DNS handling
@@ -250,260 +250,9 @@ in
   };
 
   services.libinput.enable = true;
-  # The firmware exposes a broken default RAPL cooling range ending at 125 mW.
-  # Define a safe 20-40 W PPCC range and explicit passive target states so
-  # thermald can prevent prolonged operation near TjMax without ever collapsing
-  # package power or disabling turbo.  The fan policies below act first.
-  services.thermald = {
-    enable = true;
-    configFile = pkgs.writeText "thermal-conf-celestia.xml" ''
-      <?xml version="1.0"?>
-      <ThermalConfiguration>
-        <Platform>
-          <Name>Lenovo Yoga Slim 7 14IMH9</Name>
-          <ProductName>83CV</ProductName>
-          <Preference>QUIET</Preference>
-          <PPCC>
-            <PowerLimitIndex>0</PowerLimitIndex>
-            <PowerLimitMaximum>40000</PowerLimitMaximum>
-            <PowerLimitMinimum>20000</PowerLimitMinimum>
-            <TimeWindowMinimum>2000</TimeWindowMinimum>
-            <TimeWindowMaximum>28000</TimeWindowMaximum>
-            <StepSize>2000</StepSize>
-          </PPCC>
-          <ThermalZones>
-            <ThermalZone>
-              <Type>celestia_cpu</Type>
-              <TripPoints>
-                <TripPoint>
-                  <SensorType>x86_pkg_temp</SensorType>
-                  <Temperature>90000</Temperature>
-                  <Hyst>3000</Hyst>
-                  <type>passive</type>
-                  <ControlType>PARALLEL</ControlType>
-                  <CoolingDevice>
-                    <type>rapl_controller</type>
-                    <SamplingPeriod>5</SamplingPeriod>
-                    <TargetState>32000000</TargetState>
-                  </CoolingDevice>
-                  <CoolingDevice>
-                    <type>rapl_controller_mmio</type>
-                    <SamplingPeriod>5</SamplingPeriod>
-                    <TargetState>32000000</TargetState>
-                  </CoolingDevice>
-                </TripPoint>
-                <TripPoint>
-                  <SensorType>x86_pkg_temp</SensorType>
-                  <Temperature>95000</Temperature>
-                  <Hyst>3000</Hyst>
-                  <type>passive</type>
-                  <ControlType>PARALLEL</ControlType>
-                  <CoolingDevice>
-                    <type>rapl_controller</type>
-                    <SamplingPeriod>5</SamplingPeriod>
-                    <TargetState>26000000</TargetState>
-                  </CoolingDevice>
-                  <CoolingDevice>
-                    <type>rapl_controller_mmio</type>
-                    <SamplingPeriod>5</SamplingPeriod>
-                    <TargetState>26000000</TargetState>
-                  </CoolingDevice>
-                </TripPoint>
-                <TripPoint>
-                  <SensorType>x86_pkg_temp</SensorType>
-                  <Temperature>100000</Temperature>
-                  <Hyst>3000</Hyst>
-                  <type>passive</type>
-                  <ControlType>PARALLEL</ControlType>
-                  <CoolingDevice>
-                    <type>rapl_controller</type>
-                    <SamplingPeriod>5</SamplingPeriod>
-                    <TargetState>20000000</TargetState>
-                  </CoolingDevice>
-                  <CoolingDevice>
-                    <type>rapl_controller_mmio</type>
-                    <SamplingPeriod>5</SamplingPeriod>
-                    <TargetState>20000000</TargetState>
-                  </CoolingDevice>
-                </TripPoint>
-              </TripPoints>
-            </ThermalZone>
-          </ThermalZones>
-        </Platform>
-      </ThermalConfiguration>
-    '';
-  };
-
-  # The default firmware TCPU zone is additive even with a manual XML and can
-  # independently disable turbo.  Run only the reviewed policy above.
-  systemd.services.thermald.serviceConfig.ExecStart = lib.mkForce ''
-    ${config.services.thermald.package}/sbin/thermald \
-      --no-daemon \
-      --ignore-default-control \
-      --config-file ${config.services.thermald.configFile} \
-      --dbus-enable
-  '';
-
   services.printing.enable = lib.mkDefault true;
   services.avahi.enable = lib.mkDefault true;
   services.udisks2.enable = true;
-
-
-  # TLP previously disabled turbo and capped intel_pstate at 80% even while
-  # the firmware profile was performance, so use power-profiles-daemon as the
-  # single profile manager instead.
-  services.tlp.enable = false;
-  services.power-profiles-daemon.enable = lib.mkDefault true;
-
-  # This Yoga exposes a second, independent Lenovo EC fan policy control.
-  # platform_profile=performance does not update it: it remained in mode 1
-  # (Standard) at 102 C.  Mode 4 is the kernel-documented "Efficient Thermal
-  # Dissipation" policy and is the most aggressive firmware-managed mode.
-  systemd.services.lenovo-efficient-thermal-dissipation = {
-    description = "Select Lenovo Efficient Thermal Dissipation fan mode";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "systemd-modules-load.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      fanMode=/sys/bus/platform/devices/VPC2004:00/fan_mode
-      if [ ! -w "$fanMode" ]; then
-        echo "Lenovo fan_mode interface is unavailable" >&2
-        exit 1
-      fi
-      echo 4 > "$fanMode"
-    '';
-  };
-
-  # The EC may reset its fan policy across suspend.  Reapply mode 4 after the
-  # machine has resumed, when the platform device is available again.
-  environment.etc."systemd/system-sleep/lenovo-efficient-thermal-dissipation".source =
-    pkgs.writeShellScript "lenovo-efficient-thermal-dissipation-resume" ''
-      if [ "$1" = post ] &&
-         [ -w /sys/bus/platform/devices/VPC2004:00/fan_mode ]; then
-        echo 4 > /sys/bus/platform/devices/VPC2004:00/fan_mode
-      fi
-    '';
-
-  # Keep the compositor, input path and session services responsive when a
-  # test runner or type checker fills all 22 logical CPUs.  CPUWeight affects
-  # contention only; it does not cap build performance while CPUs are free.
-  systemd.user.slices.session.sliceConfig.CPUWeight = 1000;
-  systemd.user.slices.app.sliceConfig.CPUWeight = 100;
-
-  # Prefer full performance on external power and balanced operation on
-  # battery.  A udev event reapplies the policy whenever the AC state changes.
-  systemd.services.apply-power-source-profile = {
-    description = "Select the platform profile for the current power source";
-    wantedBy = [ "graphical.target" ];
-    wants = [ "power-profiles-daemon.service" ];
-    after = [ "power-profiles-daemon.service" ];
-    path = [ pkgs.coreutils pkgs.power-profiles-daemon ];
-    serviceConfig.Type = "oneshot";
-    script = ''
-      if [ "$(cat /sys/class/power_supply/ADP1/online)" = 1 ]; then
-        powerprofilesctl set performance
-      else
-        powerprofilesctl set balanced
-      fi
-    '';
-  };
-
-  # Lenovo conservation mode stops charging at roughly 80% to reduce battery
-  # wear while the laptop spends long periods connected to AC power.
-  systemd.services.lenovo-conservation-mode = {
-    description = "Enable Lenovo battery conservation mode";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "systemd-modules-load.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      echo Long_Life > /sys/class/power_supply/BAT0/charge_types
-    '';
-  };
-
-  # The BIOS binds its ACPI fan policy to acpitz, which remains stuck near
-  # 28 C, instead of the working TCPU sensor.  DSDT/SSDT inspection shows that
-  # only PNP0C0B:01 and :00 reach the EC: 01 alone selects AC1F (normal), and
-  # 01+00 selects AC0F (maximum).  The other three exposed objects only update
-  # unused firmware variables and are not additional fan-speed levels.
-  systemd.services.lenovo-acpi-fan-workaround = {
-    description = "Drive Lenovo ACPI fan policy from the real CPU temperature";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "systemd-modules-load.service" ];
-    path = [ pkgs.coreutils ];
-    serviceConfig = {
-      Type = "simple";
-      Restart = "always";
-      RestartSec = 2;
-    };
-    script = ''
-      fanNormal=""
-      fanMaximum=""
-
-      for coolingDevice in /sys/class/thermal/cooling_device*; do
-        case "$(readlink -f "$coolingDevice/device")" in
-          */PNP0C0B:01) fanNormal="$coolingDevice" ;;
-          */PNP0C0B:00) fanMaximum="$coolingDevice" ;;
-        esac
-      done
-
-      tempZone=""
-      for zone in /sys/class/thermal/thermal_zone*; do
-        read -r zoneType < "$zone/type"
-        if [ "$zoneType" = TCPU ]; then
-          tempZone="$zone"
-          break
-        fi
-      done
-
-      if [ -z "$fanNormal" ] || [ -z "$fanMaximum" ] || [ -z "$tempZone" ]; then
-        echo "Required Lenovo ACPI fan controls or TCPU sensor not found" >&2
-        exit 1
-      fi
-
-      setLevel() {
-        level="$1"
-        if [ "$level" -ge 1 ]; then echo 1 > "$fanNormal/cur_state"; else echo 0 > "$fanNormal/cur_state"; fi
-        if [ "$level" -ge 2 ]; then echo 1 > "$fanMaximum/cur_state"; else echo 0 > "$fanMaximum/cur_state"; fi
-      }
-
-      # Select the appropriate real EC policy immediately.  Full cooling starts
-      # well below TjMax so the fan gets time to work before CPU throttling.
-      read -r temperature < "$tempZone/temp"
-      if [ "$temperature" -ge 75000 ]; then level=2
-      elif [ "$temperature" -ge 55000 ]; then level=1
-      else level=0
-      fi
-
-      setLevel "$level"
-      appliedLevel="$level"
-      trap 'setLevel 0' EXIT INT TERM
-      while true; do
-        read -r temperature < "$tempZone/temp"
-        case "$level" in
-          0) if [ "$temperature" -ge 55000 ]; then level=1; fi ;;
-          1)
-            if [ "$temperature" -ge 75000 ]; then level=2
-            elif [ "$temperature" -lt 50000 ]; then level=0
-            fi
-            ;;
-          2) if [ "$temperature" -lt 70000 ]; then level=1; fi ;;
-        esac
-        # ACPI fan writes call into the EC, so write only on a real transition.
-        if [ "$level" -ne "$appliedLevel" ]; then
-          setLevel "$level"
-          appliedLevel="$level"
-        fi
-        sleep 2
-      done
-    '';
-  };
-
   security.enableWrappers = true;
   security.wrappers.intel_gpu_top = {
     owner = "root";
@@ -524,8 +273,8 @@ in
   # package comes from nixpkgs so it tracks our (newest) nixpkgs
   programs.niri.package = pkgs.niri;
   programs.niri.enable = true;
-  programs.appimage.enable=true;
-  programs.appimage.binfmt=true;
+  programs.appimage.enable = true;
+  programs.appimage.binfmt = true;
   programs.fish.enable = true;
   environment.systemPackages = with pkgs; [
     libva-utils
