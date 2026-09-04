@@ -78,13 +78,25 @@ in
   xdg.configFile = builtins.mapAttrs
     (name: subpath: {
       source = configDir + "/${subpath}";
-      # Link each application directory atomically. Recursive per-file links
-      # wrote generated Home Manager links back into this source repository
-      # whenever ~/.config/<name> was still an out-of-store directory link.
-      recursive = false;
+      # Most application configs are immutable directory links. Clipse is the
+      # exception: it writes its history, log and temporary images alongside
+      # config.json, so give it a writable directory with immutable file links.
+      recursive = name == "clipse";
       force = true;
     })
     configs;
+
+  # Migrate the previous immutable directory link before Home Manager creates
+  # Clipse's recursive per-file links. The resulting parent directory is owned
+  # by the user, allowing Clipse to persist history and logs beside its config.
+  home.activation.prepareClipseDirectory =
+    lib.hm.dag.entryBetween [ "linkGeneration" ] [ "writeBoundary" ] ''
+      clipseConfig=${lib.escapeShellArg "${config.home.homeDirectory}/.config/clipse"}
+      if [ -L "$clipseConfig" ]; then
+        $DRY_RUN_CMD unlink "$clipseConfig"
+      fi
+      $DRY_RUN_CMD mkdir -p "$clipseConfig"
+    '';
 
   # This workstation has enough memory to restore the full Zen session. Load
   # pinned and ordinary tabs eagerly so a restored workspace is immediately
