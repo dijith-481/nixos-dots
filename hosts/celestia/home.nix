@@ -78,16 +78,21 @@ in
   xdg.configFile = builtins.mapAttrs
     (name: subpath: {
       source = configDir + "/${subpath}";
-      recursive = true;
+      # Link each application directory atomically. Recursive per-file links
+      # wrote generated Home Manager links back into this source repository
+      # whenever ~/.config/<name> was still an out-of-store directory link.
+      recursive = false;
+      force = true;
     })
     configs;
 
-  # Keep the large Zen session intact while reducing background CPU wakeups
-  # and session-store write amplification. These are defaults, not locked
-  # policies, so they can still be changed from about:config.
+  # This workstation has enough memory to restore the full Zen session. Load
+  # pinned and ordinary tabs eagerly so a restored workspace is immediately
+  # ready; normal browser background throttling still limits idle CPU use.
   home.file.".config/zen/dijith-twilight/user.js".text = ''
     user_pref("browser.tabs.unloadOnLowMemory", false);
-    user_pref("browser.sessionstore.restore_on_demand", true);
+    user_pref("browser.sessionstore.restore_on_demand", false);
+    user_pref("browser.sessionstore.restore_pinned_tabs_on_demand", false);
     user_pref("browser.sessionstore.interval", 60000);
     user_pref("dom.min_background_timeout_value", 2000);
     user_pref("dom.min_background_timeout_value_without_budget_throttling", 2000);

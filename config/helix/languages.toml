@@ -1,1 +1,8 @@
-/nix/store/v1zipiik0v7dhhly4a64hjiwmag2r2y7-home-manager-files/.config/helix/languages.toml
+[[language]]
+name = "nix"
+language-servers = ["nixd"]
+auto-format = true
+formatter.command = "nixpkgs-fmt"
+
+[language-server.nixd]
+command = "nixd"
