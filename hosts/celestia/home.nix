@@ -1,43 +1,17 @@
 { config, pkgs, lib, ... }:
 let
   versions = import ../../versions.nix;
-  # Reproducible store path — no mkOutOfStoreSymlink
-  configDir = ../../config;
-  # niri & fish are now fully declarative (modules/desktop/niri-config.nix,
-  # modules/development/shell.nix) — no out-of-store symlinks needed.
-  # Other dotfiles kept as direct store copies — will be migrated to Nix options later.
-  configs = {
-    helix = "helix";
-    zellij = "zellij";
-    # --- direct store copy --- waybar + remaining dotfiles from .Data/dotfiles ---
-    waybar = "waybar";
-    fastfetch = "fastfetch";
-    # fuzzel/foot/yazi/zed now themed via stylix — not direct copy (prevents conflict with stylix theme)
-    cava = "cava";
-    clipse = "clipse";
-    fum = "fum";
-    htop = "htop";
-    hypr = "hypr";
-    kitty = "kitty";
-    zathura = "zathura";
-    wofi = "wofi";
-    tmux = "tmux";
-    niri_taskbar_module = "niri_taskbar_module";
-    nvim = "nvim";
-    paru = "paru";
-    zed = "zed";
-    colors = "colors";
-    ghostty = "ghostty";
-    opencode = "opencode";
-  };
-
 in
-
 {
   imports = [
     ./session-variables.nix
     ./modules/development
     ./modules/desktop.nix
+    ./modules/desktop/waybar.nix
+    ./modules/desktop/clipse.nix
+    ./modules/desktop/declarative-app-config.nix
+    ./modules/desktop/foot.nix
+    ./modules/desktop/yazi.nix
     ./modules/wayland.nix
     ./modules/system
   ];
@@ -58,10 +32,15 @@ in
     # keep ghostty/helix manual nord themes — don't let stylix overwrite our configs
     ghostty.enable = false;
     helix.enable = false;
-    # file apps + launchers: let stylix theme them (we keep waybar/helix manual)
+    # kitty is fully declared in modules/development/terminal-configs.nix
+    # (Nordfox palette + opacity) — stylix must not merge its own values in.
+    kitty.enable = false;
+    # foot + fuzzel are fully declared in our HM modules (foot.nix, wayland.nix)
+    # with the same nord palette — stylix must not merge its own colors in.
+    foot.enable = false;
+    fuzzel.enable = false;
+    # yazi has no theme files of its own here; let stylix theme it.
     yazi.enable = true;
-    fuzzel.enable = true;
-    foot.enable = true;
     zen-browser = {
       enable = true;
       enableCss = true;
@@ -75,28 +54,9 @@ in
 
 
 
-  xdg.configFile = builtins.mapAttrs
-    (name: subpath: {
-      source = configDir + "/${subpath}";
-      # Most application configs are immutable directory links. Clipse is the
-      # exception: it writes its history, log and temporary images alongside
-      # config.json, so give it a writable directory with immutable file links.
-      recursive = name == "clipse";
-      force = true;
-    })
-    configs;
-
-  # Migrate the previous immutable directory link before Home Manager creates
-  # Clipse's recursive per-file links. The resulting parent directory is owned
-  # by the user, allowing Clipse to persist history and logs beside its config.
-  home.activation.prepareClipseDirectory =
-    lib.hm.dag.entryBetween [ "linkGeneration" ] [ "writeBoundary" ] ''
-      clipseConfig=${lib.escapeShellArg "${config.home.homeDirectory}/.config/clipse"}
-      if [ -L "$clipseConfig" ]; then
-        $DRY_RUN_CMD unlink "$clipseConfig"
-      fi
-      $DRY_RUN_CMD mkdir -p "$clipseConfig"
-    '';
+  # nvim is intentionally NOT migrated (per request) — it stays as the
+  # only remaining consumer of config/, as a reproducible store copy.
+  xdg.configFile."nvim".source = ../../config/nvim;
 
   # This workstation has enough memory to restore the full Zen session. Load
   # pinned and ordinary tabs eagerly so a restored workspace is immediately

@@ -1,3 +1,0 @@
-function fk
-    fuck
-end
