@@ -174,7 +174,12 @@ require("blink.cmp").setup({
 				module = "plugins.custom.blink-fff",
 				async = true, -- Keep this true
 				score_offset = 80,
-				min_keyword_length = 1, -- Blink uses this to decide when to trigger
+				min_keyword_length = 3,
+				opts = {
+					min_query_len = 3,
+					page_size = 16,
+					time_budget_ms = 8,
+				},
 			},
 			env = {
 				name = "Env",
@@ -221,7 +226,15 @@ require("blink.cmp").setup({
 				min_keyword_length = 3,
 				max_items = 3,
 				opts = {
-					get_bufnrs = vim.api.nvim_list_bufs,
+					get_bufnrs = function()
+						return vim.iter(vim.api.nvim_list_bufs())
+							:filter(function(bufnr)
+								return vim.api.nvim_buf_is_loaded(bufnr)
+									and vim.bo[bufnr].buftype == ""
+									and vim.api.nvim_buf_line_count(bufnr) < 50000
+							end)
+							:totable()
+					end,
 				},
 			},
 			markdown = {

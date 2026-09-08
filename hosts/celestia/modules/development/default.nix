@@ -4,6 +4,7 @@
 {
   imports = [
     ./git.nix
+    ./neovim.nix
     ./shell.nix
     ./terminal-configs.nix
   ];
@@ -31,7 +32,6 @@
     typescript
     # typescript-go removed — its `tsc` collides with typescript's in buildEnv
 
-    #TODO move mason imports here
     shellcheck # Shell script linting
     shfmt # Shell script formatting
     biome
@@ -51,8 +51,8 @@
     yaak # API testing tool
 
     cloudflared # Cloudflare Tunnel daemon
-    ngrok       # ngrok tunneling
-    wrangler    # Cloudflare Workers CLI
+    ngrok # ngrok tunneling
+    wrangler # Cloudflare Workers CLI
 
     # gemini-cli removed — replaced by Antigravity CLI upstream
     opencode # v1 stable via nix (opencode)

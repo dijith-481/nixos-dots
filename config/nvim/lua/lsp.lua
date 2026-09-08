@@ -24,6 +24,16 @@ autocmd("LspProgress", "lsp_core", function(args)
 	end
 end, "*", "use LSP-based folding once the language server has finished indexing/loading")
 
+-- Advertise completion support before any server attaches, and batch rapid
+-- didChange notifications so large language servers do not process every
+-- single keystroke independently.
+vim.lsp.config("*", {
+	capabilities = require("blink.cmp").get_lsp_capabilities(),
+	flags = {
+		debounce_text_changes = 150,
+	},
+})
+
 vim.lsp.enable({
 	"angularls",
 	"bashls",

@@ -1,57 +1,118 @@
-local pack_add = Config.pack_add
+local packadd = Config.packadd
+local packadd_all = Config.packadd_all
 
-pack_add({
-	"nvim-mini/mini.nvim",
-	"supermaven-inc/supermaven-nvim",
-	-- "zbirenbaum/copilot.lua",
-	-- "fang2hou/blink-copilot",
-	"MeanderingProgrammer/render-markdown.nvim",
-	"neovim/nvim-lspconfig",
-	"mfussenegger/nvim-lint",
-	"luukvbaal/statuscol.nvim",
-	"lewis6991/gitsigns.nvim",
-	"AlexvZyl/nordic.nvim",
-	"iamcco/markdown-preview.nvim",
-	"dmtrKovalenko/fff.nvim",
-	"stevearc/conform.nvim",
-	"stevearc/oil.nvim",
-	"stevearc/dressing.nvim",
-	{ src = "nvim-treesitter/nvim-treesitter", version = "main" },
-	-- { src = "nvim-treesitter/nvim-treesitter-textobjects", version = "main" },
-	-- "arborist-ts/arborist.nvim",
-	"windwp/nvim-ts-autotag",
-	"nvim-treesitter/nvim-treesitter-context",
-	"JoosepAlviste/nvim-ts-context-commentstring",
-	"pmizio/typescript-tools.nvim",
-	"nvim-lua/plenary.nvim",
-	"mrcjkb/rustaceanvim",
-	"j-hui/fidget.nvim",
-	{ src = "saghen/blink.pairs", version = "v0.5.0" },
-	{ src = "saghen/blink.cmp", version = "v1.10.2" },
-	"saghen/blink.download",
-	"saghen/blink.chartoggle",
-	"folke/lazydev.nvim",
-	"saghen/blink.indent",
-	"bydlw98/blink-cmp-env",
-	"moyiz/blink-emoji.nvim",
-	"MahanRahmati/blink-nerdfont.nvim",
-	"xzbdmw/colorful-menu.nvim",
-	"folke/snacks.nvim",
-	"Kaiser-Yang/blink-cmp-dictionary",
-	"L3MON4D3/LuaSnip",
-	"disrupted/blink-cmp-conventional-commits",
-	"mason-org/mason.nvim",
-	"WhoIsSethDaniel/mason-tool-installer.nvim",
-	"refractalize/oil-git-status.nvim",
-	"JezerM/oil-lsp-diagnostics.nvim",
-	"lewis6991/gitsigns.nvim",
-	"kawre/leetcode.nvim",
-	"MunifTanjim/nui.nvim",
-	"nvim-flutter/flutter-tools.nvim",
-	"seblyng/roslyn.nvim",
-	"esmuellert/codediff.nvim",
-	-- "NeogitOrg/neogit",
-	"epwalsh/obsidian.nvim",
-	"L3MON4D3/LuaSnip",
-	"rafamadriz/friendly-snippets",
-})
+local function load_config(plugin, module)
+	if packadd(plugin) then
+		local ok, err = pcall(require, module)
+		if not ok then
+			vim.schedule(function()
+				vim.notify(("Failed to configure %s: %s"):format(plugin, err), vim.log.levels.ERROR)
+			end)
+		end
+	end
+end
+
+local function once(event, group, callback, opts)
+	opts = opts or {}
+	opts.group = vim.api.nvim_create_augroup(group, { clear = true })
+	opts.once = true
+	opts.callback = callback
+	vim.api.nvim_create_autocmd(event, opts)
+end
+
+-- Core UI is ready during the first frame. Everything here affects the
+-- initial layout, so deferring it would cause visible flicker.
+load_config("nordic.nvim", "plugins.nordic")
+load_config("mini.nvim", "plugins.mini")
+load_config("statuscol.nvim", "plugins.statuscol")
+
+-- Register native LSP definitions before lsp.lua enables servers. Lazydev and
+-- fidget are small and need to observe the first Lua/LSP events.
+packadd("nvim-lspconfig")
+packadd("blink.cmp")
+load_config("lazydev.nvim", "plugins.lazydev")
+load_config("fidget.nvim", "plugins.fidget")
+
+-- Commands provided directly by plugin/ scripts stay available without
+-- loading their larger Lua modules.
+packadd_all({ "dressing.nvim", "nui.nvim", "codediff.nvim" })
+
+-- These files only register lightweight event/key stubs. Their actual plugins
+-- remain outside runtimepath until the feature is used.
+require("plugins.fff")
+require("plugins.oil")
+require("plugins.markdown-preview")
+require("plugins.render-markdown")
+require("plugins.obsidian")
+require("plugins.leetcode")
+require("plugins.rustaceanvim")
+
+once({ "BufReadPre", "BufNewFile" }, "lazy_gitsigns", function()
+	load_config("gitsigns.nvim", "plugins.gitsigns")
+end)
+
+once({ "BufReadPost", "BufNewFile" }, "lazy_editor_services", function()
+	load_config("conform.nvim", "plugins.conform")
+	load_config("nvim-lint", "plugins.nvim-lint")
+end)
+
+once("FileType", "lazy_treesitter", function()
+	packadd_all({
+		"nvim-treesitter",
+		"nvim-ts-autotag",
+		"nvim-treesitter-context",
+		"nvim-ts-context-commentstring",
+	})
+	require("plugins.nvim-treesitter")
+	require("plugins.nvim-ts-context-commentstring")
+end)
+
+-- Completion and pairs are initialized together on the first insert. Their
+-- Rust libraries are already present in the Nix store, so this does no I/O or
+-- compilation. All existing insert-mode mappings are defined by blink setup.
+once("InsertEnter", "lazy_completion", function()
+	packadd_all({
+		"luasnip",
+		"friendly-snippets",
+		"colorful-menu.nvim",
+		"render-markdown.nvim",
+		"fff.nvim",
+		"blink-cmp-env",
+		"blink-emoji.nvim",
+		"blink-nerdfont.nvim",
+		"blink-cmp-conventional-commits",
+		"blink.cmp",
+		"blink.pairs",
+		"blink.indent",
+		"blink.chartoggle",
+	})
+	require("plugins.luasnip")
+	require("plugins.blink")
+end)
+
+-- Language-specific integrations are loaded before FileType, so their own
+-- FileType hooks can attach to the buffer currently being opened.
+once("BufReadPre", "lazy_typescript_tools", function()
+	load_config("typescript-tools.nvim", "plugins.typescript-tools")
+end, { pattern = { "*.js", "*.jsx", "*.mjs", "*.cjs", "*.ts", "*.tsx", "*.mts", "*.cts" } })
+
+once("BufReadPre", "lazy_flutter_tools", function()
+	load_config("flutter-tools.nvim", "plugins.flutter-tools")
+end, { pattern = "*.dart" })
+
+once("BufReadPre", "lazy_roslyn", function()
+	load_config("roslyn.nvim", "plugins.roslyn")
+end, { pattern = "*.cs" })
+
+once("BufReadPre", "lazy_rustaceanvim", function()
+	packadd("rustaceanvim")
+end, { pattern = "*.rs" })
+
+-- Snacks supplies commands and keymaps used across the config. Set it up once
+-- the first UI frame exists, keeping startup responsive without changing keys.
+once("UIEnter", "deferred_ui_plugins", function()
+	vim.schedule(function()
+		load_config("snacks.nvim", "plugins.snacks")
+		load_config("supermaven-nvim", "plugins.supermaven-nvim")
+	end)
+end)

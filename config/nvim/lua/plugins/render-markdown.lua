@@ -1,6 +1,7 @@
 local autocmd = Config.autocmd
 autocmd("FileType", "markdown", function()
+	Config.packadd("render-markdown.nvim")
 	require("render-markdown").setup({
 		completions = { blink = { enabled = true } },
 	})
-end, "*.md", "enable render-markdown")
+end, "markdown", "enable render-markdown")
