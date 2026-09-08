@@ -6,10 +6,13 @@
 {
   programs.niri.settings = {
     # --- Named workspaces ---
+    # Keys are sorted when rendered to KDL, so prefix them to enforce
+    # order: main=1, browser=2, ytmusic=3. `name` keeps friendly names
+    # for open-on-workspace rules.
     workspaces = {
-      "mainWorkspace".name = "mainWorkspace";
-      "browser".name = "browser";
-      "ytmusic".name = "ytmusic";
+      "01-mainWorkspace".name = "mainWorkspace";
+      "02-browser".name = "browser";
+      "03-ytmusic".name = "ytmusic";
     };
 
     # --- Environment for compositor-spawned processes ---
@@ -370,7 +373,7 @@
         "Mod+Y".action.focus-workspace = "ytmusic";
         "Mod+grave".action.toggle-overview = { };
         "Alt+Space".action.toggle-overview = { };
-        "Mod+Alt+P" = { repeat = false; } // (sh "wl-mirror $(niri msg --json focused-output | jq -r .name)");
+        "Mod+Alt+P" = { repeat = false; } // (sh ''OUT=$(niri msg --json outputs | jq -r 'keys[]' | grep -m1 '^HDMI-A-1$' || niri msg --json outputs | jq -r --arg cur "$(niri msg --json focused-output | jq -r .name)" 'keys[] | select(. != $cur)' | head -n1); [ -z "$OUT" ] && OUT=$(niri msg --json focused-output | jq -r .name); wl-mirror "$OUT"'');
 
         # focus navigation
         "Mod+Left".action.focus-column-left = { };

@@ -8,8 +8,10 @@
   services.tlp.enable = false;
   powerManagement.powertop.enable = false;
 
-  # Use Balanced on mains power and Power Saver on battery. Fn+Q or the Waybar
+  # Use Power Saver on both mains and battery. Fn+Q or the Waybar
   # profile control can temporarily select another profile, and both update live.
+  # The udev rule below re-applies this policy on AC plug/unplug, so a
+  # manual Fn+Q selection is reset to power-saver on power-source change.
   systemd.services.celestia-power-profile = {
     description = "Select a sane power profile for the current power source";
     # PPD's upstream unit is ordered after multi-user.target. Starting this
@@ -26,11 +28,7 @@
         *) powerprofilesctl configure-battery-aware --enable ;;
       esac
 
-      if [ "$(cat /sys/class/power_supply/ADP1/online)" = 1 ]; then
-        powerprofilesctl set balanced
-      else
-        powerprofilesctl set power-saver
-      fi
+      powerprofilesctl set power-saver
 
       # Use Lenovo's kernel-supported Efficient Thermal Dissipation policy.
       # The EC remains the fan controller; there is no userspace fan loop.

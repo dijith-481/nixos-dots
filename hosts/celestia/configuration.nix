@@ -284,6 +284,8 @@ in
     vim
     curl
     wget
+    htop
+    socat
     rustup
     helix
     nh
