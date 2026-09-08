@@ -9,11 +9,12 @@
     # Keys are sorted when rendered to KDL, so prefix them to enforce
     # order: main=1, browser=2, ytmusic=3. `name` keeps friendly names
     # for open-on-workspace rules.
-    workspaces = {
-      "01-mainWorkspace".name = "mainWorkspace";
-      "02-browser".name = "browser";
-      "03-ytmusic".name = "ytmusic";
-    };
+    
+ workspaces = {
+    "1" = { name = "mainWorkspace"; };
+    "2" = { name = "browser"; };
+    "3" = { name = "ytmusic"; };
+  };
 
     # --- Environment for compositor-spawned processes ---
     environment = {
