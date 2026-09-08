@@ -56,6 +56,12 @@
         identityFile = "${config.home.homeDirectory}/.ssh/github";
         identitiesOnly = true;
       };
+      "bitbucket-clyentra" = {
+        hostname = "bitbucket.org";
+        user = "git";
+        identityFile = "${config.home.homeDirectory}/.ssh/bitbucket-clyentra";
+        identitiesOnly = true;
+      };
 
       "github-logai" = {
         hostname = "github.com";
