@@ -1,9 +1,3 @@
-local autocmd = Config.autocmd
-
-autocmd("PackChanged", "treesitter", function()
-	vim.cmd("TSUpdate")
-end, "*", "install tree sitter")
-
 local treesitter = require("nvim-treesitter")
 
 treesitter.setup({})
@@ -42,60 +36,32 @@ require("treesitter-context").setup({
 })
 -- end)
 
+local function enable_for_buffer(bufnr)
+	if vim.bo[bufnr].buftype ~= "" then
+		return
+	end
+	if not vim.treesitter.get_parser(bufnr, nil, { error = false }) then
+		return
+	end
+
+	-- Parsers and queries are immutable Nix dependencies, so this only starts
+	-- highlighting; it never invokes a compiler or writes into stdpath("data").
+	vim.treesitter.start(bufnr)
+	vim.bo[bufnr].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+	vim.wo.foldmethod = "expr"
+	vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+end
+
 vim.api.nvim_create_autocmd("FileType", {
-	callback = function()
-		-- Enable treesitter highlighting and disable regex syntax
-		pcall(vim.treesitter.start)
-		-- Enable treesitter-based indentation
-		vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+	group = vim.api.nvim_create_augroup("treesitter_buffers", { clear = true }),
+	callback = function(event)
+		enable_for_buffer(event.buf)
 	end,
 })
-local ensureInstalled = {
 
-	"ninja",
-	-- "rst",
-	"angular",
-	"python",
-	"json",
-	"javascript",
-	"typescript",
-	"tsx",
-	"latex",
-	"regex",
-	"yaml",
-	"html",
-	"astro",
-	"css",
-	"dart",
-	"java",
-	-- "prisma",
-	"markdown",
-	"markdown_inline",
-	"kdl",
-	"toml",
-	-- "svelte",
-	-- "graphql",
-	"bash",
-	"lua",
-	"vim",
-	"dockerfile",
-	"gitignore",
-	"query",
-	"fish",
-	"rust",
-	"vimdoc",
-	"c",
-	"cpp",
-	"hyprlang",
-	"zig",
-}
-local alreadyInstalled = require("nvim-treesitter.config").get_installed()
-local parsersToInstall = vim.iter(ensureInstalled)
-	:filter(function(parser)
-		return not vim.tbl_contains(alreadyInstalled, parser)
-	end)
-	:totable()
-require("nvim-treesitter").install(parsersToInstall)
+-- This module itself is loaded by the first FileType event, so initialize the
+-- buffer whose event caused the lazy load as well.
+enable_for_buffer(vim.api.nvim_get_current_buf())
 
 vim.keymap.set({ "n", "x", "o" }, "<C-space>", function()
 	if vim.treesitter.get_parser(nil, nil, { error = false }) then

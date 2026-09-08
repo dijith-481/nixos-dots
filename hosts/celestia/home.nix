@@ -52,12 +52,6 @@ in
     };
   };
 
-
-
-  # nvim is intentionally NOT migrated (per request) — it stays as the
-  # only remaining consumer of config/, as a reproducible store copy.
-  xdg.configFile."nvim".source = ../../config/nvim;
-
   # This workstation has enough memory to restore the full Zen session. Load
   # pinned and ordinary tabs eagerly so a restored workspace is immediately
   # ready; normal browser background throttling still limits idle CPU use.

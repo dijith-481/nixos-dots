@@ -1,31 +1,29 @@
 _G.Config = {}
 
-Config.pack_add = function(items)
-	local specs = {}
-	local names = {}
+local loaded_plugins = {}
 
-	for _, item in ipairs(items) do
-		local repo = type(item) == "table" and (item.src or item[1]) or item
-		local url = repo:find("://") and repo or ("https://github.com/" .. repo)
-		local raw_name = url:match(".+/(.+)$") or repo
-		-- 2. Capture everything before the first dot
-		local name = string.lower(raw_name:match("^([^%.]+)"))
-		local spec
-		if type(item) == "table" then
-			spec = vim.tbl_extend("force", item, { src = url })
-			spec[1] = nil
-		else
-			spec = { src = url }
-		end
-
-		table.insert(names, spec.name or name)
-		table.insert(specs, spec)
+-- Plugins live in the immutable Nix packpath. This only activates an opt
+-- package; it never clones, updates or writes to Neovim's data directory.
+Config.packadd = function(name)
+	if loaded_plugins[name] then
+		return true
 	end
 
-	vim.pack.add(specs)
+	local ok, err = pcall(vim.cmd.packadd, name)
+	if not ok then
+		vim.schedule(function()
+			vim.notify(("Failed to load Nix plugin %s: %s"):format(name, err), vim.log.levels.ERROR)
+		end)
+		return false
+	end
 
+	loaded_plugins[name] = true
+	return true
+end
+
+Config.packadd_all = function(names)
 	for _, name in ipairs(names) do
-		pcall(require, "plugins." .. name)
+		Config.packadd(name)
 	end
 end
 
@@ -78,13 +76,4 @@ Config.autocmd = function(event, group, cb, pattern, desc)
 		group = autocmd_group,
 		callback = cb,
 	})
-end
-Config.build_hook = function(name, kind, cb)
-	local kinds = type(kind) == "table" and kind or { kind }
-
-	return function(ev)
-		if name == ev.data.spec.name and vim.list_contains(kinds, ev.data.kind) then
-			cb(ev.data)
-		end
-	end
 end

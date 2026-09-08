@@ -1,34 +1,43 @@
 local nmap = Config.nmap
-local autocmd = Config.autocmd
-require("oil").setup({
-	view_options = {
-		show_hidden = true,
+local configured = false
 
-		---@diagnostic disable-next-line: unused-local
-		is_always_hidden = function(name, bufnr)
-			local m = name:match("^%..$")
-			return m ~= nil
-		end,
-	},
-	win_options = {
-		signcolumn = "yes",
-	},
-	watch_for_changes = true,
-	keymaps = {
-		["<CR>"] = "actions.select",
-		["<leader>v"] = { "actions.select", opts = { vertical = true } },
-		["<leader>h"] = { "actions.select", opts = { horizontal = true } },
-		["<C-q>"] = { "actions.select", opts = { tab = true } },
-	},
-})
-nmap("-", function()
-	require("oil").toggle_float()
-end, "Oil toggle float")
+local function oil()
+	Config.packadd_all({ "oil.nvim", "oil-git-status.nvim", "oil-lsp-diagnostics.nvim" })
+	if not configured then
+		require("oil").setup({
+			view_options = {
+				show_hidden = true,
 
-autocmd("User", "oil", function(event)
-	if event.data.actions.type == "move" then
-		Snacks.rename.on_rename_file(event.data.actions.src_url, event.data.actions.dest_url)
+				---@diagnostic disable-next-line: unused-local
+				is_always_hidden = function(name, bufnr)
+					local m = name:match("^%..$")
+					return m ~= nil
+				end,
+			},
+			win_options = {
+				signcolumn = "yes",
+			},
+			watch_for_changes = true,
+			keymaps = {
+				["<CR>"] = "actions.select",
+				["<leader>v"] = { "actions.select", opts = { vertical = true } },
+				["<leader>h"] = { "actions.select", opts = { horizontal = true } },
+				["<C-q>"] = { "actions.select", opts = { tab = true } },
+			},
+		})
+
+		Config.autocmd("User", "oil", function(event)
+			if event.data.actions.type == "move" and Snacks then
+				Snacks.rename.on_rename_file(event.data.actions.src_url, event.data.actions.dest_url)
+			end
+		end, "OilActionsPost", "rename files on oil")
+
+		require("oil-git-status").setup()
+		configured = true
 	end
-end, "OilActionsPost", "rename files on oil")
+	return require("oil")
+end
 
-require("oil-git-status").setup()
+nmap("-", function()
+	oil().toggle_float()
+end, "Oil toggle float")

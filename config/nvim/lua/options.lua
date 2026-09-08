@@ -1,8 +1,5 @@
 local opt = vim.opt
 local g = vim.g
--- Experimental Features
-require("vim._core.ui2").enable({}) -- New UI architecture
-
 -- Enable loader for performance
 if vim.loader then
 	vim.loader.enable()
@@ -63,6 +60,7 @@ opt.timeoutlen = 300 -- Keybind timeout delay
 opt.undofile = true -- Persistent undo history
 opt.swapfile = false -- Disable swap files
 opt.shada = "'100,<50,s10,:1000,/100,@100,h" -- Optimized history storage
+opt.synmaxcol = 500 -- Avoid pathological regex highlighting on generated/minified lines
 
 -- Navigation & Splits
 opt.scrolloff = 7 -- Context lines visible
@@ -75,8 +73,9 @@ opt.mouse = "a" -- Enable mouse support
 opt.foldcolumn = "1" -- Fold indicator column
 opt.foldlevel = 99 -- Default unfolded view
 opt.foldlevelstart = 99 -- Start fully unfolded
-opt.foldmethod = "expr"
-opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- Start cheap. Tree-sitter/LSP switches code buffers to expr folds after a
+-- parser/server is actually available, avoiding fold evaluation during boot.
+opt.foldmethod = "manual"
 opt.foldtext = "v:lua.custom_foldtext()"
 opt.foldopen:remove({ "search" })
 opt.fillchars = {

@@ -1,18 +1,5 @@
-require("obsidian").setup({
-	ui = { enable = false },
-	workspaces = {
-		{
-			name = "personal",
-			path = "~/syncthing/notes",
-		},
-	},
-	daily_notes = {
-		folder = "daily",
-		date_format = "%Y-%m-%d",
-	},
-})
-
 Config.autocmd({ "BufReadPost", "BufNewFile" }, "obsidian", function()
+	Config.packadd("obsidian.nvim")
 	require("obsidian").setup({
 		ui = { enable = false },
 		workspaces = {

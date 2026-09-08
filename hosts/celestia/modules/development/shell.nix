@@ -27,7 +27,6 @@
     lazydocker # TUI for docker
 
     zellij
-    neovim
     btop
 
     tree
