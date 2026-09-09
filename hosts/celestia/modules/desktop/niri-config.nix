@@ -374,7 +374,7 @@
         "Mod+Y".action.focus-workspace = "ytmusic";
         "Mod+grave".action.toggle-overview = { };
         "Alt+Space".action.toggle-overview = { };
-        "Mod+Alt+P" = { repeat = false; } // (sh ''OUT=$(niri msg --json outputs | jq -r 'keys[]' | grep -m1 '^HDMI-A-1$' || niri msg --json outputs | jq -r --arg cur "$(niri msg --json focused-output | jq -r .name)" 'keys[] | select(. != $cur)' | head -n1); [ -z "$OUT" ] && OUT=$(niri msg --json focused-output | jq -r .name); wl-mirror "$OUT"'');
+        "Mod+Alt+P" = { repeat = false; } // (sh ''MAIN=$(niri msg --json outputs | jq -r 'if has("eDP-1") then "eDP-1" else empty end'); [ -z "$MAIN" ] && MAIN=$(niri msg --json focused-output | jq -r .name); pkill wl-mirror; if niri msg --json outputs | jq -e 'has("HDMI-A-1")' > /dev/null; then wl-mirror --fullscreen --fullscreen-output HDMI-A-1 "$MAIN"; else wl-mirror "$MAIN"; fi'');
 
         # focus navigation
         "Mod+Left".action.focus-column-left = { };
