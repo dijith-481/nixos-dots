@@ -137,6 +137,11 @@
 
       # mirrors config/fish/functions/ff.fish
       ff = ''
+        # The compact Meta+Enter terminal intentionally has no startup banner.
+        if set -q CELESTIA_FLOATING_TERMINAL
+            return
+        end
+
         set -l width (tput cols)
         set -l height (tput lines)
         set -l term (basename "/"(ps -o cmd -f -p (cat /proc/(echo %self)/stat | cut -d \  -f 4) | tail -1 | sed 's/ .*$//'))

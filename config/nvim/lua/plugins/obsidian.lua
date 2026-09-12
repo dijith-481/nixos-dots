@@ -1,6 +1,7 @@
 Config.autocmd({ "BufReadPost", "BufNewFile" }, "obsidian", function()
 	Config.packadd("obsidian.nvim")
 	require("obsidian").setup({
+		legacy_commands = false,
 		ui = { enable = false },
 		workspaces = {
 			{
@@ -15,6 +16,6 @@ Config.autocmd({ "BufReadPost", "BufNewFile" }, "obsidian", function()
 	})
 	vim.opt.conceallevel = 2
 	-- vim.defer_fn(function()
-	vim.cmd("ObsidianToday")
+	vim.cmd("Obsidian today")
 	-- end, 100)
 end, "mdToday", "obsidian")

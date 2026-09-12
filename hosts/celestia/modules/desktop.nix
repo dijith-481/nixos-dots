@@ -2,13 +2,14 @@
 {
 
   home.packages = with pkgs;[
+    obsidian
     # Native Wayland is selected by NIXOS_OZONE_WL. Keep Chromium's tested GPU
     # defaults instead of forcing Vulkan, syncobj, multiplane and blocklist bypasses.
     brave
     google-chrome
 
     # zen twilight only — stable removed (twilight supersedes it)
-    inputs.zen-browser.packages."${pkgs.system}".twilight
+    inputs.zen-browser.packages."${pkgs.stdenv.hostPlatform.system}".twilight
     zathura
     localsend
     seahorse

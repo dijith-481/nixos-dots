@@ -76,7 +76,6 @@ once("InsertEnter", "lazy_completion", function()
 		"friendly-snippets",
 		"colorful-menu.nvim",
 		"render-markdown.nvim",
-		"fff.nvim",
 		"blink-cmp-env",
 		"blink-emoji.nvim",
 		"blink-nerdfont.nvim",

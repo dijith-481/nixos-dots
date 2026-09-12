@@ -53,7 +53,7 @@ autocmd("BufEnter", "todo_list", function()
 end, "todolist.nvim", "Open todo file")
 
 autocmd({ "TextChanged", "InsertLeave" }, "todo_list", function()
-	if vim.api.nvim_buf_get_name(0):match("todolist.md") then
+	if vim.api.nvim_buf_get_name(0):match("todolist.md") or vim.api.nvim_buf_get_name(0):match("dsa.md") then
 		vim.cmd("silent! write")
 	end
 end, "*", "Autosave todo list")

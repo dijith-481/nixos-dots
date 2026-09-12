@@ -154,7 +154,6 @@ require("blink.cmp").setup({
 			"emoji",
 			"markdown",
 			"env",
-			"fff",
 			-- "copilot",
 		},
 
@@ -169,18 +168,6 @@ require("blink.cmp").setup({
 			-- 	score_offset = 100,
 			-- 	async = true,
 			-- },
-			fff = {
-				name = "FFF",
-				module = "plugins.custom.blink-fff",
-				async = true, -- Keep this true
-				score_offset = 80,
-				min_keyword_length = 3,
-				opts = {
-					min_query_len = 3,
-					page_size = 16,
-					time_budget_ms = 8,
-				},
-			},
 			env = {
 				name = "Env",
 				module = "blink-cmp-env",
