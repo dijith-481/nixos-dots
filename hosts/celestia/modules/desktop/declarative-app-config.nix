@@ -551,6 +551,32 @@
     '';
   };
 
+  # Older generations linked several complete config directories into the
+  # Nix store. The current per-file declarations need writable parent
+  # directories instead. Remove only store-backed Home Manager directory
+  # links that the new generation represents as real directories; ordinary
+  # user directories and current whole-directory links are left untouched.
+  home.activation.migrateLegacyConfigDirectories =
+    lib.hm.dag.entryBetween [ "linkGeneration" ] [ "writeBoundary" ] ''
+      configRoot=${lib.escapeShellArg "${config.home.homeDirectory}/.config"}
+      newConfigRoot="$(readlink -e "$newGenPath/home-files/.config")"
+
+      for configPath in "$configRoot"/*; do
+        [ -L "$configPath" ] || continue
+
+        configName="''${configPath##*/}"
+        newConfigPath="$newConfigRoot/$configName"
+        [ -d "$newConfigPath" ] && [ ! -L "$newConfigPath" ] || continue
+
+        legacyTarget="$(readlink "$configPath")"
+        case "$legacyTarget" in
+          /nix/store/*-home-manager-files/.config/"$configName")
+            $DRY_RUN_CMD unlink "$configPath"
+            ;;
+        esac
+      done
+    '';
+
   # OpenCode writes history, logs, and runtime state (such as
   # service.json.tmp) inside its config directory, so give it a writable
   # directory with immutable per-file links (moved here from home.nix so

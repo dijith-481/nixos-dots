@@ -1,7 +1,7 @@
 # Declarative niri configuration via niri-flake
 # Translated from config/niri/config.kdl — build-time validated against niri's schema.
 # Stylix auto-themes borders/cursor via its niri target (focus-ring/border colors intentionally kept minimal).
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   programs.niri.settings = {
@@ -177,22 +177,28 @@
 
     window-rules = [
       {
-        matches = [ { app-id = "^floatingfoot$"; } ];
+        matches = [
+          { app-id = "^floatingfoot$"; }
+          { app-id = "^ghostty\\.floatingfoot$"; }
+        ];
         open-floating = true;
-        default-column-width.fixed = 784;
-        default-window-height.fixed = 464;
-      }
-      {
-        matches = [ { app-id = "com.mitchellh.ghostty"; title = "floatingfoot"; } ];
-        open-floating = true;
-        default-column-width.fixed = 784;
-        default-window-height.fixed = 464;
-      }
-      {
-        matches = [ { app-id = "com.mitchellh.ghostty"; title = "md"; } ];
-        open-floating = true;
-        default-column-width.fixed = 700;
+        default-column-width.fixed = 900;
         default-window-height.fixed = 500;
+      }
+      {
+        matches = [ { app-id = "^com\\.mitchellh\\.ghostty$"; title = "^floatingfoot$"; } ];
+        open-floating = true;
+        default-column-width.fixed = 900;
+        default-window-height.fixed = 500;
+      }
+      {
+        matches = [
+          { app-id = "^ghostty\\.md$"; }
+          { app-id = "^com\\.mitchellh\\.ghostty$"; title = "^md$"; }
+        ];
+        open-floating = false;
+        default-column-width.proportion = 0.66667;
+        default-window-height.proportion = 1.0;
       }
       {
         matches = [ { app-id = "^.*music.youtube.*$"; at-startup = true; } ];
@@ -212,6 +218,7 @@
       }
       {
         matches = [ { title = ".*md$"; } ];
+        open-floating = false;
       }
       {
         matches = [ { title = "^.*(qView).*$"; } ];
@@ -235,7 +242,7 @@
         default-window-height.fixed = 652;
       }
       {
-        matches = [ { app-id = "float"; } ];
+        matches = [ { app-id = "^float$"; } ];
         open-floating = true;
         default-column-width.fixed = 622;
         default-window-height.fixed = 652;
@@ -326,7 +333,10 @@
         "Mod+Ctrl+W" = { repeat = false; } // (sh "niri msg action close-window && ~/.config/hypr/scripts/wallpaper.sh");
         "Mod+W" = { repeat = false; action.close-window = { }; };
         "Mod+Q".action.spawn = [ "ghostty" ];
-        "Mod+Return" = { repeat = false; action.spawn = [ "ghostty" "--title=floatingfoot" ]; };
+        "Mod+Return" = {
+          repeat = false;
+          action.spawn = [ "env" "CELESTIA_FLOATING_TERMINAL=1" "ghostty" "--class=ghostty.floatingfoot" "--title=floatingfoot" ];
+        };
         "Mod+Alt+Return" = { repeat = false; action.spawn = [ "kitty" ]; };
 
         # notifications
@@ -341,7 +351,7 @@
         "Mod+space".action.spawn = [ "fuzzel" "--show-actions" ];
         "Mod+F2".action.spawn = [ "hyprlock" ];
         "Mod+E".action.spawn = [ "kitty" "--class" "yazi" "-e" "yazi" ];
-        "Mod+Control+E".action.spawn = [ "ghostty" "--title=floatingfoot" "-e" "yazi" ];
+        "Mod+Control+E".action.spawn = [ "env" "CELESTIA_FLOATING_TERMINAL=1" "ghostty" "--class=ghostty.floatingfoot" "--title=floatingfoot" "-e" "yazi" ];
         "Mod+V".action.spawn = [ "kitty" "--class" "clipse" "-e" "clipse" ];
         "Mod+Control+space" = { repeat = false; } // (sh "pkill fum || kitty --class fum -e 'fum'");
 
@@ -368,8 +378,9 @@
         "Mod+Control+c" = { repeat = false; } // (sh "~/.config/hypr/scripts/copy-file.sh");
         "Mod+Control+Shift+c" = { repeat = false; } // (sh "~/.config/hypr/scripts/rip-drag.sh");
         "Mod+z".action.spawn = [ "ghostty" "-e" "nvim" ];
-        "Mod+x" = { repeat = false; } // (sh "ghostty --title=md -e ~/.config/hypr/scripts/mdToday.sh");
-        "Mod+Control+X" = { repeat = false; } // (sh "ghostty --title=md -e ~/.config/hypr/scripts/todolist.sh");
+        "Mod+x" = { repeat = false; } // (sh "ghostty --class=ghostty.md --title=md -e ~/.config/hypr/scripts/mdToday.sh");
+        "Mod+Control+X" = { repeat = false; } // (sh "ghostty --class=ghostty.md --title=md -e ~/.config/hypr/scripts/todolist.sh");
+        "Mod+Shift+X" = { repeat = false; } // (sh "ghostty --class=ghostty.md --title=md -e ~/.config/hypr/scripts/dsa.sh");
         "Mod+Alt+c".action.spawn = [ "hyprpicker" "-a" ];
         "Mod+Y".action.focus-workspace = "ytmusic";
         "Mod+grave".action.toggle-overview = { };
@@ -477,4 +488,23 @@
         "Mod+F3".action.power-off-monitors = { };
       };
   };
+
+  # Home Manager atomically replaces config.kdl with a new store symlink.
+  # Niri remembers the resolved store path from session startup, so a plain
+  # reload can keep reading the previous generation. Reload the stable path
+  # explicitly after links for the new generation are installed.
+  home.activation.reloadNiriConfig = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    runtimeDir="/run/user/$(${pkgs.coreutils}/bin/id -u)"
+    configPath=${lib.escapeShellArg "${config.home.homeDirectory}/.config/niri/config.kdl"}
+
+    for niriSocket in "$runtimeDir"/niri.*.sock; do
+      [ -S "$niriSocket" ] || continue
+      if $DRY_RUN_CMD ${pkgs.coreutils}/bin/env \
+        NIRI_SOCKET="$niriSocket" \
+        ${config.programs.niri.package}/bin/niri msg action load-config-file --path "$configPath"; then
+        break
+      fi
+    done
+    true
+  '';
 }
