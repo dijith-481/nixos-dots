@@ -355,6 +355,10 @@
         "Mod+V".action.spawn = [ "kitty" "--class" "clipse" "-e" "clipse" ];
         "Mod+Control+space" = { repeat = false; } // (sh "pkill fum || kitty --class fum -e 'fum'");
 
+        # emoji picker (bemoji + fuzzel, Noto Color Emoji). Types the chosen
+        # emoji straight into the focused window via wtype.
+        "Mod+Shift+Period" = { repeat = false; action.spawn = [ "bemoji" "-t" ]; };
+
         # screenshots & recording
         "Mod+XF86Favorites".action.screenshot-screen = { };
         "Mod+Control+XF86Favorites".action.screenshot = { };
