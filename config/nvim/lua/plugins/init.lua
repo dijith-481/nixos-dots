@@ -92,10 +92,15 @@ end)
 -- Language-specific integrations are loaded before FileType, so their own
 -- FileType hooks can attach to the buffer currently being opened.
 once("BufReadPre", "lazy_typescript_tools", function()
+	-- typescript-tools' ftplugin requires plenary.async as soon as a
+	-- TypeScript buffer's filetype is set, so plenary must already be on
+	-- the runtimepath before load_config activates the plugin.
+	packadd("plenary.nvim")
 	load_config("typescript-tools.nvim", "plugins.typescript-tools")
 end, { pattern = { "*.js", "*.jsx", "*.mjs", "*.cjs", "*.ts", "*.tsx", "*.mts", "*.cts" } })
 
 once("BufReadPre", "lazy_flutter_tools", function()
+	packadd("plenary.nvim")
 	load_config("flutter-tools.nvim", "plugins.flutter-tools")
 end, { pattern = "*.dart" })
 
