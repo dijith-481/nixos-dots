@@ -1,8 +1,24 @@
 { pkgs, ... }:
+let
+  # bemoji normally downloads Unicode's emoji-test.txt on first run. Pin it at
+  # build time and convert to bemoji's "emoji name" list format so the picker
+  # works offline and reproducibly. Rendered with Noto Color Emoji.
+  emojiList = pkgs.runCommand "bemoji-emojis.txt" { } ''
+    ${pkgs.gnused}/bin/sed -ne \
+      's/^.*; fully-qualified.*# \(\S*\) \S* \(.*$\)/\1 \2/gp' \
+      ${pkgs.fetchurl {
+        url = "https://unicode.org/Public/emoji/15.1/emoji-test.txt";
+        hash = "sha256-2HbuJJqijqp2z6bfqnAoR6jROwYqpIjUZdA5XugTftk=";
+      }} > $out
+  '';
+in
 {
   imports = [
     ./desktop/niri-config.nix
   ];
+
+  # Pre-seed bemoji's database so it never needs the network at runtime.
+  home.file.".local/share/bemoji/emojis.txt".source = emojiList;
 
   services.wlsunset = {
     enable = true;
@@ -63,6 +79,8 @@
     niri
     wl-mirror
     fuzzel
+    bemoji
+    wtype
     proton-vpn
     anyrun
     imagemagick
