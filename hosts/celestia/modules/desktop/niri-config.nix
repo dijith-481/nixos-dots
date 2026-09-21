@@ -368,6 +368,8 @@
             --geometry "$(slurp)" \
             -f ~/Downloads/screenshots/record_$(date +%Y%m%d_%H%M%S)_wf.mkv'');
         "XF86Favorites" = { repeat = false; } // (sh "~/.config/hypr/scripts/screenshot.sh region --clipboard-only");
+        # annotate the current clipboard image in Satty, then copy it back
+        "Ctrl+XF86Favorites" = { repeat = false; } // (sh "~/.config/hypr/scripts/satty-clipboard.sh");
         "Print" = { action.screenshot.show-pointer = false; };
         "Ctrl+Print" = { action.screenshot-screen.show-pointer = false; };
         "Alt+Print".action.screenshot-window = { };
