@@ -9,11 +9,11 @@
 
 stdenv.mkDerivation rec {
   pname = "vp";
-  version = "0.3.0";
+  version = "1.0.0-rc.0";
 
   src = fetchurl {
     url = "https://github.com/voidzero-dev/vite-plus/releases/download/v${version}/vp-x86_64-unknown-linux-gnu.tar.gz";
-    hash = "sha256-aOAquir4d8OPGepADnMB0IPqGOrYdx3IB1eBLCSsxNA=";
+    hash = "sha256-XDtHXNJI8K8NhprEqtOiUNJ8PYC/B7kVCn6ezqAYKs0=";
   };
 
   sourceRoot = ".";
