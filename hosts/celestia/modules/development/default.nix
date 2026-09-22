@@ -9,7 +9,10 @@
     ./terminal-configs.nix
   ];
   # npm global prefix for opencode v2 (and any npm -g) — reproducible, not nix store
-  home.file.".npmrc".text = "prefix=${config.home.homeDirectory}/.npm-global";
+  home.file.".npmrc".text = ''
+    prefix=${config.home.homeDirectory}/.npm-global
+    allow-scripts=@opencode/cli
+  '';
 
   home.packages = with pkgs; [
     zed-editor
@@ -55,7 +58,6 @@
     wrangler # Cloudflare Workers CLI
 
     # gemini-cli removed — replaced by Antigravity CLI upstream
-    opencode # v1 stable via nix (opencode)
     figma-agent
 
     # vp, antigravity-cli (agy), opencode2 removed from nix — see docs/manual-installs.md for curl/npm manual installs (stub-ld pain, use nix-ld instead)
