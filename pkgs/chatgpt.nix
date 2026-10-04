@@ -59,7 +59,10 @@
 
 stdenv.mkDerivation rec {
   pname = "chatgpt";
-  version = "26.901.41600";
+  version = {
+    x86_64-linux = "26.917.51856";
+    aarch64-linux = "26.901.41600";
+  }.${stdenv.hostPlatform.system};
 
   src =
     let
@@ -67,7 +70,7 @@ stdenv.mkDerivation rec {
 
       hashes = {
         x86_64-linux =
-          "sha256-Fc9CKnfo8op1U9MYC4xyeEqZRDihQXhMgtcs3pPvync=";
+          "sha256-SiPHe2+yfM9l+K+X7YxKnd2QHNduzsSUzoOFbw+TbYw=";
 
         aarch64-linux =
           "sha256-Lmmx06JIpf/XBiQki3hj7nmYB+8SUzyyvgr8dcetBAM=";
