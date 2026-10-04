@@ -291,6 +291,7 @@ in
     nh
     chatgpt
     zcode
+    opencode-desktop
   ];
 
   programs.gnupg.agent = {
@@ -366,6 +367,12 @@ in
       "docker"
       "video"
       "audio"
+      # networking/networkmanager.nix grants a passwordless polkit.Result.YES
+      # for every org.freedesktop.NetworkManager.* action to members of this
+      # group. Proton VPN's WireGuard kill switch needs it: it commits a /32
+      # route onto the existing system-owned NetworkManager profile, which
+      # otherwise fails polkit auth with "Insufficient privileges".
+      "networkmanager"
     ];
     shell = pkgs.fish;
   };
