@@ -290,7 +290,6 @@ in
     helix
     nh
     chatgpt
-    zcode
     opencode-desktop
   ];
 

@@ -2,8 +2,7 @@
 # https://opencode.ai/download
 # e.g. https://opencode.ai/files/bin/2.0.6/opencode-desktop-linux-amd64.deb
 #
-# Packaged for NixOS via dpkg + autoPatchelfHook, mirroring pkgs/zcode.nix and
-# pkgs/chatgpt.nix.
+# Packaged for NixOS via dpkg + autoPatchelfHook, mirroring pkgs/chatgpt.nix.
 #
 # IMPORTANT:
 # - Keep version + hash in sync when updating.
