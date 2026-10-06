@@ -125,6 +125,9 @@ require("blink.cmp").setup({
 	signature = { enabled = true },
 	keymap = {
 		preset = "default",
+		-- Free Tab/S-Tab for supermaven: unmap preset's snippet jump
+		["<Tab>"] = false,
+		["<S-Tab>"] = false,
 		["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
 		["<C-l>"] = { "snippet_forward", "fallback" },
 		["<C-h>"] = { "snippet_backward", "fallback" },
