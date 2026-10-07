@@ -23,6 +23,7 @@
       vp = prev.callPackage ./pkgs/vp.nix { };
       antigravity = prev.callPackage ./pkgs/antigravity.nix { };
       chatgpt = prev.callPackage ./pkgs/chatgpt.nix { };
+      claude-desktop = prev.callPackage ./pkgs/claude-desktop.nix { };
       opencode-desktop = prev.callPackage ./pkgs/opencode-desktop.nix { };
     };
     nixosConfigurations = {

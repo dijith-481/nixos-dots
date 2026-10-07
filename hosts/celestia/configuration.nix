@@ -290,6 +290,8 @@ in
     helix
     nh
     chatgpt
+    claude-desktop
+    claude-code
     opencode-desktop
   ];
 
