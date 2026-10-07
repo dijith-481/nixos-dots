@@ -77,5 +77,6 @@
     libreoffice-stable
     # cursor: not in nixpkgs; CDN unreachable — install AppImage manually, then pin in pkgs/
     github-desktop
+    github-cli
   ];
 }
