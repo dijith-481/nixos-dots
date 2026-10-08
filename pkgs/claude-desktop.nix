@@ -61,7 +61,7 @@
 
 stdenv.mkDerivation rec {
   pname = "claude-desktop";
-  version = "2.26454.0";
+  version = "2.26454.2";
 
   src =
     let
@@ -69,10 +69,10 @@ stdenv.mkDerivation rec {
 
       hashes = {
         x86_64-linux =
-          "sha256-bT5Jc9yxFRHd2WIECzBztDXRWSsxdKgu9S5QN3p1pj8=";
+          "sha256-slGgIkqGNYdPM1mN+O2JUrQn+EgV7llYDMAi1r2yQw8=";
 
         aarch64-linux =
-          "sha256-Ab3/hz0843tNzFbNLfvEcRucj5q85HnnWlL5RqCD2YE=";
+          "sha256-MLL4VNfMRCK0Po858HVzyH95gWBRl3ZiYtiBU8fpk4s=";
       };
 
       urls = {
