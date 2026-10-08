@@ -119,6 +119,9 @@ in
   networking = {
     hostName = locals.hostname;
     networkmanager.enable = true;
+    # Wi-Fi power saving parks the radio between beacons, adding latency and
+    # jitter to every round trip (DNS, SSH, interactive web traffic).
+    networkmanager.wifi.powersave = false;
     firewall = rec{
       enable = true;
       allowedTCPPorts = [ 22 80 443 5173 3000 3001 4321 8000 8080 45325 22000 ];
@@ -197,20 +200,36 @@ in
     '';
   };
 
-  # DNS will be handled automatically by NetworkManager
-  # Optional: Custom DNS servers (uncomment if you want to override ISP DNS)
-  # networking.nameservers = [ "8.8.8.8" "1.1.1.1" "1.0.0.1" "9.9.9.9" ];
-  # Enable systemd-resolved for better DNS handling
-  # services.resolved = {
-  #   enable = true;
-  #   dnssec = "true";
-  #   domains = [ "~." ];
-  #   fallbackDns = [ "8.8.8.8" "1.1.1.1" ];
-  #   extraConfig = ''
-  #     DNS=8.8.8.8 1.1.1.1 1.0.0.1
-  #     FallbackDNS=9.9.9.9 149.112.112.112
-  #   '';
-  # };
+  # Without a local resolver every lookup went straight to the upstream
+  # (often a phone hotspot): NixOS's nsncd does not cache, and resolvconf
+  # wrote the DHCP servers directly into /etc/resolv.conf. systemd-resolved
+  # gives a local cache on 127.0.0.53; NetworkManager feeds it per-link DNS
+  # automatically. Upstream servers stay DHCP-provided so captive portals and
+  # hotspot-local names keep working. DNSSEC is off because many hotspot and
+  # ISP forwarders mangle it, which turns into slow SERVFAIL retries.
+  services.resolved = {
+    enable = true;
+    settings.Resolve = {
+      DNSSEC = "false";
+      FallbackDNS = [ "1.1.1.1" "9.9.9.9" "2606:4700:4700::1111" ];
+      # Avahi already answers mDNS; LLMNR only adds lookup delay.
+      MulticastDNS = "false";
+      LLMNR = "false";
+    };
+  };
+
+  # BBR copes far better than cubic with the lossy, variable-latency links of
+  # Wi-Fi and phone tethering; fq is the qdisc BBR is designed to pace with.
+  boot.kernelModules = [ "tcp_bbr" ];
+  boot.kernel.sysctl = {
+    "net.core.default_qdisc" = "fq";
+    "net.ipv4.tcp_congestion_control" = "bbr";
+    "net.ipv4.tcp_mtu_probing" = 1;
+  };
+
+  # Docker logs to journald, and a chatty container under load test wrote
+  # ~3k lines/min; the journal had grown to 3.4G.
+  services.journald.settings.Journal.SystemMaxUse = "1G";
 
   services.pipewire = {
     enable = true;
@@ -321,6 +340,11 @@ in
 
   services.gnome.gnome-keyring.enable = true;
   programs.kdeconnect.enable = true;
+  # wait-online held multi-user.target for ~4.3s on every boot only because
+  # docker.service orders after network-online.target. Nothing here needs a
+  # routable network before login, and Wi-Fi association is slowest of all.
+  systemd.services.NetworkManager-wait-online.enable = false;
+
   systemd.services.docker = {
     requires = [ "var-lib-vms.mount" ];
     after = [ "var-lib-vms.mount" ];
@@ -333,7 +357,9 @@ in
         data-root = "/var/lib/vms/docker";
       };
     };
-    # enableOnBoot = true;
+    # Socket-activated: dockerd starts on the first docker command instead of
+    # at boot, so dev stacks only come up when run manually.
+    enableOnBoot = false;
   };
 
   time.timeZone = "Asia/Kolkata";
