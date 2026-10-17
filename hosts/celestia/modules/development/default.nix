@@ -8,11 +8,24 @@
     ./shell.nix
     ./terminal-configs.nix
   ];
-  # npm global prefix for opencode v2 (and any npm -g) — reproducible, not nix store
+  # Keep stray `npm i -g` out of the home directory root. Real CLIs are pinned
+  # in pkgs/sources.toml instead (see `dots apps`).
   home.file.".npmrc".text = ''
     prefix=${config.home.homeDirectory}/.npm-global
-    allow-scripts=@opencode/cli
   '';
+
+  # vp: use the Nix-provided node/npm/pnpm/yarn/bun instead of downloading its own
+  # runtimes into ~/.local/share/vite-plus, and skip `vp upgrade` nags (Nix pins vp).
+  xdg.configFile."vite-plus/config.json".text = builtins.toJSON {
+    nodeShimMode = "system_first";
+    packageManagerShimModes = {
+      bun = "system_first";
+      npm = "system_first";
+      pnpm = "system_first";
+      yarn = "system_first";
+    };
+  };
+  home.sessionVariables.VP_NO_UPDATE_CHECK = "1";
 
   home.packages = with pkgs; [
     zed-editor
@@ -60,7 +73,13 @@
     # gemini-cli removed — replaced by Antigravity CLI upstream
     figma-agent
 
-    # vp, antigravity-cli (agy), opencode2 removed from nix — see docs/manual-installs.md for curl/npm manual installs (stub-ld pain, use nix-ld instead)
+    # --- Pinned upstream CLIs (pkgs/sources.toml, bumped by CI / `dots bump`) ---
+    vp # vite-plus
+    antigravity-cli # agy
+    opencode # v2, also as `opencode2`
+    vercel
+    command-code
+    loc
 
     # --- Languages & runtimes ---
     go

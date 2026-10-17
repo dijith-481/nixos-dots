@@ -1,0 +1,8 @@
+{
+  "name": "vercel-pinned",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "vercel": "64.5.0"
+  }
+}

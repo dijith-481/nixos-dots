@@ -17,15 +17,25 @@
 
   };
 
-  outputs = { nixpkgs, nixos-hardware, stylix, self, ... }@inputs: {
+  outputs = { nixpkgs, nixos-hardware, stylix, self, ... }@inputs:
+    let
+      system = "x86_64-linux";
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+        overlays = [ self.overlays.default ];
+      };
+    in
+    {
 
-    overlays.default = final: prev: {
-      vp = prev.callPackage ./pkgs/vp.nix { };
-      antigravity = prev.callPackage ./pkgs/antigravity.nix { };
-      chatgpt = prev.callPackage ./pkgs/chatgpt.nix { };
-      claude-desktop = prev.callPackage ./pkgs/claude-desktop.nix { };
-      opencode-desktop = prev.callPackage ./pkgs/opencode-desktop.nix { };
+    # Pinned upstream apps: recipes in pkgs/sources.toml, pins in pkgs/sources.lock.json.
+    overlays.default = import ./pkgs;
+
+    # `nix build .#claude-desktop`, `nix run .#dots -- help`, `nix run .#update-sources`
+    packages.${system} = nixpkgs.lib.genAttrs pkgs.dotsApps (name: pkgs.${name}) // {
+      inherit (pkgs) dots update-sources;
     };
+
     nixosConfigurations = {
       nixos-celestia = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };

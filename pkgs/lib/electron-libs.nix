@@ -1,0 +1,39 @@
+# Runtime libraries a stock Electron/Chromium app dlopens or links against.
+pkgs:
+with pkgs;
+[
+  alsa-lib
+  at-spi2-atk
+  at-spi2-core
+  atk
+  cairo
+  cups
+  dbus
+  expat
+  gdk-pixbuf
+  glib
+  gtk3
+  libdrm
+  libGL
+  libxkbcommon
+  libnotify
+  libsecret
+  libuuid
+  mesa
+  nspr
+  nss
+  pango
+  systemd
+  libX11
+  libXcomposite
+  libXdamage
+  libXext
+  libXfixes
+  libXrandr
+  libxcb
+  libxshmfence
+  libgbm
+  libusb1
+  libXScrnSaver
+  libXtst
+]

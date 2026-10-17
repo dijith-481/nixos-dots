@@ -1,0 +1,150 @@
+# Pinned upstream apps — the recipe file.
+#
+# You edit this file. `dots bump` (scripts/update-sources.py) resolves every
+# entry to an exact version + URL + hash and writes pkgs/sources.lock.json,
+# which is the only thing Nix reads. Never edit the lock by hand.
+#
+# Adding an app:
+#   1. add a [name] table here with one or more [[name.source]] strategies
+#   2. add pkgs/apps/<name>.nix (usually a few lines calling a builder in pkgs/lib)
+#   3. run `dots bump <name>` and add the package to your config
+#
+# Per-app keys:
+#   systems   Nix systems to resolve (default ["x86_64-linux"])
+#   arch      system -> upstream arch token, substituted as {arch}
+#   pick      "first"   (default) first strategy that works wins
+#             "highest" try every strategy and keep the highest version
+#   hold      true -> never bump (pin the current lock entry)
+#
+# Strategies ([[name.source]], tried in order), all support:
+#   download  URL template overriding the strategy's own URL; vars: {version} {arch} + strategy vars
+#   verify    HEAD-check the final URL before accepting (default true when `download` is set)
+#
+#   apt             repo, dist, component, package       hash from the repo's Packages index
+#   github-release  repo, asset, tag-prefix, prerelease  hash from the asset digest
+#   npm             package, tag, lockfile               hash from npm integrity;
+#                   lockfile=true writes pkgs/locks/<name>/package-lock.json (every dep sha512-pinned)
+#   crate           crate                                hash from the crates.io index;
+#                   writes pkgs/locks/<name>/Cargo.lock if the crate doesn't ship one
+#   json            url, items, version, vars, url-field, hash-field, hash-algo
+#                   generic JSON endpoint; `items` = path to an array (highest version wins)
+#   probe           url template; tries bumping the current version's patch/minor
+#                   and keeps the highest URL that exists (last-resort fallback)
+#
+# When a strategy does not publish a hash, the file is downloaded once with
+# `nix store prefetch-file` and hashed locally.
+
+# ─── Desktop apps (Electron .deb / tarballs) ───────────────────────────────
+
+[claude-desktop]
+systems = ["x86_64-linux", "aarch64-linux"]
+arch = { x86_64-linux = "amd64", aarch64-linux = "arm64" }
+[[claude-desktop.source]]
+type = "apt"
+repo = "https://downloads.claude.ai/claude-desktop/apt/stable"
+dist = "stable"
+component = "main"
+package = "claude-desktop"
+
+[chatgpt]
+systems = ["x86_64-linux", "aarch64-linux"]
+arch = { x86_64-linux = "amd64", aarch64-linux = "arm64" }
+[[chatgpt.source]]
+type = "apt"
+repo = "https://persistent.oaistatic.com/codex-app-prod/linux/deb"
+dist = "stable"
+component = "main"
+package = "chatgpt"
+
+[opencode-desktop]
+arch = { x86_64-linux = "amd64" }
+# The desktop app ships in lockstep with the @opencode/cli npm package.
+[[opencode-desktop.source]]
+type = "npm"
+package = "@opencode/cli"
+download = "https://opencode.ai/files/bin/{version}/opencode-desktop-linux-{arch}.deb"
+[[opencode-desktop.source]]
+type = "probe"
+url = "https://opencode.ai/files/bin/{version}/opencode-desktop-linux-{arch}.deb"
+
+[antigravity]
+arch = { x86_64-linux = "x64" }
+# Google's endpoints disagree with each other, so ask all of them and keep the newest.
+pick = "highest"
+[[antigravity.source]]
+# What antigravity.google/download itself reads.
+type = "json"
+url = "https://antigravity-hub-auto-updater-974169037036.us-central1.run.app/releases"
+items = ""
+version = "version"
+vars = { buildId = "execution_id" }
+download = "https://storage.googleapis.com/antigravity-public/antigravity-hub/{version}-{buildId}/linux-{arch}/Antigravity.tar.gz"
+[[antigravity.source]]
+# VS Code-style updater the app polls (often stale, but publishes a sha256).
+type = "json"
+url = "https://antigravity-auto-updater-974169037036.us-central1.run.app/api/update/linux-{arch}/stable/latest"
+version = "productVersion"
+url-field = "url"
+hash-field = "sha256hash"
+hash-algo = "sha256"
+
+# ─── CLIs (replacing curl|bash and npm -g installs) ────────────────────────
+
+[antigravity-cli]
+arch = { x86_64-linux = "x64" }
+pick = "highest"
+[[antigravity-cli.source]]
+# What the official install script / self-updater reads.
+type = "json"
+url = "https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests/linux_amd64.json"
+version = "version"
+url-field = "url"
+hash-field = "sha512"
+hash-algo = "sha512"
+[[antigravity-cli.source]]
+type = "json"
+url = "https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/releases"
+items = ""
+version = "version"
+vars = { buildId = "execution_id" }
+download = "https://storage.googleapis.com/antigravity-public/antigravity-cli/{version}-{buildId}/linux-{arch}/cli_linux_{arch}.tar.gz"
+
+[opencode]
+# OpenCode v2 (`@opencode/cli`): the platform package is the prebuilt binary.
+arch = { x86_64-linux = "x64" }
+[[opencode.source]]
+type = "npm"
+package = "@opencode/cli-linux-{arch}"
+
+[vp]
+# Fully static musl build: no patchelf, no nix-ld.
+arch = { x86_64-linux = "x86_64" }
+[[vp.source]]
+type = "github-release"
+repo = "voidzero-dev/vite-plus"
+asset = "vp-{arch}-unknown-linux-musl.tar.gz"
+
+[vite-plus]
+# The JS half of vp (what `vp` normally installs into ~/.local/share/vite-plus).
+# Must match vp's version; pkgs/apps/vp.nix refuses to build otherwise.
+[[vite-plus.source]]
+type = "npm"
+package = "vite-plus"
+lockfile = true
+
+[vercel]
+[[vercel.source]]
+type = "npm"
+package = "vercel"
+lockfile = true
+
+[command-code]
+[[command-code.source]]
+type = "npm"
+package = "command-code"
+lockfile = true
+
+[loc]
+[[loc.source]]
+type = "crate"
+crate = "loc"

@@ -1,0 +1,8 @@
+{
+  "name": "command-code-pinned",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "command-code": "1.84.0"
+  }
+}

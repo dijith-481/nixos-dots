@@ -1,0 +1,142 @@
+# Keep pinned upstream apps current.
+#
+# Every 6 hours: resolve pkgs/sources.toml against upstream, build every app
+# whose derivation changed, check the whole NixOS config still evaluates, and
+# open (or update) ONE pull request from the `auto/update-sources` branch.
+# Apps that fail to build are left at their old pin and listed in the PR.
+#
+# Merge it on GitHub, or locally with `dots update` (merges, pulls, flake
+# update, switch). `dots try-pr` test-activates it without merging.
+name: update-sources
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      apps:
+        description: "Space-separated apps to bump (empty = all)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-sources
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      HOST: nixos-celestia
+      SYSTEM: x86_64-linux
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h /
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            accept-flake-config = false
+
+      - name: Snapshot current derivations
+        run: |
+          nix eval --json ".#packages.$SYSTEM" \
+            --apply 'ps: builtins.mapAttrs (_: p: p.drvPath) ps' > "$RUNNER_TEMP/before.json"
+
+      - name: Resolve latest upstream versions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          nix run .#update-sources -- --summary "$RUNNER_TEMP/summary.json" ${{ inputs.apps }}
+          cat "$RUNNER_TEMP/summary.json"
+
+      - name: Build changed apps
+        id: build
+        run: |
+          set -u
+          failed=()
+          # Loop: a failure reverts that app's pins, which can change other drvs.
+          for _ in 1 2 3; do
+            nix eval --json ".#packages.$SYSTEM" \
+              --apply 'ps: builtins.mapAttrs (_: p: p.drvPath) ps' > "$RUNNER_TEMP/after.json"
+            mapfile -t changed < <(jq -r --slurpfile b "$RUNNER_TEMP/before.json" \
+              'to_entries[] | select(.value != ($b[0][.key] // "")) | .key' "$RUNNER_TEMP/after.json" \
+              | grep -vxE 'dots|update-sources' || true)
+            [ "${#changed[@]}" -eq 0 ] && break
+            retry=0
+            for app in "${changed[@]}"; do
+              echo "::group::build $app"
+              if nix build --no-link -L ".#$app"; then
+                echo "::endgroup::"
+              else
+                echo "::endgroup::"
+                echo "::warning::$app failed to build; keeping its previous pin"
+                failed+=("$app")
+                # Revert the app's own pin plus any changed pin that has no app file (shared deps like vite-plus).
+                revert=("$app")
+                for name in $(jq -r '.changes[].name' "$RUNNER_TEMP/summary.json"); do
+                  [ -f "pkgs/apps/$name.nix" ] || revert+=("$name")
+                done
+                nix run .#update-sources -- --revert "${revert[@]}"
+                retry=1
+              fi
+            done
+            [ "$retry" -eq 0 ] && break
+          done
+          printf '%s\n' "${failed[@]}" > "$RUNNER_TEMP/failed.txt"
+
+      - name: Evaluate the full system
+        run: nix eval --raw ".#nixosConfigurations.$HOST.config.system.build.toplevel.drvPath"
+
+      - name: Write PR body
+        id: body
+        run: |
+          python3 - "$RUNNER_TEMP" <<'PY'
+          import json, pathlib, subprocess, sys
+          tmp = pathlib.Path(sys.argv[1])
+          summary = json.loads((tmp / "summary.json").read_text())
+          failed_builds = [l for l in (tmp / "failed.txt").read_text().split() if l]
+          lock = json.loads(pathlib.Path("pkgs/sources.lock.json").read_text())
+          base = json.loads(subprocess.run(["git", "show", "HEAD:pkgs/sources.lock.json"],
+                                           capture_output=True, text=True).stdout or "{}")
+          rows = [(n, base.get(n, {}).get("version", "∅"), e["version"])
+                  for n, e in sorted(lock.items()) if base.get(n, {}).get("version") != e["version"]]
+          out = ["Automated bump of pinned apps from `pkgs/sources.toml`.", ""]
+          if rows:
+              out += ["| app | from | to |", "|---|---|---|"]
+              out += [f"| `{n}` | {a} | **{b}** |" for n, a, b in rows]
+          if failed_builds:
+              out += ["", "**Failed to build (kept at old pin):** " + ", ".join(f"`{f}`" for f in failed_builds)]
+          if summary["failures"]:
+              out += ["", "**Could not resolve upstream:**"]
+              out += [f"- `{f['name']}`: {f['error'].splitlines()[0]}" for f in summary["failures"]]
+          out += ["", "Every changed app was built in CI and the full system evaluated.",
+                  "", "Test locally first: `dots try-pr`  ·  merge + switch: `dots update`"]
+          (tmp / "body.md").write_text("\n".join(out) + "\n")
+          names = ", ".join(n for n, _, _ in rows)
+          (tmp / "title.txt").write_text(f"chore(pkgs): bump {names}" if rows else "chore(pkgs): bump pinned apps")
+          PY
+          echo "title=$(cat "$RUNNER_TEMP/title.txt")" >> "$GITHUB_OUTPUT"
+
+      - name: Open or update the PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: auto/update-sources
+          delete-branch: true
+          title: ${{ steps.body.outputs.title }}
+          body-path: ${{ runner.temp }}/body.md
+          commit-message: ${{ steps.body.outputs.title }}
+          add-paths: |
+            pkgs/sources.lock.json
+            pkgs/locks/**
+          labels: dependencies

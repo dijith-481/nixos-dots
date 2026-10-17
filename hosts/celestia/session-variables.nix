@@ -33,6 +33,8 @@
     XDG_CONFIG_HOME = "$HOME/.config";
     XDG_DATA_HOME = "$HOME/.local/share";
 
-    PATH = "$HOME/.cargo/bin:$HOME/go/bin:$HOME/.local/bin:$PATH:$HOME/.npm-global/bin";
+    # Nix-managed tools come first; personal install dirs only fill gaps, so a
+    # leftover manual install can never shadow a pinned package.
+    PATH = "$PATH:$HOME/.local/bin:$HOME/.cargo/bin:$HOME/go/bin:$HOME/.npm-global/bin";
   };
 }

@@ -224,7 +224,10 @@ in
   boot.kernel.sysctl = {
     "net.core.default_qdisc" = "fq";
     "net.ipv4.tcp_congestion_control" = "bbr";
-    "net.ipv4.tcp_mtu_probing" = 1;
+    # 2 = always probe for a smaller path MTU. The Jio tether black-holes
+    # oversized segments without ICMP, and the default (1) only probes after
+    # the kernel has already stalled. 2 makes it converge up front.
+    "net.ipv4.tcp_mtu_probing" = 2;
   };
 
   # Docker logs to journald, and a chatty container under load test wrote
@@ -287,7 +290,7 @@ in
   };
 
   programs.dconf.enable = true;
-  programs.nix-ld.enable = true; # for dynamically linked binaries in $HOME (vp's vite-plus node at ~/.local/share/vite-plus/js_runtime/node/…/bin/node, manual installs)
+  programs.nix-ld.enable = true; # for one-off prebuilt binaries (and any runtime `vp env on` downloads)
   # flake module provides session wiring + config validation;
   # package comes from nixpkgs so it tracks our (newest) nixpkgs
   programs.niri.package = pkgs.niri;
@@ -295,6 +298,11 @@ in
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;
   programs.fish.enable = true;
+  # NH_FLAKE: lets `nh os switch` (and `dots`) find this checkout from anywhere.
+  programs.nh = {
+    enable = true;
+    flake = "/home/dijith/.Data/nixos-dots";
+  };
   environment.systemPackages = with pkgs; [
     libva-utils
     intel-gpu-tools
@@ -308,6 +316,7 @@ in
     rustup
     helix
     nh
+    dots # `dots help`: switch / update / bump / rollback / gc
     chatgpt
     claude-desktop
     claude-code
