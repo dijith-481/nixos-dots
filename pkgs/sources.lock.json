@@ -13,12 +13,12 @@
     }
   },
   "antigravity-cli": {
-    "version": "1.4.0",
+    "version": "1.4.2",
     "type": "json",
     "sources": {
       "x86_64-linux": {
-        "url": "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.4.0-5281842794987520/linux-x64/cli_linux_x64.tar.gz",
-        "hash": "sha512-bEspjCpptr0PWFZwMcxW2Al6Mr5UxLYzqoCtOVhxs4lhirOGDUugoSWZgxuCJrUbA+JY7i7H+uEFpFuOD84hiA=="
+        "url": "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.4.2-4835981233356800/linux-x64/cli_linux_x64.tar.gz",
+        "hash": "sha512-Sjk6/BNpzulOgXwbQwyRKNArEuvU1XA6zlzUeyMz4hbWc/sAl8v3GV91exEBY7qYUOnuo/27rd1LJWaLgsA/BQ=="
       }
     }
   },
@@ -37,16 +37,16 @@
     }
   },
   "claude-desktop": {
-    "version": "2.42304.0",
+    "version": "2.42304.2",
     "type": "apt",
     "sources": {
       "aarch64-linux": {
-        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_2.42304.0_arm64.deb",
-        "hash": "sha256-j7PEID5TiC8DesyCLzUMfT2mbNaR45uYru1NZtcyhkg="
+        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_2.42304.2_arm64.deb",
+        "hash": "sha256-APuFZMoVYIaxHTLwa7mld07xCE9GMtAV9kjcJbf+Prs="
       },
       "x86_64-linux": {
-        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_2.42304.0_amd64.deb",
-        "hash": "sha256-dM0szCnSQWUUTkVcvIcsbMKiSiY7g+c0IOlfiRZtSqQ="
+        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_2.42304.2_amd64.deb",
+        "hash": "sha256-OKfVi1ipdsiMplLqovesAsh8SjiK4w9GjXK3kOa1f5A="
       }
     }
   },
