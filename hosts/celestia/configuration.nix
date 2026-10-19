@@ -359,6 +359,26 @@ in
     after = [ "var-lib-vms.mount" ];
   };
 
+  # lcd serves the *.localhost short links. Port 80 needs a low-port bind, so it
+  # runs as a system service instead of a user one; CAP_NET_BIND_SERVICE is the
+  # only privilege it gets. No kernel-wide sysctl, no firewall/DNAT rule, and no
+  # privileged daemon is involved.
+  systemd.services.lcd = {
+    description = "lcd - local *.localhost link shortener";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" ];
+    serviceConfig = {
+      Type = "simple";
+      User = "dijith";
+      Group = "users";
+      ExecStart = "/home/dijith/.cargo/bin/lcd --addr 127.0.0.1:80";
+      AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
+      CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
+      Restart = "on-failure";
+      RestartSec = 1;
+    };
+  };
+
   virtualisation.docker = {
     enable = true;
     daemon = {
