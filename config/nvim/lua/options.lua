@@ -1,9 +1,26 @@
 local opt = vim.opt
 local g = vim.g
+
+-- vim.loader keys its bytecode cache by file path, but Nix store files always
+-- have the same mtime, so a Home Manager rebuild that repoints a plugin
+-- symlink to a new store path cannot invalidate the cache. Drop the cache
+-- whenever the config generation (init.lua store path) changes, otherwise
+-- stale Lua can reference GC'd store paths such as an old libfff_nvim.so.
+local loader_cache = vim.fn.stdpath("cache") .. "/luac"
+local loader_marker = loader_cache .. "/.config-generation"
+local current_generation = vim.uv.fs_realpath(vim.fn.stdpath("config") .. "/init.lua") or ""
+local cached_generation = vim.fn.filereadable(loader_marker) == 1 and vim.fn.readfile(loader_marker)[1] or nil
+if cached_generation ~= current_generation then
+	vim.fn.delete(loader_cache, "rf")
+end
+
 -- Enable loader for performance
 if vim.loader then
 	vim.loader.enable()
 end
+
+vim.fn.mkdir(loader_cache, "p")
+vim.fn.writefile({ current_generation }, loader_marker)
 
 -- Global / Provider Settings
 g.have_nerd_font = true -- Icons support
