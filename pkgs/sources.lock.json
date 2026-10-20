@@ -13,12 +13,12 @@
     }
   },
   "antigravity-cli": {
-    "version": "1.4.2",
+    "version": "1.4.3",
     "type": "json",
     "sources": {
       "x86_64-linux": {
-        "url": "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.4.2-4835981233356800/linux-x64/cli_linux_x64.tar.gz",
-        "hash": "sha512-Sjk6/BNpzulOgXwbQwyRKNArEuvU1XA6zlzUeyMz4hbWc/sAl8v3GV91exEBY7qYUOnuo/27rd1LJWaLgsA/BQ=="
+        "url": "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.4.3-4577820882632704/linux-x64/cli_linux_x64.tar.gz",
+        "hash": "sha512-m3JrhigKVuj/qEs7OhwA0ZlygzofbAsh2FxfxuQIr2SS5MYTU8rZtQC+5ZmvJkySz8Lq0fUEirlSUyjh5BmcQA=="
       }
     }
   },
@@ -73,32 +73,32 @@
     "lockfile": "pkgs/locks/loc"
   },
   "opencode": {
-    "version": "2.0.32",
+    "version": "2.1.1",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/@opencode/cli-linux-x64/-/cli-linux-x64-2.0.32.tgz",
-        "hash": "sha512-Q50ofBQ3gdwjD6ZQhrVR8fVlm8D2xPMshy4dynY6l6b+qLdKgBSJ9WpoaDyrQX1YWmf2s7IN4RbXmoXXdJitDA=="
+        "url": "https://registry.npmjs.org/@opencode/cli-linux-x64/-/cli-linux-x64-2.1.1.tgz",
+        "hash": "sha512-95RGRs0xMqzBuSj85pvXc7MQxokXHBBc3Ng1/I0EH83bq7sYrKKFw1FTXI7je6bZQjB+8q79bzUOoG1j0A192w=="
       }
     }
   },
   "opencode-desktop": {
-    "version": "2.0.32",
+    "version": "2.1.1",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://opencode.ai/files/bin/2.0.32/opencode-desktop-linux-amd64.deb",
-        "hash": "sha256-3se8rY3PVagltlx4+fe5pU1vpcH9+2sxTmNdv+WJJYA="
+        "url": "https://opencode.ai/files/bin/2.1.1/opencode-desktop-linux-amd64.deb",
+        "hash": "sha256-fg47mvH7HtRFoLdmblLeOlc4IO3IZdOvqeRylLUapKM="
       }
     }
   },
   "vercel": {
-    "version": "64.5.0",
+    "version": "64.7.0",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/vercel/-/vercel-64.5.0.tgz",
-        "hash": "sha512-JsWnLGHojqd0YKmLeU4NHpeCEX7/jIKNydBMNf0DGJe5W/jVb+j8lMekLkCIXqFTb8LObLoAe+OZ6/XJt4AhyQ=="
+        "url": "https://registry.npmjs.org/vercel/-/vercel-64.7.0.tgz",
+        "hash": "sha512-/2ze0K7OVfjDbh6eWQmCCOoAa3MDcbZX3OYljobcougiyqCMakLTAtj5H8aKubgD5IM1+otUMxvYcvlo6pv0Ng=="
       }
     },
     "lockfile": "pkgs/locks/vercel"
