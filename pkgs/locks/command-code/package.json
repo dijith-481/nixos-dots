@@ -3,6 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "command-code": "1.84.0"
+    "command-code": "1.86.3"
   }
 }
