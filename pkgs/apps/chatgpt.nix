@@ -1,10 +1,13 @@
 # ChatGPT Desktop — official .deb from OpenAI's apt repo.
-{ dotsLib }:
+{ dotsLib, pkgs }:
 
 dotsLib.mkElectronDeb {
   pname = "chatgpt";
   appDir = "lib/chatgpt";
   executable = "ChatGPT";
+
+  # resources/native/remote-control-device-key.node links against the TPM2 stack.
+  extraLibs = [ pkgs.tpm2-tss ];
 
   # SIGILL in the git repo watcher: autoPatchelf moves PT_INTERP past the first
   # ~2 KiB that detect-libc scans, so it falls back to process.report, which
