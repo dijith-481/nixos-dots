@@ -13,12 +13,12 @@
     }
   },
   "antigravity-cli": {
-    "version": "1.4.3",
+    "version": "1.4.4",
     "type": "json",
     "sources": {
       "x86_64-linux": {
-        "url": "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.4.3-4577820882632704/linux-x64/cli_linux_x64.tar.gz",
-        "hash": "sha512-m3JrhigKVuj/qEs7OhwA0ZlygzofbAsh2FxfxuQIr2SS5MYTU8rZtQC+5ZmvJkySz8Lq0fUEirlSUyjh5BmcQA=="
+        "url": "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.4.4-4783783166214144/linux-x64/cli_linux_x64.tar.gz",
+        "hash": "sha512-fOFJ01A0TBBGx7WbZlm8xdZZ81G/OgfGwIWIfZNCfOuJ2Sd1LkzNCES1P/uR0z1qSfcoNc6ydsfP/dE8+4AjuA=="
       }
     }
   },
