@@ -13,50 +13,50 @@
     }
   },
   "antigravity-cli": {
-    "version": "1.4.4",
+    "version": "1.4.5",
     "type": "json",
     "sources": {
       "x86_64-linux": {
-        "url": "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.4.4-4783783166214144/linux-x64/cli_linux_x64.tar.gz",
-        "hash": "sha512-fOFJ01A0TBBGx7WbZlm8xdZZ81G/OgfGwIWIfZNCfOuJ2Sd1LkzNCES1P/uR0z1qSfcoNc6ydsfP/dE8+4AjuA=="
+        "url": "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.4.5-4952523841339392/linux-x64/cli_linux_x64.tar.gz",
+        "hash": "sha512-/TDo0lbijEptD1/dqg90tHyMWo6foihcsD+FCT6Q7KBAbxwvpXoDhruCDiHtQn4nwjFaAUU9/aQBwiI7JjmrMA=="
       }
     }
   },
   "chatgpt": {
-    "version": "26.1016.51333",
+    "version": "26.1016.61520",
     "type": "apt",
     "sources": {
       "aarch64-linux": {
-        "url": "https://persistent.oaistatic.com/codex-app-prod/linux/deb/pool/main/c/chatgpt/chatgpt_26.1016.51333_arm64.deb",
-        "hash": "sha256-PllqPjYdf+e1z+ZT+tXayki+kJdWUs4sLCyconP1cLI="
+        "url": "https://persistent.oaistatic.com/codex-app-prod/linux/deb/pool/main/c/chatgpt/chatgpt_26.1016.61520_arm64.deb",
+        "hash": "sha256-xUmDSFgfdgcQKsbyBsn4dmjM42yMfbtMAgniXNimCxE="
       },
       "x86_64-linux": {
-        "url": "https://persistent.oaistatic.com/codex-app-prod/linux/deb/pool/main/c/chatgpt/chatgpt_26.1016.51333_amd64.deb",
-        "hash": "sha256-x59/0k/X2LZDmUKpcwbFYT2OBJkD2JPxNqBb/tVR3Io="
+        "url": "https://persistent.oaistatic.com/codex-app-prod/linux/deb/pool/main/c/chatgpt/chatgpt_26.1016.61520_amd64.deb",
+        "hash": "sha256-mt1iKRbF+jhhr9lQga934lSIwQjKnFQ+H2dWCzkNKNQ="
       }
     }
   },
   "claude-desktop": {
-    "version": "3.1623.0",
+    "version": "3.1623.4",
     "type": "apt",
     "sources": {
       "aarch64-linux": {
-        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_3.1623.0_arm64.deb",
-        "hash": "sha256-puGO0GtI4K8qzQj0g3wmlaTMAn4xqCiRplG0hqSg5Vw="
+        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_3.1623.4_arm64.deb",
+        "hash": "sha256-LYs1ehvtvvcJTj+xcDgL6mO371fIH5985tVAhphFjH8="
       },
       "x86_64-linux": {
-        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_3.1623.0_amd64.deb",
-        "hash": "sha256-054dmlcPHlF/FYR59aHZA7mnTR7z8nk2IALcrTdeM88="
+        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_3.1623.4_amd64.deb",
+        "hash": "sha256-Zxyf3+CwK1DUuQfDvfE23P7CkFGrjP/Pop6+MCanLD0="
       }
     }
   },
   "command-code": {
-    "version": "1.86.3",
+    "version": "1.87.1",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/command-code/-/command-code-1.86.3.tgz",
-        "hash": "sha512-Pu5Nq5/2K+78OuCTfoJGkioyK0ZgVUO2VCkQkHocZjcCo2m4OFlk2H0QEHiOxwXhAHB08TjOfnG5zBFG2veNcA=="
+        "url": "https://registry.npmjs.org/command-code/-/command-code-1.87.1.tgz",
+        "hash": "sha512-K6jPoKNKmu6OgSPLPVe9xu8ec/J236PuQgMdBe9LiFofP7POtHqOAQKtdvsTSHluSlEHkxTI2DsBk9UjLEyfXw=="
       }
     },
     "lockfile": "pkgs/locks/command-code"
@@ -93,12 +93,12 @@
     }
   },
   "vercel": {
-    "version": "65.0.0",
+    "version": "65.1.0",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/vercel/-/vercel-65.0.0.tgz",
-        "hash": "sha512-v3QiuBN1DmEyx+5VooEOuVy54//t+IASnEUtQPaNkp3b28LgUwI6t8hYzBtwhA3VuHH3iQSvi/QPI1rpDUJdtA=="
+        "url": "https://registry.npmjs.org/vercel/-/vercel-65.1.0.tgz",
+        "hash": "sha512-DOi/GBlLIEqaVYK3cZJJV66GvETjMxk3tN3Yp+jdfFBM+AQiDEjLKR1N/keE5yTCQMSZ/+u8+jcJTu3E0exucw=="
       }
     },
     "lockfile": "pkgs/locks/vercel"
