@@ -1,24 +1,24 @@
 {
   "antigravity": {
-    "version": "2.25.0",
+    "version": "2.26.0",
     "type": "json",
     "sources": {
       "x86_64-linux": {
-        "url": "https://storage.googleapis.com/antigravity-public/antigravity-hub/2.25.0-6535192714805248/linux-x64/Antigravity.tar.gz",
-        "hash": "sha256-n5y9LbnhlvZW2fTK97+Zr3Vukzb3BBIiCvnzlmm2kiI="
+        "url": "https://storage.googleapis.com/antigravity-public/antigravity-hub/2.26.0-6546645232517120/linux-x64/Antigravity.tar.gz",
+        "hash": "sha256-n3lzA3L2hdhJuTUYcjHt6ls4xSaehV40Xmi1xgcfeIQ="
       }
     },
     "vars": {
-      "buildId": "6535192714805248"
+      "buildId": "6546645232517120"
     }
   },
   "antigravity-cli": {
-    "version": "1.4.5",
+    "version": "1.4.6",
     "type": "json",
     "sources": {
       "x86_64-linux": {
-        "url": "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.4.5-4952523841339392/linux-x64/cli_linux_x64.tar.gz",
-        "hash": "sha512-/TDo0lbijEptD1/dqg90tHyMWo6foihcsD+FCT6Q7KBAbxwvpXoDhruCDiHtQn4nwjFaAUU9/aQBwiI7JjmrMA=="
+        "url": "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.4.6-4884751325200384/linux-x64/cli_linux_x64.tar.gz",
+        "hash": "sha512-ThJEuLjBKAVS9ZwbJLdqkkXbnIADKuxtso+4YDPWCIq8MKkNrUMtKyRsKP3YfYKrtIcn1f+Iuh1dTsdrMzSOfQ=="
       }
     }
   },
@@ -37,26 +37,26 @@
     }
   },
   "claude-desktop": {
-    "version": "3.1623.4",
+    "version": "3.6556.2",
     "type": "apt",
     "sources": {
       "aarch64-linux": {
-        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_3.1623.4_arm64.deb",
-        "hash": "sha256-LYs1ehvtvvcJTj+xcDgL6mO371fIH5985tVAhphFjH8="
+        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_3.6556.2_arm64.deb",
+        "hash": "sha256-W3CutrszWz1GhO0QataMfaRP86pH/42y/v5VvegQwQs="
       },
       "x86_64-linux": {
-        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_3.1623.4_amd64.deb",
-        "hash": "sha256-Zxyf3+CwK1DUuQfDvfE23P7CkFGrjP/Pop6+MCanLD0="
+        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_3.6556.2_amd64.deb",
+        "hash": "sha256-D27R8oRcMEGbhUWoMgZ210ZKGfYl4F4CkZI4qml47LQ="
       }
     }
   },
   "command-code": {
-    "version": "1.87.1",
+    "version": "1.87.3",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/command-code/-/command-code-1.87.1.tgz",
-        "hash": "sha512-K6jPoKNKmu6OgSPLPVe9xu8ec/J236PuQgMdBe9LiFofP7POtHqOAQKtdvsTSHluSlEHkxTI2DsBk9UjLEyfXw=="
+        "url": "https://registry.npmjs.org/command-code/-/command-code-1.87.3.tgz",
+        "hash": "sha512-172l65tbKQ71MdQcYqh2CQ8Q0KpVxT6NZo4dK7ue365YwBQ8srbV4ePGdVu3bNInFFqyQCDWnC8cVVHs2uIAGQ=="
       }
     },
     "lockfile": "pkgs/locks/command-code"
@@ -73,12 +73,12 @@
     "lockfile": "pkgs/locks/loc"
   },
   "opencode": {
-    "version": "2.1.2",
+    "version": "2.1.4",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/@opencode/cli-linux-x64/-/cli-linux-x64-2.1.2.tgz",
-        "hash": "sha512-O8/8JT8SNmMReDmpYDsm04KmkrQQ2dzaKgaw06zCoUfh50ARGHs58E6zCh16GIUyEL8abrdSe268K5/ExE89Gw=="
+        "url": "https://registry.npmjs.org/@opencode/cli-linux-x64/-/cli-linux-x64-2.1.4.tgz",
+        "hash": "sha512-o8EJ0ZsT4dzDKN+0mpG2EKbNGzJyp+F1++Av28UReRVfiEv+N34eZEnN/unkiMoerKHad6W6Ii7k4ukTnPNmNQ=="
       }
     }
   },
@@ -93,12 +93,12 @@
     }
   },
   "vercel": {
-    "version": "65.1.0",
+    "version": "65.2.0",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/vercel/-/vercel-65.1.0.tgz",
-        "hash": "sha512-DOi/GBlLIEqaVYK3cZJJV66GvETjMxk3tN3Yp+jdfFBM+AQiDEjLKR1N/keE5yTCQMSZ/+u8+jcJTu3E0exucw=="
+        "url": "https://registry.npmjs.org/vercel/-/vercel-65.2.0.tgz",
+        "hash": "sha512-IPalObt3xnaY9Njbwb3wbQR7ht0gyL3XYt4z1wjFui3r5pkJPKSAGaGSD4B5AX5B4tOXxSbnXpWnKx+RJgdKrg=="
       }
     },
     "lockfile": "pkgs/locks/vercel"
