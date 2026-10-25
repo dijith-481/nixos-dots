@@ -68,6 +68,26 @@
         "type": "github"
       }
     },
+    "delta": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792609998,
+        "narHash": "sha256-xeYPpllCLZYRON/kzmROZr9Zt+0jpyv/p5BdIkUSYYU=",
+        "owner": "zed-industries",
+        "repo": "delta-nix",
+        "rev": "79f76929c63869d89bbd04e9422bc6908a5c5770",
+        "type": "github"
+      },
+      "original": {
+        "owner": "zed-industries",
+        "repo": "delta-nix",
+        "type": "github"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -362,6 +382,7 @@
     },
     "root": {
       "inputs": {
+        "delta": "delta",
         "home-manager": "home-manager",
         "niri": "niri",
         "nixos-hardware": "nixos-hardware",

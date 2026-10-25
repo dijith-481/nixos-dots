@@ -1,10 +1,21 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 let
   # OpenSSH sets IP_TOS 0xb8 (DSCP 46 / CS6) on its socket; the mobile carrier
   # blackholes those packets, so the SYN never gets a reply and git hangs with
   # no output. Let bash (not OpenSSH) create the TCP socket, then relay it.
   proxyCmd = "bash -c 'exec 3<>/dev/tcp/%h/%p; cat <&3 & cat >&3'";
+
+  # git-delta (the diff pager) and Zed's Delta both ship bin/delta. Zed's
+  # package owns that name here, so expose the pager as `git-delta`; the git
+  # integration below points at it by absolute store path. A symlink wrapper
+  # avoids rebuilding git-delta from source just to rename one binary.
+  gitDelta = pkgs.runCommand "git-delta-${pkgs.delta.version}" {
+    meta.mainProgram = "git-delta";
+  } ''
+    mkdir -p $out/bin
+    ln -s ${pkgs.lib.getExe pkgs.delta} $out/bin/git-delta
+  '';
 in
 {
 
@@ -43,6 +54,7 @@ in
   # git diff pager — replaces the deprecated programs.git.delta module
   programs.delta = {
     enable = true;
+    package = gitDelta;
     enableGitIntegration = true;
     options = {
       navigate = true;

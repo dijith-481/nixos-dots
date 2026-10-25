@@ -10,6 +10,13 @@
     };
     stylix.url = "github:nix-community/stylix";
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    # Official Delta Linux binaries. `follows` keeps Delta on our nixpkgs so its
+    # bundled glibc matches the host Mesa/LLVM stack loaded from
+    # /run/opengl-driver; a stale pin breaks GPU adapter detection at startup.
+    delta = {
+      url = "github:zed-industries/delta-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     niri = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";

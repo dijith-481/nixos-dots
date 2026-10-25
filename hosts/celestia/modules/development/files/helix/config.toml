@@ -70,9 +70,9 @@ g =":sh zellij run -n Lazygit -c -f -x 10%% -y 10%% --width 80%% --height 80%%  
 e = ":sh zellij run -n Yazi -c -f -x 10%% -y 10%% --width 80%% --height 80%% -- bash ~/.config/helix/scripts/yazi-picker.sh open %{buffer_name}"
 
 [keys.normal.space.H]
-i = ":sh zellij run --name 'Git Inline' --floating --close-on-exit -- bash -c 'git diff HEAD -- %{buffer_name} | delta --features arctic-fox'"
+i = ":sh zellij run --name 'Git Inline' --floating --close-on-exit -- bash -c 'git diff HEAD -- %{buffer_name} | git-delta --features arctic-fox'"
 
-d = ":sh zellij run --name 'Git Side-By-Side'  --close-on-exit -- bash -c 'git diff HEAD -- %{buffer_name} | delta --side-by-side arctic-fox'"
+d = ":sh zellij run --name 'Git Side-By-Side'  --close-on-exit -- bash -c 'git diff HEAD -- %{buffer_name} | git-delta --side-by-side arctic-fox'"
 
 r = ":reset-diff-change"
 

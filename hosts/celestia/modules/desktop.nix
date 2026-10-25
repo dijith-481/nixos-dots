@@ -10,6 +10,7 @@
 
     # zen twilight only — stable removed (twilight supersedes it)
     inputs.zen-browser.packages."${pkgs.stdenv.hostPlatform.system}".twilight
+    inputs.delta.packages."${pkgs.stdenv.hostPlatform.system}".delta
     zathura
     localsend
     seahorse

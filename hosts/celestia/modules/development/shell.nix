@@ -22,7 +22,8 @@
     scooter
     eslint_d
 
-    delta # Better git diff
+    # git-delta pager is installed by programs.delta (as `git-delta`, since
+    # Zed's Delta owns the `delta` command).
     lazygit # TUI for git
     lazydocker # TUI for docker
 
