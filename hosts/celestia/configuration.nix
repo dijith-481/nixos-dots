@@ -88,6 +88,23 @@ in
     };
   };
 
+  # Codex repeatedly leaves bundled-marketplace staging copies in this path.
+  # Keep that disposable cache in RAM, with swapping disabled, so growth cannot
+  # spill onto the SSD. The 1 GiB ceiling bounds RAM use if Codex loops again.
+  fileSystems."/home/dijith/.codex/.tmp/bundled-marketplaces" = {
+    device = "tmpfs";
+    fsType = "tmpfs";
+    options = [
+      "noswap"
+      "size=1G"
+      "mode=0700"
+      "uid=1000"
+      "gid=100"
+      "nodev"
+      "nosuid"
+    ];
+  };
+
   hardware = {
 
     enableRedistributableFirmware = true;

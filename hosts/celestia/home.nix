@@ -1,6 +1,30 @@
 { config, pkgs, lib, ... }:
 let
   versions = import ../../versions.nix;
+  codexMarketplaceStagingCleanup = pkgs.writeShellScript "codex-marketplace-staging-cleanup" ''
+    set -euo pipefail
+
+    root="${config.home.homeDirectory}/.codex/.tmp/bundled-marketplaces"
+    [[ -d "$root" ]] || exit 0
+
+    cutoff="$(( $(${pkgs.coreutils}/bin/date +%s) - 180 ))"
+    while IFS= read -r -d "" stage; do
+      # Do not touch a directory created or modified in the last three minutes.
+      stage_mtime="$(${pkgs.coreutils}/bin/stat -c %Y -- "$stage")"
+      if [[ "$stage_mtime" -gt "$cutoff" ]]; then
+        continue
+      fi
+
+      # Preserve any stage whose files or directories are still changing.
+      if ${pkgs.findutils}/bin/find "$stage" -printf '%T@\n' \
+        | ${pkgs.gawk}/bin/awk -v cutoff="$cutoff" '$1 > cutoff { active=1 } END { exit !active }'; then
+        continue
+      fi
+
+      ${pkgs.coreutils}/bin/rm -rf -- "$stage"
+    done < <(${pkgs.findutils}/bin/find "$root" -mindepth 1 -maxdepth 1 \
+      -type d -name 'openai-bundled.staging-*' -print0)
+  '';
 in
 {
   imports = [
@@ -18,6 +42,27 @@ in
   home.username = "dijith";
   home.homeDirectory = "/home/dijith";
   home.stateVersion = versions.homeManager;
+
+  # Free RAM used by abandoned Codex marketplace staging copies. The
+  # NixOS tmpfs mount keeps this cache off disk and caps its total size.
+  systemd.user.services.codex-marketplace-staging-cleanup = {
+    Unit.Description = "Prune stale Codex bundled marketplace staging directories";
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${codexMarketplaceStagingCleanup}";
+    };
+  };
+
+  systemd.user.timers.codex-marketplace-staging-cleanup = {
+    Unit.Description = "Periodically prune stale Codex marketplace staging directories";
+    Timer = {
+      OnBootSec = "1m";
+      OnUnitActiveSec = "1m";
+      AccuracySec = "30s";
+      Unit = "codex-marketplace-staging-cleanup.service";
+    };
+    Install.WantedBy = [ "timers.target" ];
+  };
 
   home.pointerCursor = {
     gtk.enable = true;
