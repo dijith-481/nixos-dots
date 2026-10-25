@@ -1,31 +1,21 @@
 local nmap_leader = Config.nmap_leader
 local conform = require("conform")
-local function get_formatter(fallback)
-	if vim.fs.root(0, { "biome.json", "biome.jsonc" }) then
-		return { "biome" }
-	end
-	if vim.fs.root(0, { ".oxlintrc.json" }) then
-		return { "oxlint" }
-	end
-	return fallback or { "prettier" }
-end
-
 conform.setup({
 	formatters_by_ft = {
 		c = { "clang-format" },
 		cpp = { "clang-format" },
 		fish = { "fish_indent" },
 		bash = { "shfmt" },
-		javascript = get_formatter(),
-		tailwind = get_formatter({ "rustywind" }),
-		typescript = get_formatter(),
-		javascriptreact = get_formatter(),
-		typescriptreact = get_formatter(),
+		javascript = { "prettier" },
+		tailwind = { "rustywind" },
+		typescript = { "prettier" },
+		javascriptreact = { "prettier" },
+		typescriptreact = { "prettier" },
 		svelte = { "prettier" },
-		css = get_formatter(),
+		css = { "prettier" },
 		html = { "prettier" },
-		json = get_formatter(),
-		jsonc = get_formatter(),
+		json = { "prettier" },
+		jsonc = { "prettier" },
 		yaml = { "prettier" },
 		markdown = { "prettier" },
 		lua = { "stylua" },
@@ -50,10 +40,21 @@ conform.setup({
 	},
 
 	format_on_save = function(bufnr)
-		if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+		if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat or vim.b[bufnr].bigfile then
 			return
 		end
-		return { timeout_ms = 500, lsp_fallback = true }
+
+		local filetype = vim.bo[bufnr].filetype
+		local project_formatters
+		if vim.tbl_contains({ "javascript", "javascriptreact", "typescript", "typescriptreact", "css", "json", "jsonc" }, filetype) then
+			if vim.fs.root(bufnr, { "biome.json", "biome.jsonc" }) then
+				project_formatters = { "biome" }
+			elseif vim.fs.root(bufnr, { ".oxlintrc.json" }) then
+				project_formatters = { "oxlint" }
+			end
+		end
+
+		return { timeout_ms = 500, lsp_fallback = true, formatters = project_formatters }
 	end,
 })
 

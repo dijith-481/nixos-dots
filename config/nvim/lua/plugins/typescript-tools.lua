@@ -1,19 +1,21 @@
 local nmap_leader = Config.nmap_leader
-local function has_deno_json()
-	local deno_json_path = vim.fn.findfile("deno.json", vim.fn.getcwd() .. ";")
+local ts_utils = require("typescript-tools.utils")
 
-	return deno_json_path ~= ""
-end
-
-if not has_deno_json() then
-	require("typescript-tools").setup({
+require("typescript-tools").setup({
+	-- Choose per buffer so Deno packages inside a monorepo do not also start
+	-- tsserver, regardless of the directory Neovim was launched from.
+	root_dir = function(bufnr, on_dir)
+		if vim.fs.root(bufnr, { "deno.json", "deno.jsonc", "deno.lock" }) then
+			return
+		end
+		on_dir(ts_utils.get_root_dir(bufnr))
+	end,
+	settings = {
 		expose_as_code_action = "all",
-		settings = {
-			tsserver_file_preferences = {
-				importModuleSpecifierPreference = "non-relative",
-				importModuleSpecifierEnding = "minimal",
-			},
-		},
 		complete_function_calls = true,
-	})
-end
+		tsserver_file_preferences = {
+			importModuleSpecifierPreference = "non-relative",
+			importModuleSpecifierEnding = "minimal",
+		},
+	},
+})

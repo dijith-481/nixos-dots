@@ -1,5 +1,65 @@
 local opt = vim.opt
 local g = vim.g
+local bigfile_size = 1.5 * 1024 * 1024
+
+local function mark_bigfile(bufnr)
+	vim.b[bufnr].bigfile = true
+	vim.b[bufnr].completion = false
+	vim.b[bufnr].minianimate_disable = true
+	vim.b[bufnr].minihipatterns_disable = true
+	vim.bo[bufnr].filetype = "bigfile"
+end
+
+-- Set the filetype before the built-in extension matcher sees a CLI-opened
+-- file. The FileType event then reaches the lazy LSP/Tree-sitter guards with
+-- the bigfile marker already set.
+vim.api.nvim_create_autocmd("BufReadPre", {
+	group = vim.api.nvim_create_augroup("early_bigfile_guard", { clear = true }),
+	callback = function(event)
+		local path = vim.api.nvim_buf_get_name(event.buf)
+		if path ~= "" and vim.fn.getfsize(path) > bigfile_size then
+			mark_bigfile(event.buf)
+		end
+	end,
+})
+vim.api.nvim_create_autocmd("FileType", {
+	group = vim.api.nvim_create_augroup("early_bigfile_filetype", { clear = true }),
+	pattern = "*",
+	callback = function(event)
+		if vim.b[event.buf].bigfile and event.match ~= "bigfile" then
+			vim.bo[event.buf].filetype = "bigfile"
+		end
+	end,
+})
+
+-- Filetype detection runs after init.lua has been sourced, so registering
+-- this here also covers files passed on Neovim's command line. Snacks' own
+-- bigfile module is loaded after UIEnter and otherwise misses that first file.
+vim.filetype.add({
+	pattern = {
+		[".*"] = {
+			function(path, bufnr)
+				if not path or not bufnr or vim.bo[bufnr].filetype == "bigfile" then
+					return
+				end
+				if path ~= vim.fs.normalize(vim.api.nvim_buf_get_name(bufnr)) then
+					return
+				end
+
+				local size = vim.fn.getfsize(path)
+				if size <= 0 then
+					return
+				end
+
+				local lines = vim.api.nvim_buf_line_count(bufnr)
+				if size > bigfile_size or (lines > 0 and (size - lines) / lines > 1000) then
+					mark_bigfile(bufnr)
+					return "bigfile"
+				end
+			end,
+		},
+	},
+})
 
 -- vim.loader keys its bytecode cache by file path, but Nix store files always
 -- have the same mtime, so a Home Manager rebuild that repoints a plugin

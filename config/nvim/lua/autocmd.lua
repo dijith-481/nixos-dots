@@ -38,11 +38,38 @@ autocmd("FileType", "plugin_fixes", function()
 end, { "dashboard", "mason", "notify", "trouble", "help" }, "Disable indent scope")
 
 -- Development Workflow (Rust/Dioxus)  TODO: move to dioxus config
-autocmd("BufWritePost", "rust_tools", function()
-	if vim.fn.filereadable(vim.fn.getcwd() .. "/Dioxus.toml") == 1 then
-		vim.cmd("silent !dx fmt --file %")
+local dioxus_formatting = {}
+autocmd("BufWritePost", "rust_tools", function(event)
+	local root = vim.fs.root(event.buf, { "Dioxus.toml" })
+	local path = vim.api.nvim_buf_get_name(event.buf)
+	if not root or path == "" or dioxus_formatting[event.buf] then
+		return
 	end
-end, "*.rs", "Dioxus auto-format")
+
+	dioxus_formatting[event.buf] = true
+	local changedtick = vim.api.nvim_buf_get_changedtick(event.buf)
+	vim.system({ "dx", "fmt", "--file", path }, { cwd = root, text = true }, function(result)
+		vim.schedule(function()
+			dioxus_formatting[event.buf] = nil
+			if result.code ~= 0 then
+				local detail = vim.trim(result.stderr or result.stdout or "")
+				vim.notify(("dx fmt failed (exit %d)%s"):format(result.code, detail ~= "" and (": " .. detail) or ""), vim.log.levels.ERROR)
+				return
+			end
+
+			if
+				vim.api.nvim_buf_is_valid(event.buf)
+				and vim.api.nvim_buf_get_name(event.buf) == path
+				and vim.api.nvim_buf_get_changedtick(event.buf) == changedtick
+				and not vim.bo[event.buf].modified
+			then
+				vim.api.nvim_buf_call(event.buf, function()
+					vim.cmd.checktime()
+				end)
+			end
+		end)
+	end)
+end, "*.rs", "Dioxus auto-format (async)")
 
 -- Personal Workflow TODO move to personal config
 autocmd("BufEnter", "todo_list", function()

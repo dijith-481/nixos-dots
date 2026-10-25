@@ -7,7 +7,9 @@ vim.g.rustaceanvim = {
 		on_attach = function(client, bufnr) end,
 		default_settings = {
 			["rust-analyzer"] = {
-				cargo = { features = "all", buildScripts = {
+				-- Use the workspace's default features. `all` can force very
+				-- large dependency graphs and duplicate build-script work.
+				cargo = { buildScripts = {
 					enable = true,
 				} },
 			},

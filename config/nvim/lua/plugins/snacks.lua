@@ -56,7 +56,9 @@ require("snacks").setup({
 		sources = {
 			files = {
 				hidden = true,
-				ignored = true,
+				-- Keep hidden config files searchable, but let ripgrep honor
+				-- repository ignores such as node_modules and target.
+				ignored = false,
 			},
 		},
 		win = {

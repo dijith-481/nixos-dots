@@ -7,12 +7,16 @@ local git_cache = {} -- [bufnr] = { [lnum] = diff_status_string }
 -- Stores fold info per lnum so foldfn + lineNrFn share one lookup.
 local fold_info_cache = {} -- [lnum] = { level, closed_at }
 local ctx_cache = {} -- [lnum] = context table
+local scope_range_cache = {} -- [fold_level][lnum] = { start, end_ }
+local render_bufnr = -1
 local render_tick = -1 -- vim.b[bufnr].changedtick snapshot
 
-local function reset_render_cache(tick)
-	if tick ~= render_tick then
+local function reset_render_cache(bufnr, tick)
+	if bufnr ~= render_bufnr or tick ~= render_tick then
 		fold_info_cache = {}
 		ctx_cache = {}
+		scope_range_cache = {}
+		render_bufnr = bufnr
 		render_tick = tick
 	end
 end
@@ -23,6 +27,7 @@ vim.api.nvim_create_autocmd({ "DiagnosticChanged", "BufEnter" }, {
 	group = group,
 	callback = function(args)
 		diag_cache[args.buf] = nil
+		ctx_cache = {}
 	end,
 })
 vim.api.nvim_create_autocmd("User", {
@@ -30,6 +35,7 @@ vim.api.nvim_create_autocmd("User", {
 	group = group,
 	callback = function(args)
 		git_cache[args.buf or vim.api.nvim_get_current_buf()] = nil
+		ctx_cache = {}
 	end,
 })
 
@@ -56,6 +62,7 @@ local last_fold_args = {}
 local function get_current_fold_range(cursor_lnum, fold_level)
 	local bufnr = vim.api.nvim_get_current_buf()
 	local tick = vim.b[bufnr].changedtick
+	reset_render_cache(bufnr, tick)
 
 	if
 		last_fold_args.bufnr == bufnr
@@ -82,6 +89,20 @@ local function get_current_fold_range(cursor_lnum, fold_level)
 		return nil, nil
 	end
 
+	local ranges = scope_range_cache[calc_level]
+	local cached_range = ranges and ranges[calc_lnum]
+	if cached_range then
+		last_fold_args = {
+			bufnr = bufnr,
+			lnum = cursor_lnum,
+			tick = tick,
+			level = fold_level,
+			start = cached_range.start,
+			end_ = cached_range.end_,
+		}
+		return cached_range.start, cached_range.end_
+	end
+
 	-- Walk upward until the fold level drops below calc_level.
 	-- Each get_fold_info call is cached, so repeated lines in the same
 	-- render cycle are essentially free.
@@ -94,6 +115,13 @@ local function get_current_fold_range(cursor_lnum, fold_level)
 	local last_line = vim.fn.line("$")
 	while end_lnum < last_line and get_fold_info(end_lnum + 1).level >= calc_level do
 		end_lnum = end_lnum + 1
+	end
+
+	local range = { start = start_lnum, end_ = end_lnum }
+	ranges = ranges or {}
+	scope_range_cache[calc_level] = ranges
+	for line = start_lnum, end_lnum do
+		ranges[line] = range
 	end
 
 	last_fold_args = {
@@ -155,7 +183,7 @@ end
 -- ── line context (shared between foldfn + lineNrFn) ───────────────
 -- Called once per lnum per render cycle; result is cached in ctx_cache.
 local function get_line_context(bufnr, lnum, tick)
-	reset_render_cache(tick)
+	reset_render_cache(bufnr, tick)
 
 	local cached = ctx_cache[lnum]
 	if cached then
@@ -236,6 +264,9 @@ local foldfn = function(args)
 	end
 
 	local bufnr = vim.api.nvim_get_current_buf()
+	if vim.b[bufnr].bigfile then
+		return ""
+	end
 	local tick = vim.b[bufnr].changedtick
 	local lnum = args.lnum
 	local context = get_line_context(bufnr, lnum, tick)
@@ -350,6 +381,9 @@ local lineNrFn = function(args, segment)
 
 	local pad = (" "):rep(args.nuw - #lnum_str)
 	local bufnr = vim.api.nvim_get_current_buf()
+	if vim.b[bufnr].bigfile then
+		return "%=" .. pad .. lnum_str .. " "
+	end
 	local tick = vim.b[bufnr].changedtick
 	-- Re-use context already built by foldfn (or build it now if foldfn
 	-- was skipped, e.g. when fold column is absent).

@@ -1,20 +1,6 @@
-local source_icons = {
-	Buffer = "󰺮",
-	Snippets = "󰅴",
-	Dict = "󱀽",
-	Ripgrep = "󰩫",
-	git = "",
-	tags = "",
-	omni = "󰊕",
-}
-
 require("blink.cmp").setup({
 	fuzzy = {
-		sorts = {
-			"exact",
-			"score",
-			"sort_text",
-		},
+		sorts = { "exact", "score", "sort_text" },
 		implementation = "rust",
 	},
 	completion = {
@@ -25,107 +11,23 @@ require("blink.cmp").setup({
 		},
 		ghost_text = { enabled = false },
 		list = {
-			selection = {
-				preselect = true,
-				auto_insert = true,
-			},
+			selection = { preselect = true, auto_insert = true },
 		},
 		menu = {
 			border = "rounded",
 			auto_show = true,
 			draw = {
 				align_to = "none",
-				treesitter = { "lsp" },
+				-- Blink's built-in components avoid per-item Treesitter and
+				-- custom Lua formatting on every completion refresh.
 				columns = { { "kind_icon", "label", gap = 1 }, { "source_name" } },
-				components = {
-					label_description = {
-						width = { max = 30 },
-						text = function(ctx)
-							return ctx.label_description
-						end,
-						highlight = "BlinkCmpLabelDescription",
-					},
-					source_name = {
-						text = function(ctx)
-							return ctx.source_name
-						end,
-					},
-					kind = {
-						ellipsis = false,
-						width = { fill = true },
-						text = function(ctx)
-							return ctx.kind
-						end,
-						highlight = function(ctx)
-							return ctx.kind_hl
-						end,
-					},
-					kind_icon = {
-						ellipsis = false,
-						text = function(ctx)
-							local kind_icon
-							if ctx.source_name == "lsp" then
-								kind_icon, _, _ = require("mini.icons").get("lsp", ctx.kind)
-							elseif ctx.kind == "File" then
-								kind_icon, _, _ = require("mini.icons").get("file", ctx.label)
-							elseif ctx.kind == "Folder" then
-								kind_icon, _, _ = require("mini.icons").get("directory", ctx.label)
-							elseif ctx.source_name == "Nerd Fonts" or ctx.source_name == "Emoji" then
-								kind_icon = ""
-							else
-								kind_icon = source_icons[ctx.source_name]
-							end
-
-							return kind_icon
-						end,
-						highlight = function(ctx)
-							local hl
-							if ctx.kind == "File" then
-								_, hl, _ = require("mini.icons").get("file", ctx.label)
-							elseif ctx.kind == "Folder" then
-								_, hl, _ = require("mini.icons").get("directory", ctx.label)
-							else
-								_, hl, _ = require("mini.icons").get("lsp", ctx.kind)
-							end
-							return hl
-						end,
-					},
-					label = {
-						width = { fill = false, max = 60 },
-						text = function(ctx)
-							local highlights_info = require("colorful-menu").blink_highlights(ctx)
-							if highlights_info ~= nil then
-								return highlights_info.label .. ctx.label_detail
-							else
-								return ctx.label .. ctx.label_detail
-							end
-						end,
-						highlight = function(ctx)
-							local highlights = {}
-							local highlights_info = require("colorful-menu").blink_highlights(ctx)
-							if highlights_info ~= nil then
-								highlights = highlights_info.highlights
-							end
-							if ctx.label_detail then
-								table.insert(
-									highlights,
-									{ #ctx.label, #ctx.label + #ctx.label_detail, group = "BlinkCmpLabelDetail" }
-								)
-							end
-							for _, idx in ipairs(ctx.label_matched_indices) do
-								table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
-							end
-							return highlights
-						end,
-					},
-				},
 			},
 		},
 	},
 	signature = { enabled = true },
 	keymap = {
 		preset = "default",
-		-- Free Tab/S-Tab for supermaven: unmap preset's snippet jump
+		-- Free Tab/S-Tab for Supermaven: unmap the preset's snippet jump.
 		["<Tab>"] = false,
 		["<S-Tab>"] = false,
 		["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
@@ -139,38 +41,20 @@ require("blink.cmp").setup({
 			end,
 		},
 	},
-	appearance = {
-		nerd_font_variant = "mono",
-	},
-
-	snippets = {
-		preset = "luasnip",
-	},
+	appearance = { nerd_font_variant = "mono" },
+	snippets = { preset = "luasnip" },
 	sources = {
-		default = {
-			"conventional_commits",
-			"lsp",
-			"buffer",
-			"snippets",
-			"path",
-			"nerdfont",
-			"emoji",
-			"markdown",
-			"env",
-			-- "copilot",
-		},
-
+		-- Keep the hot path focused on local, built-in sources. Specialized
+		-- providers are only queried in the filetypes where they are useful.
+		default = { "lsp", "path", "snippets", "buffer" },
 		per_filetype = {
-			markdown = { inherit_defaults = true, "markdown" },
+			markdown = { inherit_defaults = true, "markdown", "emoji" },
+			bash = { inherit_defaults = true, "env" },
+			sh = { inherit_defaults = true, "env" },
+			zsh = { inherit_defaults = true, "env" },
+			gitcommit = { inherit_defaults = false, "conventional_commits", "buffer", "snippets" },
 		},
-
 		providers = {
-			-- copilot = {
-			-- 	name = "copilot",
-			-- 	module = "blink-copilot",
-			-- 	score_offset = 100,
-			-- 	async = true,
-			-- },
 			env = {
 				name = "Env",
 				module = "blink-cmp-env",
@@ -184,29 +68,13 @@ require("blink.cmp").setup({
 				name = "lsp",
 				module = "blink.cmp.sources.lsp",
 				score_offset = 90,
-				-- fallbacks = { "snippets", "buffer" },
 			},
 			path = {
-				-- opts = {
-				-- get_cwd = function(_)
-				-- local cwd = vim.fn.getcwd()
-				-- set public as default directory in angular files
-				-- if vim.fn.filereadable(cwd .. "/angular.json") == 1 then
-				-- 	return cwd .. "/public"
-				-- else
-				-- return cwd
-				-- end
-				-- end,
-				-- },
 				fallbacks = { "snippets", "buffer" },
 				score_offset = 53,
 				opts = {
 					trailing_slash = false,
 					label_trailing_slash = true,
-					-- try if i need this function
-					-- get_cwd = function(context)
-					-- 	return vim.fn.expand(("#%d:p:h"):format(context.bufnr))
-					-- end,
 					show_hidden_files_by_default = true,
 				},
 			},
@@ -216,14 +84,10 @@ require("blink.cmp").setup({
 				min_keyword_length = 3,
 				max_items = 3,
 				opts = {
+					-- Avoid rescanning every loaded buffer, which can include
+					-- large files and buffers from unrelated repositories.
 					get_bufnrs = function()
-						return vim.iter(vim.api.nvim_list_bufs())
-							:filter(function(bufnr)
-								return vim.api.nvim_buf_is_loaded(bufnr)
-									and vim.bo[bufnr].buftype == ""
-									and vim.api.nvim_buf_line_count(bufnr) < 50000
-							end)
-							:totable()
+						return { vim.api.nvim_get_current_buf() }
 					end,
 				},
 			},
@@ -233,38 +97,9 @@ require("blink.cmp").setup({
 				score_offset = 200,
 				fallbacks = { "lsp" },
 			},
-			-- ripgrep = {
-			--   module = "blink-ripgrep",
-			--   name = "Ripgrep",
-			--
-			--   max_items = 8,
-			--   opts = {
-			--     prefix_min_len = 4,
-			--     project_root_marker = ".git",
-			--     project_root_fallback = true,
-			--   },
-			--   score_offset = 40,
-			-- },
-			-- minuet = {
-			-- 	name = "minuet",
-			-- 	module = "minuet.blink",
-			-- 	score_offset = 40,
-			-- 	async = true,
-			-- },
-			nerdfont = {
-				module = "blink-nerdfont",
-				name = "Nerd Fonts",
-				score_offset = 30,
-				max_items = 18,
-				opts = { insert = true },
-			},
 			conventional_commits = {
 				name = "Conventional Commits",
 				module = "blink-cmp-conventional-commits",
-				enabled = function()
-					return vim.bo.filetype == "gitcommit"
-				end,
-				---@module 'blink-cmp-conventional-commits'
 			},
 			emoji = {
 				max_items = 16,

@@ -88,6 +88,7 @@ in
       git
       google-java-format
       hyprls
+      inotify-tools
       jdt-language-server
       kdlfmt
       lua-language-server
@@ -141,10 +142,7 @@ in
       blink-chartoggle
       blink-cmp-env
       blink-emoji-nvim
-      blink-nerdfont-nvim
-      blink-cmp-dictionary
       blink-cmp-conventional-commits
-      colorful-menu-nvim
       luasnip
       friendly-snippets
 
