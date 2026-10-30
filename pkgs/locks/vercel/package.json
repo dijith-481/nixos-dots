@@ -3,6 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "vercel": "65.4.0"
+    "vercel": "65.8.0"
   }
 }
