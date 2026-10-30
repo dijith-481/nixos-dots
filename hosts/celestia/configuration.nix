@@ -32,16 +32,12 @@ in
     kernelModules = [
       "i915"
     ];
-    systemd = {
-      enable = true;
-    };
     systemd.tpm2.enable = true;
   };
   # Track the newest kernel available in the pinned nixpkgs revision. Meteor
   # Lake graphics, scheduling and power-management fixes land here first.
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.consoleLogLevel = 0;
-  boot.initrd.verbose = false;
 
   boot.plymouth = {
     enable = true;
