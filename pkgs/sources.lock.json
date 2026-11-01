@@ -1,62 +1,62 @@
 {
   "antigravity": {
-    "version": "2.26.0",
+    "version": "2.28.2",
     "type": "json",
     "sources": {
       "x86_64-linux": {
-        "url": "https://storage.googleapis.com/antigravity-public/antigravity-hub/2.26.0-6546645232517120/linux-x64/Antigravity.tar.gz",
-        "hash": "sha256-n3lzA3L2hdhJuTUYcjHt6ls4xSaehV40Xmi1xgcfeIQ="
+        "url": "https://storage.googleapis.com/antigravity-public/antigravity-hub/2.28.2-5937220255875072/linux-x64/Antigravity.tar.gz",
+        "hash": "sha256-vZKTiwiIY7r/VosII2928NI36KOVgQd6B5N/TcbhOMM="
       }
     },
     "vars": {
-      "buildId": "6546645232517120"
+      "buildId": "5937220255875072"
     }
   },
   "antigravity-cli": {
-    "version": "1.4.8",
+    "version": "1.4.12",
     "type": "json",
     "sources": {
       "x86_64-linux": {
-        "url": "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.4.8-5447777392656384/linux-x64/cli_linux_x64.tar.gz",
-        "hash": "sha512-sjaDdxQ45yv/4KIjEWj2Whag1z7Sx6hGCzEdxf4MPJ2d/Gy/t9h1UXM0AHGqTMXHpVL7XRvj/dMcK3VZ1n5ASg=="
+        "url": "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.4.12-4768735748292608/linux-x64/cli_linux_x64.tar.gz",
+        "hash": "sha512-6gHHO3chh7ypKIUs+WI18NhG1tpevawYi5rnGVl0ZXN/MlVA1IPuXz9i0VECkAFxM0SXKhh937mMx7l/cgS39A=="
       }
     }
   },
   "chatgpt": {
-    "version": "26.1021.22027",
+    "version": "26.1027.51404",
     "type": "apt",
     "sources": {
       "aarch64-linux": {
-        "url": "https://persistent.oaistatic.com/codex-app-prod/linux/deb/pool/main/c/chatgpt/chatgpt_26.1021.22027_arm64.deb",
-        "hash": "sha256-aN4exEBmhx5Bd7ocp5Pr7muiODl/E8eU5FsUlBwSYfs="
+        "url": "https://persistent.oaistatic.com/codex-app-prod/linux/deb/pool/main/c/chatgpt/chatgpt_26.1027.51404_arm64.deb",
+        "hash": "sha256-LCulzS9cE95fXZOl4WI/u2HqSzVWVx5fdDGlcPF/j+o="
       },
       "x86_64-linux": {
-        "url": "https://persistent.oaistatic.com/codex-app-prod/linux/deb/pool/main/c/chatgpt/chatgpt_26.1021.22027_amd64.deb",
-        "hash": "sha256-6wgxxzTxVPk/jrzw4X0RjaDep9wXN9xhoecURDdb8ZA="
+        "url": "https://persistent.oaistatic.com/codex-app-prod/linux/deb/pool/main/c/chatgpt/chatgpt_26.1027.51404_amd64.deb",
+        "hash": "sha256-RvHiLQKGmP6e2u/VhHrs4HxFCaMNNwnhBCIHGdjBKCI="
       }
     }
   },
   "claude-desktop": {
-    "version": "3.6556.2",
+    "version": "4.4212.0",
     "type": "apt",
     "sources": {
       "aarch64-linux": {
-        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_3.6556.2_arm64.deb",
-        "hash": "sha256-W3CutrszWz1GhO0QataMfaRP86pH/42y/v5VvegQwQs="
+        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_4.4212.0_arm64.deb",
+        "hash": "sha256-cCLcVt4w4L63+gp9yE4JqgDX+dTht/kwQ7Mrr3Wi9tg="
       },
       "x86_64-linux": {
-        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_3.6556.2_amd64.deb",
-        "hash": "sha256-D27R8oRcMEGbhUWoMgZ210ZKGfYl4F4CkZI4qml47LQ="
+        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_4.4212.0_amd64.deb",
+        "hash": "sha256-T89ljg/IlTkKuCWTKHKB37ziYbDsPqkAYOgti/v9eoQ="
       }
     }
   },
   "command-code": {
-    "version": "1.88.0",
+    "version": "1.88.2",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/command-code/-/command-code-1.88.0.tgz",
-        "hash": "sha512-8es7pmDlw1YYbUYUW3RHDGyI3zBQAhvkZaBh2ZxSnuuzZY1mavrN4e5+SICi8nBqah6GYThMLtvfqmFnL95i3A=="
+        "url": "https://registry.npmjs.org/command-code/-/command-code-1.88.2.tgz",
+        "hash": "sha512-B/+JVQecxHlkouzsVnFsRlxZ3e8VY35Grr934T1fx+c8aq4Em9kxI79B1gQ195xW50f3Svq8qc8j0QThSpNjWw=="
       }
     },
     "lockfile": "pkgs/locks/command-code"
@@ -73,12 +73,12 @@
     "lockfile": "pkgs/locks/loc"
   },
   "opencode": {
-    "version": "2.2.0",
+    "version": "2.2.5",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/@opencode/cli-linux-x64/-/cli-linux-x64-2.2.0.tgz",
-        "hash": "sha512-XTGFTiZTgugps6rgTXp4mPjOM8klsa5uHn/Shcms2o3k1bjSA3Sgl6O4yJ48y18WWxn9My5Pxt7JKcLID7LOHg=="
+        "url": "https://registry.npmjs.org/@opencode/cli-linux-x64/-/cli-linux-x64-2.2.5.tgz",
+        "hash": "sha512-BkHAfTqNsg/qphyHNrnH+DGkOxZsGjamNpM5DvwoEvz7ZAPNw8mEbMXGTCDOAH+/+40Eqeie6KNZBZZQwPCjaA=="
       }
     }
   },
@@ -93,12 +93,12 @@
     }
   },
   "vercel": {
-    "version": "65.4.0",
+    "version": "65.9.0",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/vercel/-/vercel-65.4.0.tgz",
-        "hash": "sha512-2TfMSKn7OUP2X3AgvOfp1y6aL9F1MCVqBnuCyhrbI3M4IO0AYM08FotCnp9+OauzKA1LToNSSBtlJVOxUfDl4Q=="
+        "url": "https://registry.npmjs.org/vercel/-/vercel-65.9.0.tgz",
+        "hash": "sha512-uROjH+BpZP18DXTruhl4JTVvZbRZPIG89gFN8xZ5V66WLK660Qc+3rITATIG82/yrEm3d3GpYGavISc52kBn/w=="
       }
     },
     "lockfile": "pkgs/locks/vercel"
