@@ -216,19 +216,55 @@ in
   # Without a local resolver every lookup went straight to the upstream
   # (often a phone hotspot): NixOS's nsncd does not cache, and resolvconf
   # wrote the DHCP servers directly into /etc/resolv.conf. systemd-resolved
-  # gives a local cache on 127.0.0.53; NetworkManager feeds it per-link DNS
-  # automatically. Upstream servers stay DHCP-provided so captive portals and
-  # hotspot-local names keep working. DNSSEC is off because many hotspot and
-  # ISP forwarders mangle it, which turns into slow SERVFAIL retries.
+  # gives a local cache on 127.0.0.53, and now encrypts every upstream lookup
+  # with DNS-over-TLS (port 853) to Cloudflare instead of sending plaintext
+  # port-53 queries to whatever resolver the network handed us over DHCP.
+  #
+  # NetworkManager is kept out of resolved's DNS configuration (main.dns=none
+  # below): if it published per-link DHCP servers, those would outrank the
+  # global list and resolved would try to speak DoT to a hotspot resolver
+  # that does not support it. With no per-link servers, the entries here are
+  # the only upstreams, and DNSOverTLS=yes makes that fail closed: if 853 is
+  # blocked (captive portals often do this) lookups fail rather than silently
+  # falling back to plaintext DNS.
+  #
+  # DNSSEC stays off: validation is the upstream's job here, and local
+  # validation has historically produced SERVFAIL retries on chains that
+  # hotspot/ISP forwarders mangled.
   services.resolved = {
     enable = true;
     settings.Resolve = {
+      # The #name suffix is the SNI/certificate name used to validate the
+      # TLS session; a bare IP would be encrypted but unauthenticated.
+      DNS = [
+        "1.1.1.1#cloudflare-dns.com"
+        "1.0.0.1#cloudflare-dns.com"
+        "2606:4700:4700::1111#cloudflare-dns.com"
+        "2606:4700:4700::1001#cloudflare-dns.com"
+      ];
+      FallbackDNS = [
+        "9.9.9.9#dns.quad9.net"
+        "149.112.112.112#dns.quad9.net"
+        "2620:fe::fe#dns.quad9.net"
+      ];
+      DNSOverTLS = "yes";
       DNSSEC = "false";
-      FallbackDNS = [ "1.1.1.1" "9.9.9.9" "2606:4700:4700::1111" ];
       # Avahi already answers mDNS; LLMNR only adds lookup delay.
       MulticastDNS = "false";
       LLMNR = "false";
     };
+  };
+
+  # The resolved module assigns networking.networkmanager.dns itself, so
+  # override the generated NetworkManager.conf keys instead of the option.
+  # cfg.settings is merged last, so the option value stays as-is while NM is
+  # told to use its "none" DNS plugin. `systemd-resolved = false` is required
+  # on top of that: NM defaults it to true and keeps its systemd-resolved
+  # plugin running even in another DNS mode, which would keep publishing
+  # DHCP resolvers to resolved behind our back.
+  networking.networkmanager.settings.main = {
+    dns = "none";
+    systemd-resolved = false;
   };
 
   # BBR copes far better than cubic with the lossy, variable-latency links of
