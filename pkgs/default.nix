@@ -25,19 +25,6 @@ in
   # Names of the pinned apps (used by the flake's `packages` output and CI).
   dotsApps = builtins.attrNames apps;
 
-  # Backport nixpkgs #581089 (merged 2026-11-02, after our 20261101 nix
-  # snapshot): wasm-pack 0.15.1 no longer sets the wasm target itself, so
-  # yaak's build-wasm.cjs scripts built for the host target and wasm-pack
-  # failed with "Expected exactly one .wasm file in the compiler artifact".
-  # Drop this override once nixpkgs is updated past the fix.
-  yaak = prev.yaak.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-
-      substituteInPlace crates/yaak-templates/build-wasm.cjs crates/yaak-wasm/build-wasm.cjs \
-        --replace-fail 'execSync("wasm-pack build' 'execSync("CARGO_BUILD_TARGET=wasm32-unknown-unknown wasm-pack build'
-    '';
-  });
-
   update-sources = final.callPackage ./tools/update-sources.nix { };
   dots = final.callPackage ./tools/dots.nix { };
 }
