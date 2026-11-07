@@ -40,7 +40,7 @@
 
     # `nix build .#claude-desktop`, `nix run .#dots -- help`, `nix run .#update-sources`
     packages.${system} = nixpkgs.lib.genAttrs pkgs.dotsApps (name: pkgs.${name}) // {
-      inherit (pkgs) dots update-sources;
+      inherit (pkgs) dots update-sources nix-helper;
     };
 
     nixosConfigurations = {

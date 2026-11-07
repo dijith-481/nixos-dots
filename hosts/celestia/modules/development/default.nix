@@ -6,6 +6,7 @@
     ./git.nix
     ./neovim.nix
     ./shell.nix
+    ./helper-packages.nix
     ./terminal-configs.nix
   ];
   # Keep stray `npm i -g` out of the home directory root. Real CLIs are pinned

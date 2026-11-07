@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
+    nix-helper
     nix-your-shell
     fishPlugins.done
     fishPlugins.fzf-fish

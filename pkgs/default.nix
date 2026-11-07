@@ -27,5 +27,6 @@ in
 
   update-sources = final.callPackage ./tools/update-sources.nix { };
   dots = final.callPackage ./tools/dots.nix { };
+  nix-helper = final.callPackage ./tools/nix-helper.nix { };
 }
 // apps
