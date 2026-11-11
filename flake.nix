@@ -4,6 +4,12 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # Brave was restored on master after its temporary removal from unstable.
+    # Use only its maintained recipe, built against our regular package set.
+    brave-nixpkgs = {
+      url = "github:NixOS/nixpkgs/master";
+      flake = false;
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -36,11 +42,18 @@
     {
 
     # Pinned upstream apps: recipes in pkgs/sources.toml, pins in pkgs/sources.lock.json.
-    overlays.default = import ./pkgs;
+    overlays.default = nixpkgs.lib.composeManyExtensions [
+      (import ./pkgs)
+      (final: _prev: {
+        brave = (final.callPackage
+          "${inputs.brave-nixpkgs}/pkgs/applications/networking/browsers/brave"
+          { }).brave;
+      })
+    ];
 
     # `nix build .#claude-desktop`, `nix run .#dots -- help`, `nix run .#update-sources`
     packages.${system} = nixpkgs.lib.genAttrs pkgs.dotsApps (name: pkgs.${name}) // {
-      inherit (pkgs) dots update-sources nix-helper;
+      inherit (pkgs) brave dots update-sources nix-helper;
     };
 
     nixosConfigurations = {
