@@ -65,7 +65,6 @@
 
     httpie # Better curl alternative
     #todo test it
-    yaak # API testing tool
 
     cloudflared # Cloudflare Tunnel daemon
     ngrok # ngrok tunneling
