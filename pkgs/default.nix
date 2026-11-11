@@ -18,6 +18,17 @@ in
     buildInputs = (old.buildInputs or [ ]) ++ [ final.aws-lc ];
   });
 
+  # Fix the native library itself so the plugin links the corrected build.
+  vimPlugins = prev.vimPlugins.extend (_: plugins: {
+    fff-nvim = plugins.fff-nvim.override {
+      rustPlatform = final.rustPlatform // {
+        buildRustPackage = args: final.rustPlatform.buildRustPackage (args // {
+          buildInputs = (args.buildInputs or [ ]) ++ [ final.libgit2 ];
+        });
+      };
+    };
+  });
+
   dotsLib = {
     sources = final.callPackage ./lib/sources.nix { };
     mkElectronDeb = final.callPackage ./lib/electron-deb.nix { inherit (final.dotsLib) sources; };
