@@ -13,6 +13,11 @@ let
   ) appFiles;
 in
 {
+  # The Rust hook requires system AWS-LC, but this Anyrun recipe omits it.
+  anyrun = prev.anyrun.overrideAttrs (old: {
+    buildInputs = (old.buildInputs or [ ]) ++ [ final.aws-lc ];
+  });
+
   dotsLib = {
     sources = final.callPackage ./lib/sources.nix { };
     mkElectronDeb = final.callPackage ./lib/electron-deb.nix { inherit (final.dotsLib) sources; };
