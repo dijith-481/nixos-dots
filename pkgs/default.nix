@@ -24,6 +24,11 @@ in
     buildInputs = (old.buildInputs or [ ]) ++ [ final.zstd ];
   });
 
+  scooter = prev.scooter.overrideAttrs (old: {
+    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.pkg-config ];
+    buildInputs = (old.buildInputs or [ ]) ++ [ final.oniguruma ];
+  });
+
   # Fix the native library itself so the plugin links the corrected build.
   vimPlugins = prev.vimPlugins.extend (_: plugins: {
     fff-nvim = plugins.fff-nvim.override {
