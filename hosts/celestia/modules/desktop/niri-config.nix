@@ -177,6 +177,17 @@
 
     window-rules = [
       {
+        matches = [ { app-id = "^brave-proton-private$"; } ];
+        border = {
+          enable = true;
+          width = 4;
+          active.color = "#57d99b";
+          inactive.color = "#37996b";
+          urgent.color = "#57d99b";
+        };
+        draw-border-with-background = false;
+      }
+      {
         matches = [
           { app-id = "^floatingfoot$"; }
           { app-id = "^ghostty\\.floatingfoot$"; }

@@ -11,6 +11,7 @@ in
       ./hardware-configuration.nix
       ./modules/system/display-manager.nix
       ./modules/system/power.nix
+      ./modules/system/brave-proton.nix
     ];
 
   boot.loader.systemd-boot = {

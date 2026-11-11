@@ -53,7 +53,7 @@ in
         layer = "top";
         position = "top";
         reload_style_on_change = true;
-        modules-left = [ "niri/workspaces" ];
+        modules-left = [ "niri/workspaces" "custom/vpn-window" ];
         modules-center = [ "mpris" ];
         modules-right = [
           "custom/dunst"
@@ -66,6 +66,17 @@ in
           "power-profiles-daemon"
           "battery"
         ];
+
+        "custom/vpn-window" = {
+          exec = pkgs.writeShellScript "waybar-vpn-window" ''
+            niri msg -j focused-window | ${pkgs.jq}/bin/jq -c '
+              if .app_id == "brave-proton-private" then
+                {text: "󰒃 VPN ONLY · CA", tooltip: "All tabs in this window use the dedicated Proton tunnel. Network access stops if the tunnel fails."}
+              else {text: ""} end'
+          '';
+          return-type = "json";
+          interval = 2;
+        };
 
         "niri/workspaces" = {
           format = "{icon}";
@@ -218,6 +229,11 @@ in
     };
 
     style = ''
+      #custom-vpn-window {
+        color: #57d99b;
+        padding: 0 10px;
+        font-weight: bold;
+      }
       ${nordColors}
 
       * {
