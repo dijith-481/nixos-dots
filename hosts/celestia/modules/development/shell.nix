@@ -54,6 +54,14 @@
 
   programs.starship.enable = true;
 
+  # Per-directory env from .envrc (fish hook is added automatically). Used to
+  # point `gh` at the work account in work repos via GH_CONFIG_DIR.
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+    silent = true;
+  };
+
   # Declarative fish — pure Nix, mirrors config/fish/config.fish + config/fish/functions/*
   programs.fish = {
     enable = true;
