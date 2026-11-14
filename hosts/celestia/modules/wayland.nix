@@ -76,7 +76,6 @@ in
 
   home.packages = with pkgs;[
     ghostty
-    niri
     wl-mirror
     fuzzel
     bemoji

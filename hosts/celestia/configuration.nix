@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, inputs, ... }:
 let
   versions = import ../../versions.nix;
   locals = import ./locals.nix { inherit pkgs; };
@@ -341,9 +341,9 @@ in
 
   programs.dconf.enable = true;
   programs.nix-ld.enable = true; # for one-off prebuilt binaries (and any runtime `vp env on` downloads)
-  # flake module provides session wiring + config validation;
-  # package comes from nixpkgs so it tracks our (newest) nixpkgs
-  programs.niri.package = pkgs.niri;
+  # Track niri-flake's latest development package, including portal fixes.
+  nixpkgs.overlays = [ inputs.niri.overlays.niri ];
+  programs.niri.package = pkgs.niri-unstable;
   programs.niri.enable = true;
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;

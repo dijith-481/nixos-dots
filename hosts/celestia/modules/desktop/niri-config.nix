@@ -106,7 +106,12 @@
       workspace-shadow.enable = false;
     };
 
-    gestures.hot-corners.enable = false;
+    gestures.hot-corners = {
+      top-left = false;
+      top-right = false;
+      bottom-left = false;
+      bottom-right = false;
+    };
 
     animations.slowdown = 0.5;
 
