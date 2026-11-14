@@ -21,13 +21,15 @@ System
   dots test              activate without a boot entry (a reboot goes back to the old system)
   dots boot              build now, activate on the next boot
   dots build             build only and show what would change
+  dots plan              preview builds and cached downloads without building
   dots update [flags]    the full routine:
                            1. merge the open app-update PR (if CI opened one)
                            2. git pull
-                           3. nix flake update (nixpkgs, home-manager, ...)
+                           3. preserve flake.lock (use --flake to upgrade inputs)
                            4. dots switch
-                           5. commit flake.lock and push
-                         flags: --no-merge  --no-push  --no-flake (apps only)
+                           5. commit and push flake.lock if --flake changed it
+                         flags: --flake  --no-merge  --no-push
+                         --no-flake is accepted for compatibility (the default)
 
 Pinned apps (pkgs/sources.toml -> pkgs/sources.lock.json)
   dots apps              list pinned app versions
@@ -56,7 +58,7 @@ require_clean() {
 os() {
   local verb="$1"
   shift
-  nh os "$verb" "$FLAKE#nixosConfigurations.$HOST" "$@"
+  nh os "$verb" "$FLAKE#nixosConfigurations.$HOST" --no-update-lock-file "$@"
 }
 
 bump_pr_json() {
@@ -85,7 +87,7 @@ merge_bump_pr() {
     warn "PR #$number conflicts with main; skipping it (CI rebuilds it on the next run)"
     return 0
   fi
-  # CI only opens/updates the PR after every changed app built, so open == built.
+  # CI validates the app pins. Its builds are not published to a binary cache.
   if ! gh pr merge "$number" --squash --delete-branch; then
     warn "could not merge PR #$number; continuing without it"
     return 0
@@ -94,11 +96,12 @@ merge_bump_pr() {
 }
 
 cmd_update() {
-  local merge=1 push=1 flake=1
+  local merge=1 push=1 flake=0
   for arg in "$@"; do
     case "$arg" in
     --no-merge) merge=0 ;;
     --no-push) push=0 ;;
+    --flake) flake=1 ;;
     --no-flake) flake=0 ;;
     *) die "unknown flag: $arg" ;;
     esac
@@ -114,8 +117,7 @@ cmd_update() {
   fi
   say "building and switching"
   if ! os switch; then
-    git checkout -- flake.lock
-    die "switch failed; flake.lock restored, system unchanged"
+    die "switch failed; keeping flake.lock for diagnosis and retry with 'dots switch'; activation may have partially completed"
   fi
   if ! git diff --quiet -- flake.lock; then
     git commit -m "chore(flake): update inputs" -- flake.lock
@@ -131,7 +133,7 @@ cmd_try_pr() {
   [ -n "$pr" ] || die "no open app-update PR"
   say "testing PR #$(jq -r .number <<<"$pr") without merging (reboot or 'dots switch' to undo)"
   git fetch origin "$BUMP_BRANCH"
-  nh os test "git+file://$FLAKE?ref=refs/remotes/origin/$BUMP_BRANCH#nixosConfigurations.$HOST"
+  nh os test "git+file://$FLAKE?ref=refs/remotes/origin/$BUMP_BRANCH#nixosConfigurations.$HOST" --no-update-lock-file
 }
 
 cmd_gc() {
@@ -153,6 +155,11 @@ switch | test | boot | build)
   os "$cmd" "$@"
   ;;
 update) cmd_update "$@" ;;
+plan)
+  in_flake
+  nix build --dry-run --no-link --no-update-lock-file \
+    "$FLAKE#nixosConfigurations.$HOST.config.system.build.toplevel" "$@"
+  ;;
 apps)
   in_flake
   update-sources --list

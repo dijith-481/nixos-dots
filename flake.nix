@@ -56,6 +56,24 @@
       inherit (pkgs) brave dots update-sources nix-helper;
     };
 
+    # Local dependency workarounds must not silently replace cached Rust builds.
+    # Evaluate with `nix flake check --no-build`; no cache access is needed.
+    checks.${system}.upstream-rust-packages =
+      let
+        upstream = import nixpkgs { inherit system; };
+        rustOutputs = p: [
+          p.anyrun.outPath
+          p.scooter.outPath
+          p.figma-agent.outPath
+          p.vimPlugins.fff-nvim.outPath
+          p.vimPlugins.fff-nvim.fff-nvim-lib.outPath
+        ];
+        systemPkgs = self.nixosConfigurations.nixos-celestia.pkgs;
+      in
+      assert nixpkgs.lib.assertMsg (rustOutputs systemPkgs == rustOutputs upstream)
+        "Rust package overrides differ from nixpkgs and may bypass the official binary cache";
+      pkgs.runCommand "upstream-rust-packages" { } "touch $out";
+
     nixosConfigurations = {
       nixos-celestia = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };

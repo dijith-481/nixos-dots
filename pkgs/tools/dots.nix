@@ -6,6 +6,7 @@
   gh,
   jq,
   nh,
+  nix,
   coreutils,
   update-sources,
   # Where the flake checkout lives and which nixosConfiguration to build.
@@ -20,6 +21,7 @@ writeShellApplication {
     gh
     jq
     nh
+    nix
     coreutils
     update-sources
   ];

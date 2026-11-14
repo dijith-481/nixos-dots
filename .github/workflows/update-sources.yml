@@ -5,8 +5,10 @@
 # open (or update) ONE pull request from the `auto/update-sources` branch.
 # Apps that fail to build are left at their old pin and listed in the PR.
 #
-# Merge it on GitHub, or locally with `dots update` (merges, pulls, flake
-# update, switch). `dots try-pr` test-activates it without merging.
+# Merge it on GitHub, or locally with `dots update` (merges, pulls, switches).
+# `dots update --flake` also upgrades flake inputs explicitly.
+# `dots try-pr` test-activates it without merging. Builds validate packages;
+# they are not uploaded to a binary cache.
 name: update-sources
 
 on:
@@ -76,7 +78,7 @@ jobs:
             retry=0
             for app in "${changed[@]}"; do
               echo "::group::build $app"
-              if nix build --no-link -L ".#$app"; then
+              if nix build --no-link --no-update-lock-file -L ".#$app"; then
                 echo "::endgroup::"
               else
                 echo "::endgroup::"
@@ -96,7 +98,9 @@ jobs:
           printf '%s\n' "${failed[@]}" > "$RUNNER_TEMP/failed.txt"
 
       - name: Evaluate the full system
-        run: nix eval --raw ".#nixosConfigurations.$HOST.config.system.build.toplevel.drvPath"
+        run: |
+          nix eval --no-update-lock-file --raw ".#nixosConfigurations.$HOST.config.system.build.toplevel.drvPath"
+          nix flake check --no-build --no-update-lock-file
 
       - name: Write PR body
         id: body
@@ -121,6 +125,7 @@ jobs:
               out += ["", "**Could not resolve upstream:**"]
               out += [f"- `{f['name']}`: {f['error'].splitlines()[0]}" for f in summary["failures"]]
           out += ["", "Every changed app was built in CI and the full system evaluated.",
+                  "CI outputs are not published to a binary cache; custom packages may build locally.",
                   "", "Test locally first: `dots try-pr`  ·  merge + switch: `dots update`"]
           (tmp / "body.md").write_text("\n".join(out) + "\n")
           names = ", ".join(n for n, _, _ in rows)

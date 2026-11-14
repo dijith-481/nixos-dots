@@ -13,32 +13,9 @@ let
   ) appFiles;
 in
 {
-  # The Rust hook requires system AWS-LC, but this Anyrun recipe omits it.
-  anyrun = prev.anyrun.overrideAttrs (old: {
-    buildInputs = (old.buildInputs or [ ]) ++ [ final.aws-lc ];
-  });
-
-  # zstd-sys uses pkg-config under the Rust hook's system-library policy.
-  figma-agent = prev.figma-agent.overrideAttrs (old: {
-    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.pkg-config ];
-    buildInputs = (old.buildInputs or [ ]) ++ [ final.zstd ];
-  });
-
-  scooter = prev.scooter.overrideAttrs (old: {
-    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.pkg-config ];
-    buildInputs = (old.buildInputs or [ ]) ++ [ final.oniguruma ];
-  });
-
-  # Fix the native library itself so the plugin links the corrected build.
-  vimPlugins = prev.vimPlugins.extend (_: plugins: {
-    fff-nvim = plugins.fff-nvim.override {
-      rustPlatform = final.rustPlatform // {
-        buildRustPackage = args: final.rustPlatform.buildRustPackage (args // {
-          buildInputs = (args.buildInputs or [ ]) ++ [ final.libgit2 ];
-        });
-      };
-    };
-  });
+  # Use nixpkgs' unmodified Rust packages so their binary-cache paths match.
+  # The pinned nixpkgs already supplies AWS-LC (anyrun), pkg-config/oniguruma
+  # (scooter), pkg-config/zstd (figma-agent), and libgit2 (fff-nvim).
 
   dotsLib = {
     sources = final.callPackage ./lib/sources.nix { };
