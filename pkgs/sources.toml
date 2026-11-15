@@ -116,6 +116,15 @@ arch = { x86_64-linux = "x64" }
 type = "npm"
 package = "@opencode/cli-linux-{arch}"
 
+[tsrs]
+# Rust port of the TypeScript 7 compiler and language server. The npm platform
+# package ships the native binary plus the default lib.*.d.ts files it loads
+# from its own directory.
+arch = { x86_64-linux = "x64" }
+[[tsrs.source]]
+type = "npm"
+package = "@tsrs/linux-{arch}-gnu"
+
 [vp]
 # Fully static musl build: no patchelf, no nix-ld.
 arch = { x86_64-linux = "x86_64" }

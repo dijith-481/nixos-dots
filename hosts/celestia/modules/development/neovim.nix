@@ -107,6 +107,9 @@ in
       tailwindcss-language-server
       ty
       typescript-language-server
+      # Fast native TypeScript language server (Rust port of the TS 7 server).
+      # Replaces typescript-tools.nvim and its JS tsserver requirement.
+      tsrs
       vscode-langservers-extracted
       zls
 
@@ -126,7 +129,6 @@ in
       nvim-lspconfig
       fidget-nvim
       lazydev-nvim
-      typescript-tools-nvim
       rustaceanvim
       flutter-tools-nvim
       roslyn-nvim

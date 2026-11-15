@@ -92,6 +92,16 @@
       }
     }
   },
+  "tsrs": {
+    "version": "0.25.0-ts7.1.0-beta",
+    "type": "npm",
+    "sources": {
+      "x86_64-linux": {
+        "url": "https://registry.npmjs.org/@tsrs/linux-x64-gnu/-/linux-x64-gnu-0.25.0-ts7.1.0-beta.tgz",
+        "hash": "sha512-dGRvubxWQXNP3aow+RLgFAbW3pR4oQ+UPfwrSgdggKCKKL9sAPr8nFGYM50JWAiqGQYSwRJl48AzIC7bHuQ2cQ=="
+      }
+    }
+  },
   "vercel": {
     "version": "65.16.0",
     "type": "npm",

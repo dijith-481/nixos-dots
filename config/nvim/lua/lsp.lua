@@ -98,6 +98,7 @@ vim.lsp.enable({
 	"ruff",
 	"ty", -- python
 	"tailwindcss",
+	"tsrs",
 	"jdtls",
 	"clangd",
 	"astro",

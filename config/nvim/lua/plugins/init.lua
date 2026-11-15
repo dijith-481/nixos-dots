@@ -89,14 +89,6 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
-local function is_large_file(bufnr)
-	if vim.b[bufnr].bigfile then
-		return true
-	end
-	local path = vim.api.nvim_buf_get_name(bufnr)
-	return path ~= "" and vim.fn.getfsize(path) > 1.5 * 1024 * 1024
-end
-
 -- Optional completion sources only need to be present for their matching
 -- filetypes, so Rust/TypeScript InsertEnter does not activate them.
 vim.api.nvim_create_autocmd("FileType", {
@@ -139,21 +131,6 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 
 -- Language-specific integrations are loaded before FileType, so their own
 -- FileType hooks can attach to the buffer currently being opened.
-vim.api.nvim_create_autocmd("BufReadPre", {
-	group = vim.api.nvim_create_augroup("lazy_typescript_tools", { clear = true }),
-	pattern = { "*.js", "*.jsx", "*.mjs", "*.cjs", "*.ts", "*.tsx", "*.mts", "*.cts" },
-	callback = function(event)
-		if is_large_file(event.buf) then
-			return
-		end
-		-- typescript-tools' ftplugin requires plenary.async as soon as a
-		-- TypeScript buffer's filetype is set, so plenary must already be on
-		-- the runtimepath before load_config activates the plugin.
-		packadd("plenary.nvim")
-		load_config("typescript-tools.nvim", "plugins.typescript-tools")
-	end,
-})
-
 once_for_code_buffer("BufReadPre", "lazy_flutter_tools", function()
 	packadd("plenary.nvim")
 	load_config("flutter-tools.nvim", "plugins.flutter-tools")
