@@ -84,10 +84,14 @@ jobs:
                 echo "::endgroup::"
                 echo "::warning::$app failed to build; keeping its previous pin"
                 failed+=("$app")
-                # Revert the app's own pin plus any changed pin that has no app file (shared deps like vite-plus).
+                # Revert the app's own pin, plus any shared pin (one with no app
+                # file, like vite-plus) that this app actually consumes. Reverting
+                # unrelated shared pins cascades: a failure elsewhere must not
+                # revert vite-plus and thereby break the matching vp bump.
                 revert=("$app")
                 for name in $(jq -r '.changes[].name' "$RUNNER_TEMP/summary.json"); do
-                  [ -f "pkgs/apps/$name.nix" ] || revert+=("$name")
+                  [ -f "pkgs/apps/$name.nix" ] && continue
+                  grep -qF -- "$name" "pkgs/apps/$app.nix" && revert+=("$name")
                 done
                 nix run .#update-sources -- --revert "${revert[@]}"
                 retry=1
@@ -100,7 +104,7 @@ jobs:
       - name: Evaluate the full system
         run: |
           nix eval --no-update-lock-file --raw ".#nixosConfigurations.$HOST.config.system.build.toplevel.drvPath"
-          nix flake check --no-build --no-update-lock-file
+          nix flake check --no-update-lock-file
 
       - name: Write PR body
         id: body

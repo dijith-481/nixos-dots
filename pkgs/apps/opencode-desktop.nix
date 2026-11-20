@@ -4,7 +4,8 @@
 dotsLib.mkElectronDeb {
   pname = "opencode-desktop";
   appDir = "opt/OpenCode";
-  executable = "ai.opencode.desktop";
+  # Upstream renamed the Electron binary in 2.3.0 (was ai.opencode.desktop).
+  executable = "ai.opencode";
   # Upstream desktop entries and scripts call the electron-builder executableName.
   binAliases = [ "ai.opencode.desktop" ];
   meta = {

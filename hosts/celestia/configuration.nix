@@ -171,6 +171,10 @@ in
     ACTION=="add", SUBSYSTEM=="leds", KERNEL=="platform::micmute", MODE="0666"
   '';
 
+  # Register GVfs services, MTP udev rules, and the GIO module path so
+  # Nautilus can discover and mount phones outside a GNOME session.
+  services.gvfs.enable = true;
+
   systemd.user.services.mic-led-sync = {
     description = "Sync Microphone Mute LED with WirePlumber status";
 

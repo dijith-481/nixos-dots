@@ -27,4 +27,7 @@ jobs:
       - name: Check update behavior
         run: python3 scripts/test-dots.py
       - name: Evaluate packages, system and cache compatibility
-        run: nix flake check --no-build --no-update-lock-file
+        # Evaluates every output and builds the `checks` output. --no-build cannot
+        # be used here: stylix's base16Scheme is an IFD and a fresh runner has to
+        # realise that derivation during evaluation.
+        run: nix flake check --no-update-lock-file

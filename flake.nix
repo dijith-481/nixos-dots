@@ -57,7 +57,7 @@
     };
 
     # Local dependency workarounds must not silently replace cached Rust builds.
-    # Evaluate with `nix flake check --no-build`; no cache access is needed.
+    # Evaluate with `nix flake check`; the check itself is a no-op derivation.
     checks.${system}.upstream-rust-packages =
       let
         upstream = import nixpkgs { inherit system; };

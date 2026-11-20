@@ -16,6 +16,9 @@
     seahorse
     libsecret
     nautilus
+    # gvfs must be in the profile (not just a nautilus dependency) so its
+    # D-Bus volume-monitor services get registered and MTP devices show up.
+    gvfs
     helvum
 
 
