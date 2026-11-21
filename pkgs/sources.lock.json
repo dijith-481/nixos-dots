@@ -1,15 +1,15 @@
 {
   "antigravity": {
-    "version": "2.33.0",
+    "version": "2.34.0",
     "type": "json",
     "sources": {
       "x86_64-linux": {
-        "url": "https://storage.googleapis.com/antigravity-public/antigravity-hub/2.33.0-4731201358004224/linux-x64/Antigravity.tar.gz",
-        "hash": "sha256-pzOHsinGsfUoiGBzETPFsm4VM0Dq7ZbYZQMs2KhTUFA="
+        "url": "https://storage.googleapis.com/antigravity-public/antigravity-hub/2.34.0-5887025308631040/linux-x64/Antigravity.tar.gz",
+        "hash": "sha256-R4xo+Gye9hpQIYWjnpzuxmsSdqalOxkaGbDZzoaYNts="
       }
     },
     "vars": {
-      "buildId": "4731201358004224"
+      "buildId": "5887025308631040"
     }
   },
   "antigravity-cli": {
@@ -23,40 +23,40 @@
     }
   },
   "chatgpt": {
-    "version": "26.1117.31558",
+    "version": "26.1117.41037",
     "type": "apt",
     "sources": {
       "aarch64-linux": {
-        "url": "https://persistent.oaistatic.com/codex-app-prod/linux/deb/pool/main/c/chatgpt/chatgpt_26.1117.31558_arm64.deb",
-        "hash": "sha256-gWcFAca314TvK5pisy2gMegaDqwPUOvZM9CplW177Hc="
+        "url": "https://persistent.oaistatic.com/codex-app-prod/linux/deb/pool/main/c/chatgpt/chatgpt_26.1117.41037_arm64.deb",
+        "hash": "sha256-cUFG6cZnsmob1OV2M8VEM0qe1Hw5mYm/2Yz3ZBQL3FM="
       },
       "x86_64-linux": {
-        "url": "https://persistent.oaistatic.com/codex-app-prod/linux/deb/pool/main/c/chatgpt/chatgpt_26.1117.31558_amd64.deb",
-        "hash": "sha256-bAcgYxT3i8G+URRFmeAdJ4CKUfeOXXjD3rHGgPcEPAM="
+        "url": "https://persistent.oaistatic.com/codex-app-prod/linux/deb/pool/main/c/chatgpt/chatgpt_26.1117.41037_amd64.deb",
+        "hash": "sha256-gw4lG2ykrUX+aQQSenkOjwD3wm7UyAOUc/cyPHxOJpI="
       }
     }
   },
   "claude-desktop": {
-    "version": "5.11492.5",
+    "version": "6.28899.2",
     "type": "apt",
     "sources": {
       "aarch64-linux": {
-        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_5.11492.5_arm64.deb",
-        "hash": "sha256-/mzYpw+WuW605rZHMAz67mqv9M4TOg+74Rws23dfWmo="
+        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_6.28899.2_arm64.deb",
+        "hash": "sha256-fsKjVOy4uvrj48yv5iAUQjK3QpsharWaBaDWzDQPFFU="
       },
       "x86_64-linux": {
-        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_5.11492.5_amd64.deb",
-        "hash": "sha256-uWIIsgfkULdA99vjBPYHf+2A5/PTfd1UWZHE6CAVZM8="
+        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_6.28899.2_amd64.deb",
+        "hash": "sha256-t8vMR6jDfP5AnrFGiFsBlv/Nmx8pvhZC63iolNie9rE="
       }
     }
   },
   "command-code": {
-    "version": "1.91.1",
+    "version": "1.93.0",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/command-code/-/command-code-1.91.1.tgz",
-        "hash": "sha512-VEusbFKEb4pAygAO66AeFRDNMNohdJmqiHs+zhGtzkLFP43rQFuJ603Y5xqSKq81UwOUlrCmcbGN+8aIVQ3jMw=="
+        "url": "https://registry.npmjs.org/command-code/-/command-code-1.93.0.tgz",
+        "hash": "sha512-COCrJAS0vY/tY2sZn8VDrNpTZRP+sq6Z68GHCV6OaxaBUaOK/AdrZCXqNWEt0rq+akKRVC3J/MoCO/igwcMo9A=="
       }
     },
     "lockfile": "pkgs/locks/command-code"
@@ -83,58 +83,58 @@
     }
   },
   "opencode-desktop": {
-    "version": "2.3.0",
+    "version": "2.3.2",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://opencode.ai/files/bin/2.3.0/opencode-desktop-linux-amd64.deb",
-        "hash": "sha256-mADOi7SN/rq7CQ7Lf3/8L1ZUcsl8aH0WpwP1vwW8RJY="
+        "url": "https://opencode.ai/files/bin/2.3.2/opencode-desktop-linux-amd64.deb",
+        "hash": "sha256-7XAA4uH9m5j0NnEY5tHuvvO6qaSwLWxgkPOX36p4exc="
       }
     }
   },
   "tsrs": {
-    "version": "7.1.0-beta.tsrs3",
+    "version": "7.1.0-beta.tsrs4",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/@tsrs/linux-x64-gnu/-/linux-x64-gnu-7.1.0-beta.tsrs3.tgz",
-        "hash": "sha512-erepwUH0NoRDjLeHEEEruh0Gd2/t0n2PHfJwXNlgSNbGM94+nNNZop0sYmjAtx63MadiC9YQXO6blTEQDVpDOg=="
+        "url": "https://registry.npmjs.org/@tsrs/linux-x64-gnu/-/linux-x64-gnu-7.1.0-beta.tsrs4.tgz",
+        "hash": "sha512-YIqFRStXq5yURR+zYDwIKcV126KH+EibPMJ1ZbfT2ToJ0w5zmRUKV/A5z0kjmQu6A6wItLZxOzKjU1v+ad5blA=="
       }
     }
   },
   "vercel": {
-    "version": "66.5.0",
+    "version": "66.6.0",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/vercel/-/vercel-66.5.0.tgz",
-        "hash": "sha512-ANTuZjG0BDzP9HEw9IP9cqftJCD4168IZ0/CSnfWIY+PRQcMY4RQpwrMdK1g7VJzSo8E9nCXZuyZy8TbRluj7g=="
+        "url": "https://registry.npmjs.org/vercel/-/vercel-66.6.0.tgz",
+        "hash": "sha512-3Dd3wPzYvcRoAqLTrqCH6I4geTBqmc+29kcdflcDmiDDmRtVZ2LZSPz6ym4U5Nh3NxCiDGZgCxn5HsGbkzSwuw=="
       }
     },
     "lockfile": "pkgs/locks/vercel"
   },
   "vite-plus": {
-    "version": "1.6.0",
+    "version": "1.7.0",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/vite-plus/-/vite-plus-1.6.0.tgz",
-        "hash": "sha512-h6aIA80QcAhICBp2Xga8lPM9jOZm2VvPn7Ls531C7RjD9herrT1rPDUMY72IdFf1XyWDmFVEwO+W3EgXtSSMLQ=="
+        "url": "https://registry.npmjs.org/vite-plus/-/vite-plus-1.7.0.tgz",
+        "hash": "sha512-dWeTqWhRXZSIr9i45IjPXjiAuLtHOdiRrZNBCusyhb/06MxFHOSbVKqG5bq9svxsE494AMHmVocBvzem+a6qHw=="
       }
     },
     "lockfile": "pkgs/locks/vite-plus"
   },
   "vp": {
-    "version": "1.6.0",
+    "version": "1.7.0",
     "type": "github-release",
     "sources": {
       "x86_64-linux": {
-        "url": "https://github.com/voidzero-dev/vite-plus/releases/download/v1.6.0/vp-x86_64-unknown-linux-musl.tar.gz",
-        "hash": "sha256-D6LN428rin0//ILY2qXTSLSSaymYcvTTGs3FstctnHY="
+        "url": "https://github.com/voidzero-dev/vite-plus/releases/download/v1.7.0/vp-x86_64-unknown-linux-musl.tar.gz",
+        "hash": "sha256-Mg1rEfizbYHPaUk660f47r45PS2p9iHC2r2nDRrp0Xc="
       }
     },
     "vars": {
-      "tag": "v1.6.0"
+      "tag": "v1.7.0"
     }
   }
 }
