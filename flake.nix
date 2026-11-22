@@ -4,6 +4,7 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    kiri.url = "git+file:///home/dijith/Dev/personal/file-manager?ref=feat/kiri";
     # Brave was restored on master after its temporary removal from unstable.
     # Use only its maintained recipe, built against our regular package set.
     brave-nixpkgs = {

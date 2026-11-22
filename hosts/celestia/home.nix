@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 let
   versions = import ../../versions.nix;
   codexMarketplaceStagingCleanup = pkgs.writeShellScript "codex-marketplace-staging-cleanup" ''
@@ -42,6 +42,8 @@ in
   home.username = "dijith";
   home.homeDirectory = "/home/dijith";
   home.stateVersion = versions.homeManager;
+
+  xdg.configFile."kiri/config.kdl".source = "${inputs.kiri}/config.example.kdl";
 
   # Free RAM used by abandoned Codex marketplace staging copies. The
   # NixOS tmpfs mount keeps this cache off disk and caps its total size.

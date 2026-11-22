@@ -2,6 +2,7 @@
 let
   versions = import ../../versions.nix;
   locals = import ./locals.nix { inherit pkgs; };
+  kiri = inputs.kiri.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   imports =
@@ -305,6 +306,7 @@ in
       niri = {
         default = [ "gnome" "gtk" ];
         "org.freedesktop.impl.portal.Access" = [ "gtk" ];
+        "org.freedesktop.impl.portal.FileChooser" = [ "kiri" "gtk" ];
         "org.freedesktop.impl.portal.Notification" = [ "gtk" ];
         "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
         "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
@@ -312,7 +314,7 @@ in
       };
       common.default = [ "gtk" ];
     };
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [ kiri pkgs.xdg-desktop-portal-gtk ];
   };
 
   services.syncthing = {
@@ -358,6 +360,7 @@ in
     flake = "/home/dijith/.Data/nixos-dots";
   };
   environment.systemPackages = with pkgs; [
+    kiri
     libva-utils
     intel-gpu-tools
     bubblewrap
@@ -451,6 +454,7 @@ in
   fonts = {
     packages = with pkgs;[
       nerd-fonts.iosevka
+      nerd-fonts.jetbrains-mono
       inter
       noto-fonts
       noto-fonts-color-emoji

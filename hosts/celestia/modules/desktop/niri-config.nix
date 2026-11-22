@@ -187,6 +187,12 @@
 
     window-rules = [
       {
+        matches = [ { app-id = "^kiri-picker$"; } ];
+        open-floating = true;
+        default-column-width.fixed = 1040;
+        default-window-height.fixed = 640;
+      }
+      {
         matches = [ { app-id = "^brave-proton-private$"; } ];
         border = {
           enable = true;
@@ -379,8 +385,7 @@
         # apps & tools
         "Mod+space".action.spawn = [ "fuzzel" "--show-actions" ];
         "Mod+F2".action.spawn = [ "hyprlock" ];
-        "Mod+E".action.spawn = [ "kitty" "--class" "yazi" "-e" "yazi" ];
-        "Mod+Control+E".action.spawn = [ "env" "CELESTIA_FLOATING_TERMINAL=1" "ghostty" "--class=ghostty.floatingfoot" "--title=floatingfoot" "-e" "yazi" ];
+        "Mod+E".action.spawn = [ "kiri" ];
         "Mod+V".action.spawn = [ "kitty" "--class" "clipse" "-e" "clipse" ];
         "Mod+Shift+V" = {
           repeat = false;
