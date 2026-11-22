@@ -90,6 +90,7 @@ in
     keepassxc
     playerctl
     ripdrag
+    file
     wl-clipboard
     wf-recorder
     satty

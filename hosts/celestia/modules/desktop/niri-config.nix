@@ -4,6 +4,11 @@
 { config, pkgs, lib, ... }:
 
 {
+  xdg.configFile."niri/scripts/paste-file.sh" = {
+    source = ./files/paste-file.sh;
+    executable = true;
+  };
+
   programs.niri.settings = {
     # --- Named workspaces ---
     # Keys are sorted when rendered to KDL, so prefix them to enforce
@@ -227,10 +232,18 @@
         default-floating-position = { x = 600; y = 0; relative-to = "top-left"; };
       }
       {
-        matches = [ { title = "fzf-picker"; } ];
+        matches = [
+          { title = "fzf-picker"; }
+          { app-id = "^paste-file-picker$"; }
+        ];
         open-floating = true;
         default-column-width.fixed = 600;
         default-window-height.fixed = 600;
+      }
+      {
+        matches = [ { app-id = "^it\\.catboy\\.ripdrag$"; } ];
+        open-floating = true;
+        default-floating-position = { x = 24; y = 24; relative-to = "bottom-right"; };
       }
       {
         matches = [ { title = ".*md$"; } ];
@@ -369,6 +382,14 @@
         "Mod+E".action.spawn = [ "kitty" "--class" "yazi" "-e" "yazi" ];
         "Mod+Control+E".action.spawn = [ "env" "CELESTIA_FLOATING_TERMINAL=1" "ghostty" "--class=ghostty.floatingfoot" "--title=floatingfoot" "-e" "yazi" ];
         "Mod+V".action.spawn = [ "kitty" "--class" "clipse" "-e" "clipse" ];
+        "Mod+Shift+V" = {
+          repeat = false;
+          action.spawn = [ "${config.xdg.configHome}/niri/scripts/paste-file.sh" "--paste-file" ];
+        };
+        "Mod+Control+Shift+V" = {
+          repeat = false;
+          action.spawn = [ "${config.xdg.configHome}/niri/scripts/paste-file.sh" ];
+        };
         "Mod+Control+space" = { repeat = false; } // (sh "pkill fum || kitty --class fum -e 'fum'");
 
         # emoji picker (bemoji + fuzzel, Noto Color Emoji). Types the chosen
