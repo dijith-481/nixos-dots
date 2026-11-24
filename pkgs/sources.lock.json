@@ -1,24 +1,24 @@
 {
   "antigravity": {
-    "version": "2.34.0",
+    "version": "2.35.0",
     "type": "json",
     "sources": {
       "x86_64-linux": {
-        "url": "https://storage.googleapis.com/antigravity-public/antigravity-hub/2.34.0-5887025308631040/linux-x64/Antigravity.tar.gz",
-        "hash": "sha256-R4xo+Gye9hpQIYWjnpzuxmsSdqalOxkaGbDZzoaYNts="
+        "url": "https://storage.googleapis.com/antigravity-public/antigravity-hub/2.35.0-6394266482769920/linux-x64/Antigravity.tar.gz",
+        "hash": "sha256-uIcZy9X0CMASHud9KXQBGidIMGslkdNG60iKILxR7Ck="
       }
     },
     "vars": {
-      "buildId": "5887025308631040"
+      "buildId": "6394266482769920"
     }
   },
   "antigravity-cli": {
-    "version": "1.5.13",
+    "version": "1.5.15",
     "type": "json",
     "sources": {
       "x86_64-linux": {
-        "url": "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.5.13-5999302598852608/linux-x64/cli_linux_x64.tar.gz",
-        "hash": "sha512-AUs3OHcDrKsfR81TLIu2AWemo1N7D5iR3gPxsf+pYUMHvIPEsvdVEnOwh31yJxawzZ4meC9rKlBwXbTwXhjGjw=="
+        "url": "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.5.15-5514532022517760/linux-x64/cli_linux_x64.tar.gz",
+        "hash": "sha512-rz8L5YuEdZQNefmr6hnnYuzD0mXqn1bP+N2AXie6KZtEowWnlQSn/+br36KaKUxW7cTK7Rh1mQv68v7xUI7IsA=="
       }
     }
   },
@@ -37,26 +37,26 @@
     }
   },
   "claude-desktop": {
-    "version": "6.28899.2",
+    "version": "6.28899.6",
     "type": "apt",
     "sources": {
       "aarch64-linux": {
-        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_6.28899.2_arm64.deb",
-        "hash": "sha256-fsKjVOy4uvrj48yv5iAUQjK3QpsharWaBaDWzDQPFFU="
+        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_6.28899.6_arm64.deb",
+        "hash": "sha256-I5wg0hhFbKzGVtSDgv1ZEWMlrGeapOR2N3rxRWrIVxU="
       },
       "x86_64-linux": {
-        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_6.28899.2_amd64.deb",
-        "hash": "sha256-t8vMR6jDfP5AnrFGiFsBlv/Nmx8pvhZC63iolNie9rE="
+        "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_6.28899.6_amd64.deb",
+        "hash": "sha256-fjgWAdhlcBSWQ9Uum4nCZXWrEvp4iqQf/dTMpbBjjPg="
       }
     }
   },
   "command-code": {
-    "version": "1.93.0",
+    "version": "1.93.2",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/command-code/-/command-code-1.93.0.tgz",
-        "hash": "sha512-COCrJAS0vY/tY2sZn8VDrNpTZRP+sq6Z68GHCV6OaxaBUaOK/AdrZCXqNWEt0rq+akKRVC3J/MoCO/igwcMo9A=="
+        "url": "https://registry.npmjs.org/command-code/-/command-code-1.93.2.tgz",
+        "hash": "sha512-/4tEtucmvOnQqoG+u4v+viuxSAQxXUe727B6K2vpQ/y+sWQG848TqcLYSg9BDxufsfedKrsGn/Io+Ra4+0h6oQ=="
       }
     },
     "lockfile": "pkgs/locks/command-code"
@@ -73,32 +73,32 @@
     "lockfile": "pkgs/locks/loc"
   },
   "opencode": {
-    "version": "2.3.2",
+    "version": "2.4.1",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/@opencode/cli-linux-x64/-/cli-linux-x64-2.3.2.tgz",
-        "hash": "sha512-E9txUc4fNtvuEQUiEx84h4/bd/LJZcAHdIu0yfZRP8KDVP79WhzhEd7BTckJUyvWUc58ZP/o+nfgcnTQnvfJgw=="
+        "url": "https://registry.npmjs.org/@opencode/cli-linux-x64/-/cli-linux-x64-2.4.1.tgz",
+        "hash": "sha512-FYQAnneVlLmqy862674vvRVkj8yHuZAFHJGV3UCGQxo8aKG58IHPKrspbxruVajnIEpb0t8PeO63H/oW4vJG5A=="
       }
     }
   },
   "opencode-desktop": {
-    "version": "2.3.2",
+    "version": "2.4.1",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://opencode.ai/files/bin/2.3.2/opencode-desktop-linux-amd64.deb",
-        "hash": "sha256-7XAA4uH9m5j0NnEY5tHuvvO6qaSwLWxgkPOX36p4exc="
+        "url": "https://opencode.ai/files/bin/2.4.1/opencode-desktop-linux-amd64.deb",
+        "hash": "sha256-k8zMWyaFppfYyMcLCViYrAMc1v3tqNg9sGzuuxec4zI="
       }
     }
   },
   "tsrs": {
-    "version": "7.1.0-beta.tsrs4",
+    "version": "7.1.0-beta.tsrs5",
     "type": "npm",
     "sources": {
       "x86_64-linux": {
-        "url": "https://registry.npmjs.org/@tsrs/linux-x64-gnu/-/linux-x64-gnu-7.1.0-beta.tsrs4.tgz",
-        "hash": "sha512-YIqFRStXq5yURR+zYDwIKcV126KH+EibPMJ1ZbfT2ToJ0w5zmRUKV/A5z0kjmQu6A6wItLZxOzKjU1v+ad5blA=="
+        "url": "https://registry.npmjs.org/@tsrs/linux-x64-gnu/-/linux-x64-gnu-7.1.0-beta.tsrs5.tgz",
+        "hash": "sha512-hyg70btCCaMT3RvFYU0KEibFyQjFUUfrqk4zTl7rf/7G3HPO3X6sEs8J/AHYUvJB0cA+dXgU/adkiZf1XJI/XA=="
       }
     }
   },
